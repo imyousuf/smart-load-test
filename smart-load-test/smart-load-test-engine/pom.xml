@@ -10,7 +10,7 @@
     <artifactId>smart-load-test-engine</artifactId>
     <name>smart-load-test-engine</name>
     <version>0.1-SNAPSHOT</version>
-    <url>http://maven.apache.org</url>
+    <url>http://code.google.com/p/smart-load-test/</url>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

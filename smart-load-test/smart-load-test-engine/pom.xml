@@ -11,6 +11,12 @@
     <name>smart-load-test-engine</name>
     <version>0.1-SNAPSHOT</version>
     <url>http://code.google.com/p/smart-load-test/</url>
+    <developers>
+        <developer>
+            <name>Imran M Yousuf</name>
+            <email>imyousuf@smartitengineering.com</email>
+        </developer>
+    </developers>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

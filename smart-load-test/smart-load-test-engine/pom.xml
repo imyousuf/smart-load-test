@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project>
     <parent>
         <artifactId>smart-load-test</artifactId>
@@ -11,6 +11,9 @@
     <name>smart-load-test-engine</name>
     <version>0.1-SNAPSHOT</version>
     <url>http://code.google.com/p/smart-load-test/</url>
+    <description>This module is responsible for executing the load tests 
+and gathering the test results. It is also responsible for
+result persistence.</description>
     <developers>
         <developer>
             <name>Imran M Yousuf</name>
@@ -25,4 +28,16 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>RELEASE</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -19,39 +19,25 @@
  */
 package com.smartitengineering.loadtest.engine;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.Properties;
 
 /**
- * Unit test for simple App.
+ *
+ * @author imyousuf
  */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
+public interface TestCaseCreationFactory {
 
     /**
-     * @return the suite of tests being tested
+     * This factory method is responsible for creating TestCase. For this the
+     * client will supply the properties it achieved during the test instance
+     * creation. How the properties will be used depends solely on the
+     * implementor
+     * @param <TestCaseType> Specifying what type of TestCase this factory
+     *                       returns
+     * @param properties The properties that the factory may use for creating
+     *                      the test case.
+     * @return The test case in CREATED state
      */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
+    public <TestCaseType extends TestCase> TestCaseType getTestCase(
+        Properties properties);
 }

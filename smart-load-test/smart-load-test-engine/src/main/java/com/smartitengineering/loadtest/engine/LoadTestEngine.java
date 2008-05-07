@@ -21,9 +21,9 @@ package com.smartitengineering.loadtest.engine;
 
 import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangeListener;
 import com.smartitengineering.loadtest.engine.events.TestCaseTransitionListener;
-import com.smartitengineering.loadtest.engine.persistence.PersistenceEngine;
-import com.smartitengineering.loadtest.engine.ui.UserInterfaceEngine;
-import java.util.List;
+import com.smartitengineering.loadtest.engine.result.TestResult;
+import java.util.Date;
+import java.util.Set;
 
 /**
  *
@@ -31,17 +31,23 @@ import java.util.List;
  */
 public interface LoadTestEngine {
 
-    public void init(List<UnitTestInstance> testInstances,
-                     PersistenceEngine persistenceLayerEngine,
-                     UserInterfaceEngine userInterfaceEngine);
+    public void init(Set<UnitTestInstance> testInstances);
 
     public LoadTestEngine.State getState();
     
-    public boolean isPersistenceLayerAvailable();
-    
-    public boolean isGUIAvailable();
-
     public void start();
+    
+    public Date getStartTime();
+    
+    public Date getEndTime();
+    
+    public long getDuration();
+    
+    public TestResult getTestResult();
+    
+    public void setTestCaseThreadPolicy(TestCaseThreadPolicy policy);
+    
+    public TestCaseThreadPolicy getTestCaseThreadPolicy();
 
     public void addLoadTestEngineStateChangeListener(
         LoadTestEngineStateChangeListener listener);

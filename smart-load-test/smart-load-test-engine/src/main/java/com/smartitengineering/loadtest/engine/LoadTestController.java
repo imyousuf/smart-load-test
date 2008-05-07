@@ -17,31 +17,27 @@
  *    with this program; if not, write to the Free Software Foundation, Inc.,
  *    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.smartitengineering.loadtest.engine.events;
+package com.smartitengineering.loadtest.engine;
+
+import com.smartitengineering.loadtest.engine.persistence.PersistenceEngine;
+import com.smartitengineering.loadtest.engine.ui.UserInterfaceEngine;
 
 /**
  *
  * @author imyousuf
  */
-public class AbstractStateChangeEvent<Source, OldValue, NewValue> extends AbstractEvent<Source>{
-
-    private OldValue oldValue;
-    private NewValue newValue;
-
-    protected AbstractStateChangeEvent(Source source,
-                            OldValue oldValue,
-                            NewValue newValue) {
-        super(source);
-        this.oldValue = oldValue;
-        this.newValue = newValue;
-    }
-
-    public NewValue getNewValue() {
-        return newValue;
-    }
-
-    public OldValue getOldValue() {
-        return oldValue;
-    }
-
+public interface LoadTestController {
+    
+    public boolean isLoadTestEngineConfigured();
+    
+    public boolean isPersistenceEngineConfigured();
+    
+    public boolean isUIEngineConfigured();
+    
+    public LoadTestEngine getLoadTestEngine();
+    
+    public PersistenceEngine getPersistenceEngine();
+    
+    public UserInterfaceEngine getUserInterfaceEngine();
+    
 }

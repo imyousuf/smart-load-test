@@ -17,31 +17,12 @@
  *    with this program; if not, write to the Free Software Foundation, Inc.,
  *    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.smartitengineering.loadtest.engine.events;
+package com.smartitengineering.loadtest.engine.result;
 
 /**
  *
  * @author imyousuf
  */
-public class AbstractStateChangeEvent<Source, OldValue, NewValue> extends AbstractEvent<Source>{
-
-    private OldValue oldValue;
-    private NewValue newValue;
-
-    protected AbstractStateChangeEvent(Source source,
-                            OldValue oldValue,
-                            NewValue newValue) {
-        super(source);
-        this.oldValue = oldValue;
-        this.newValue = newValue;
-    }
-
-    public NewValue getNewValue() {
-        return newValue;
-    }
-
-    public OldValue getOldValue() {
-        return oldValue;
-    }
+public class TestResult {
 
 }

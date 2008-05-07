@@ -19,10 +19,39 @@
  */
 package com.smartitengineering.loadtest.engine.persistence;
 
+import com.smartitengineering.loadtest.engine.LoadTestEngine;
+import com.smartitengineering.loadtest.engine.events.ProgressListener;
+
 /**
  *
  * @author imyousuf
  */
 public interface PersistenceEngine {
 
+    public void init(LoadTestEngine loadTestEngine);
+
+    public boolean persistTestResult();
+
+    public PersistenceEngine.State getState();
+    
+    public void addProgressListener(ProgressListener progressListener);
+    
+    public void removeProgressListener(ProgressListener listener);
+
+    public enum State {
+
+        CREATED(1),
+        INITIALIZED(2),
+        STARTED(3),
+        FINISHED(4);
+        private int stateStep;
+
+        State(int stateStep) {
+            this.stateStep = stateStep;
+        }
+
+        public int getStateStep() {
+            return stateStep;
+        }
+    }
 }

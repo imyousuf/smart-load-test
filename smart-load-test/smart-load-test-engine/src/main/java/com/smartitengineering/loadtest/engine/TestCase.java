@@ -19,6 +19,7 @@
  */
 package com.smartitengineering.loadtest.engine;
 
+import com.smartitengineering.loadtest.engine.events.TestCaseStateChangeListener;
 import java.util.Date;
 
 /**
@@ -76,7 +77,7 @@ public interface TestCase
      * Returns the current state of the test case
      * @return the current state
      */
-    public TestCase.TestCaseStatus getState();
+    public TestCase.State getState();
 
     /**
      * This operation is invoked just before initializing/starting the thread.
@@ -87,17 +88,43 @@ public interface TestCase
      */
     public <InitParam extends Object> void initTestCase(InitParam... params);
 
-    public enum TestCaseStatus {
-        //When the test case is initialized
+    public void addTestCaseStateChangeListener(
+        TestCaseStateChangeListener changeListener);
 
-        CREATED,
-        //After the initTestCase method invoked
-        INITIALIZED,
-        //Once the this test case is started
-        STARTED,
-        //If the test case is stopped
-        STOPPED,
-        //If the test case finishes normally
-        FINISHED
+    public void removeTestCaseStateChangeListener(
+        TestCaseStateChangeListener changeListener);
+
+    public enum State {
+
+        /**
+         * When the test case is initialized
+         */
+        CREATED(1),
+        /**
+         * After the initTestCase method invoked
+         */
+        INITIALIZED(2),
+        /**
+         * Once the this test case is started
+         */
+        STARTED(3),
+        /**
+         * If the test case is stopped
+         */
+        STOPPED(4),
+        /**
+         * If the test case finishes normally
+         */
+        FINISHED(4);
+        
+        private int stateStep;
+
+        State(int stateStep) {
+            this.stateStep = stateStep;
+        }
+
+        public int getStateStep() {
+            return stateStep;
+        }
     }
 }

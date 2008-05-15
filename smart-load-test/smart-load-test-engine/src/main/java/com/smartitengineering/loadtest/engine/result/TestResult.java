@@ -19,10 +19,61 @@
  */
 package com.smartitengineering.loadtest.engine.result;
 
+import com.smartitengineering.domain.PersistentDTO;
+import java.util.Date;
+import java.util.Set;
+
 /**
  *
  * @author imyousuf
  */
-public class TestResult {
+public class TestResult
+    extends PersistentDTO<TestResult> {
 
+    private Date startDateTime;
+    private Date endDateTime;
+    private Set<TestCaseResult> testCaseRunResults;
+    private Set<KeyedInformation> otherInfomations;
+
+    public boolean isValid(TestResult object) {
+        //Not implemented yet
+        return true;
+    }
+
+    @Override
+    public Object clone() {
+        throw new UnsupportedOperationException("Clone not implemented yet!");
+    }
+
+    public Date getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(Date endDateTime) {
+        this.endDateTime = endDateTime;
+    }
+
+    public Set<KeyedInformation> getOtherInfomations() {
+        return otherInfomations;
+    }
+
+    public void setOtherInfomations(Set<KeyedInformation> otherInfomations) {
+        this.otherInfomations = otherInfomations;
+    }
+
+    public Date getStartDateTime() {
+        return startDateTime;
+    }
+
+    public void setStartDateTime(Date startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public Set<TestCaseResult> getTestCaseRunResults() {
+        return testCaseRunResults;
+    }
+
+    public void setTestCaseRunResults(Set<TestCaseResult> testCaseRunResults) {
+        this.testCaseRunResults = testCaseRunResults;
+    }
 }

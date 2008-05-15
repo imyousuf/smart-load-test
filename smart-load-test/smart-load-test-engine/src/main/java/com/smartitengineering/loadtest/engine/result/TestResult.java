@@ -21,6 +21,7 @@ package com.smartitengineering.loadtest.engine.result;
 
 import com.smartitengineering.domain.PersistentDTO;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -35,14 +36,50 @@ public class TestResult
     private Set<TestCaseResult> testCaseRunResults;
     private Set<KeyedInformation> otherInfomations;
 
-    public boolean isValid(TestResult object) {
-        //Not implemented yet
+    public boolean isValid() {
+        if (startDateTime == null || endDateTime == null) {
+            return false;
+        }
+        if (testCaseRunResults == null || testCaseRunResults.size() < 1) {
+            return false;
+        }
+        for (TestCaseResult testCaseResult : testCaseRunResults) {
+            if (!testCaseResult.isValid()) {
+                return false;
+            }
+        }
+        if(otherInfomations != null) {
+            for (KeyedInformation keyedInformation : otherInfomations) {
+                if(!keyedInformation.isValid()) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
     @Override
     public Object clone() {
-        throw new UnsupportedOperationException("Clone not implemented yet!");
+        TestResult testResult = new TestResult();
+        testResult.startDateTime =
+            startDateTime != null ? new Date(startDateTime.getTime()) : null;
+        testResult.endDateTime =
+            endDateTime != null ? new Date(endDateTime.getTime()) : null;
+        if (testCaseRunResults != null) {
+            testResult.testCaseRunResults = new HashSet<TestCaseResult>();
+            for (TestCaseResult caseResult : testCaseRunResults) {
+                testResult.testCaseRunResults.add((TestCaseResult) caseResult.
+                    clone());
+            }
+        }
+        if (otherInfomations != null) {
+            testResult.otherInfomations = new HashSet<KeyedInformation>();
+            for (KeyedInformation keyInfo : otherInfomations) {
+                testResult.otherInfomations.add(
+                    (KeyedInformation) keyInfo.clone());
+            }
+        }
+        return testResult;
     }
 
     public Date getEndDateTime() {

@@ -39,7 +39,7 @@ public class TestCaseResult
     private Set<TestCaseInstanceResult> testCaseInstanceResults;
     private Set<KeyedInformation> otherInfomations;
 
-    public boolean isValid(TestCaseResult object) {
+    public boolean isValid() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

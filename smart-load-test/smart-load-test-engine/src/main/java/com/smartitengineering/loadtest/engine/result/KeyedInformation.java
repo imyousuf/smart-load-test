@@ -32,7 +32,7 @@ public class KeyedInformation
     
     private String value;
 
-    public boolean isValid(KeyedInformation object) {
+    public boolean isValid() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

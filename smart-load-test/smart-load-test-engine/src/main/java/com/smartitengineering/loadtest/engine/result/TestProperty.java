@@ -32,7 +32,7 @@ public class TestProperty
     private String key;
     private String value;
 
-    public boolean isValid(TestProperty object) {
+    public boolean isValid() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

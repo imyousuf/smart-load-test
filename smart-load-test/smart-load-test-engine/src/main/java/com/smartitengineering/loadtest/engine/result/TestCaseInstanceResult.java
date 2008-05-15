@@ -38,7 +38,7 @@ public class TestCaseInstanceResult
     private String endState;
     private Set<KeyedInformation> otherInfomations;
 
-    public boolean isValid(TestCaseInstanceResult object) {
+    public boolean isValid() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

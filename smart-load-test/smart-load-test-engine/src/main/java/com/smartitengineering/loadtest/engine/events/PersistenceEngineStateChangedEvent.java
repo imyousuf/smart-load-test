@@ -17,11 +17,26 @@
  *    with this program; if not, write to the Free Software Foundation, Inc.,
  *    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.smartitengineering.loadtest.engine.ui;
+package com.smartitengineering.loadtest.engine.events;
+
+import com.smartitengineering.loadtest.engine.persistence.PersistenceEngine;
 
 /**
  *
  * @author imyousuf
  */
-public interface UserInterfaceEngine {
+public class PersistenceEngineStateChangedEvent
+    extends AbstractStateChangeEvent<PersistenceEngine, PersistenceEngine.State, PersistenceEngine.State> {
+
+    /**
+     * Constructor of the event representing persistence engine state change
+     * @param source Persistence engine of which state has changed
+     * @param oldValue Old state
+     * @param newValue New state
+     */
+    public PersistenceEngineStateChangedEvent(PersistenceEngine source,
+                                           PersistenceEngine.State oldValue,
+                                           PersistenceEngine.State newValue) {
+        super(source, oldValue, newValue);
+    }
 }

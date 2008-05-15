@@ -20,9 +20,14 @@
 package com.smartitengineering.loadtest.engine.events;
 
 /**
- *
+ * State change listener that should be fired when state of an object changes
  * @author imyousuf
  */
-public interface AbstractStateChangeListener<StateChangedEvent extends AbstractStateChangeEvent> {
+public interface StateChangeListener<StateChangedEvent extends AbstractStateChangeEvent> {
+    
+    /**
+     * The observer should be notified about the state change in here
+     * @param stateChangeEvent Event representing the state change
+     */
     public void stateChanged(StateChangedEvent stateChangeEvent);
 }

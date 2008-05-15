@@ -23,6 +23,6 @@ package com.smartitengineering.loadtest.engine.events;
  *
  * @author imyousuf
  */
-public interface TestCaseStateChangeListener extends AbstractStateChangeListener<TestCaseStateChangedEvent>{
+public interface TestCaseStateChangeListener extends StateChangeListener<TestCaseStateChangedEvent>{
 
 }

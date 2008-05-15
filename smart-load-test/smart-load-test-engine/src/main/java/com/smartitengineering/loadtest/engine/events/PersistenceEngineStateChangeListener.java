@@ -17,11 +17,14 @@
  *    with this program; if not, write to the Free Software Foundation, Inc.,
  *    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package com.smartitengineering.loadtest.engine.ui;
+package com.smartitengineering.loadtest.engine.events;
 
 /**
+ * Presistent engine state change listener should work with the
+ * PersistentEngineStateChangedEvent
  *
  * @author imyousuf
  */
-public interface UserInterfaceEngine {
+public interface PersistenceEngineStateChangeListener
+    extends StateChangeListener<PersistenceEngineStateChangedEvent> {
 }

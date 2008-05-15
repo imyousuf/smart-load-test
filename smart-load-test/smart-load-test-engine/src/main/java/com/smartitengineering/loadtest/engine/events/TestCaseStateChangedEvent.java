@@ -28,6 +28,12 @@ import com.smartitengineering.loadtest.engine.TestCase;
 public class TestCaseStateChangedEvent
     extends AbstractStateChangeEvent<TestCase, TestCase.State, TestCase.State> {
 
+    /**
+     * Constructor of the event representing test case state change
+     * @param source Test case of which state has changed
+     * @param oldValue Old state
+     * @param newValue New state
+     */
     public TestCaseStateChangedEvent(TestCase source,
                                      TestCase.State oldState,
                                      TestCase.State newState) {

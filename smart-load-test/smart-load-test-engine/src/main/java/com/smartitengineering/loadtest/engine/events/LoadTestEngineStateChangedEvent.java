@@ -28,6 +28,12 @@ import com.smartitengineering.loadtest.engine.LoadTestEngine;
 public class LoadTestEngineStateChangedEvent
     extends AbstractStateChangeEvent<LoadTestEngine, LoadTestEngine.State, LoadTestEngine.State> {
 
+    /**
+     * Constructor of the event representing load test engine state change
+     * @param source Load test engine of which state has changed
+     * @param oldValue Old state
+     * @param newValue New state
+     */
     public LoadTestEngineStateChangedEvent(LoadTestEngine source,
                                            LoadTestEngine.State oldValue,
                                            LoadTestEngine.State newValue) {

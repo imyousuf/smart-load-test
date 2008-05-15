@@ -20,9 +20,11 @@
 package com.smartitengineering.loadtest.engine.events;
 
 /**
- *
+ * Load Test Engine state change listener that works with
+ * LoadTestEngineStateChangedEvent
+ * 
  * @author imyousuf
  */
-public interface LoadTestEngineStateChangeListener extends AbstractStateChangeListener<LoadTestEngineStateChangedEvent>{
+public interface LoadTestEngineStateChangeListener extends StateChangeListener<LoadTestEngineStateChangedEvent>{
 
 }

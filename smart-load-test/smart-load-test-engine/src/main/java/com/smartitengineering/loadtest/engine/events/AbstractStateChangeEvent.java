@@ -25,9 +25,23 @@ package com.smartitengineering.loadtest.engine.events;
  */
 public class AbstractStateChangeEvent<Source, OldValue, NewValue> extends AbstractEvent<Source>{
 
+    /**
+     * Old value of the source's state that changed. It need not only be the
+     * state but anything for that matter
+     */
     private OldValue oldValue;
+    /**
+     * New value of the source that it has changed to
+     */
     private NewValue newValue;
 
+    /**
+     * Constructor to construct the event with source, its old value and new
+     * value
+     * @param source Source of the event
+     * @param oldValue Old value that prevailed before change
+     * @param newValue New value after the change of state of the source 
+     */
     protected AbstractStateChangeEvent(Source source,
                             OldValue oldValue,
                             NewValue newValue) {
@@ -36,10 +50,19 @@ public class AbstractStateChangeEvent<Source, OldValue, NewValue> extends Abstra
         this.newValue = newValue;
     }
 
+    /**
+     * The new value of the source state provided during construction
+     * @return The new value representing the state of the source
+     */
     public NewValue getNewValue() {
         return newValue;
     }
 
+    /**
+     * The old of the source that was provided during the construction of the
+     * event
+     * @return The old value of the source representing the old source
+     */
     public OldValue getOldValue() {
         return oldValue;
     }

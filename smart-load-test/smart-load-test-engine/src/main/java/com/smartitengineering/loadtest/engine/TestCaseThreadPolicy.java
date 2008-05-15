@@ -25,8 +25,21 @@ package com.smartitengineering.loadtest.engine;
  */
 public interface TestCaseThreadPolicy {
 
+    /**
+     * Check the thread and the test case for deciding whether the thread should
+     * be stopped or not.
+     * 
+     * @param testCaseThread Thread executing the test case
+     * @param testCase The test case being executed by the thread
+     * @return true if it should be stopped by the client or else false
+     */
     public boolean shouldTestCaseBeStopped(Thread testCaseThread,
                                            TestCase testCase);
-    
+    /**
+     * If the client wants to know after how long more to check the thread then
+     * this method can be used to find out a sleep duration for the thread-stop
+     * monitor.
+     * @return Duration in milisecond
+     */
     public long getNextCheckDuration();
 }

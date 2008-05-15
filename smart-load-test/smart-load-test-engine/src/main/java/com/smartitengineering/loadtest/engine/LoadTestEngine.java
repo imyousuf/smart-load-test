@@ -52,12 +52,12 @@ public interface LoadTestEngine {
     public void addLoadTestEngineStateChangeListener(
         LoadTestEngineStateChangeListener listener);
     
+    public void removeLoadTestEngineStateChangeListener(
+        LoadTestEngineStateChangeListener listener);
+
     public void addTestCaseTransitionListener(TestCaseTransitionListener listener);
     
     public void removeTestCaseTransitionListener(TestCaseTransitionListener listener);
-
-    public void removeLoadTestEngineStateChangeListener(
-        LoadTestEngineStateChangeListener listener);
 
     public enum State {
 

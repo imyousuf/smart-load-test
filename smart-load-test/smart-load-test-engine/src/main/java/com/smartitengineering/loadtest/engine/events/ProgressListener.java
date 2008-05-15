@@ -20,9 +20,10 @@
 package com.smartitengineering.loadtest.engine.events;
 
 /**
- *
+ * Progress state change listener that works with ProgressEvent
+ * 
  * @author imyousuf
  */
-public interface ProgressListener extends AbstractStateChangeListener<ProgressEvent>{
+public interface ProgressListener extends StateChangeListener<ProgressEvent>{
 
 }

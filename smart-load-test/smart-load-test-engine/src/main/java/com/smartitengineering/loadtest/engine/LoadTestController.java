@@ -20,6 +20,7 @@ package com.smartitengineering.loadtest.engine;
 
 import com.smartitengineering.loadtest.engine.persistence.PersistenceEngine;
 import com.smartitengineering.loadtest.engine.ui.UserInterfaceEngine;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -27,6 +28,14 @@ import java.util.Set;
  * @author imyousuf
  */
 public interface LoadTestController {
+    
+    /**
+     * This operation will initialize the load test controller using the initial
+     * properties supplied as parameter.
+     * 
+     * @param initProperties Properties to be used initialization
+     */
+    public void init(Properties initProperties);
 
     /**
      * Returns whether the load test engine is configured or not. If load test

@@ -21,19 +21,25 @@ package com.smartitengineering.loadtest.engine.persistence;
 import com.smartitengineering.loadtest.engine.LoadTestEngine;
 import com.smartitengineering.loadtest.engine.events.PersistenceEngineStateChangeListener;
 import com.smartitengineering.loadtest.engine.events.ProgressListener;
+import java.util.Properties;
 
 /**
  *
  * @author imyousuf
  */
 public interface PersistenceEngine {
-    
+
     /**
      * Initialize the persistence engine with the load test it is to configure
      * 
      * @param loadTestEngine The load test to persist
+     * @param initProperties Properties to be used initialization
+     * @throws IllegalStateException If loadTestEngine is not in INITIALIZED
+     *                               state
      */
-    public void init(LoadTestEngine loadTestEngine);
+    public void init(LoadTestEngine loadTestEngine,
+                     Properties initProperties)
+        throws IllegalStateException;
 
     /**
      * Get the load test engine this persistence engine will persist.
@@ -88,7 +94,7 @@ public interface PersistenceEngine {
      */
     public void addLoadTestEngineStateChangeListener(
         PersistenceEngineStateChangeListener listener);
-    
+
     /**
      * Remove the observer if exists. No events occurring after removed will be
      * notified to this observer
@@ -97,7 +103,7 @@ public interface PersistenceEngine {
      */
     public void removeLoadTestEngineStateChangeListener(
         PersistenceEngineStateChangeListener listener);
-    
+
     /**
      * Returns the persistent test result engine used to read persisted test
      * results for the persistent storage in use by this engine
@@ -110,6 +116,7 @@ public interface PersistenceEngine {
      * State for representing the persistence engine state
      */
     public enum State {
+
         /**
          * Represents the created state of the persistence engine
          */
@@ -130,7 +137,6 @@ public interface PersistenceEngine {
          * Represents the finished state of the persistence engine
          */
         FINISHED(5);
-        
         /**
          * The step of the lifecycle that this state will show up
          */

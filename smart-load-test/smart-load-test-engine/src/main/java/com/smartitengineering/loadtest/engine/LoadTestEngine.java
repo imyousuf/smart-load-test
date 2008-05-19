@@ -22,6 +22,7 @@ import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangeLi
 import com.smartitengineering.loadtest.engine.events.TestCaseTransitionListener;
 import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.Date;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -37,8 +38,10 @@ public interface LoadTestEngine {
      * 
      * @param testInstances A collection of instances that this engine will
      *                      execute
+     * @param initProperties Properties to be used initialization
      */
-    public void init(Set<UnitTestInstance> testInstances);
+    public void init(Set<UnitTestInstance> testInstances,
+                     Properties initProperties);
 
     /**
      * Returns the current state of the engine.
@@ -46,7 +49,7 @@ public interface LoadTestEngine {
      * @return Current state of the engine
      */
     public LoadTestEngine.State getState();
-    
+
     /**
      * This method will set the status ot CREATED and ensure that the engine can
      * be reused for another test. It will ensure that the same engine can be

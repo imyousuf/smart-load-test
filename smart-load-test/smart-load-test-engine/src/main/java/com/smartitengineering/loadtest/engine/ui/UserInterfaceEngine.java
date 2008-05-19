@@ -18,11 +18,46 @@
  */
 package com.smartitengineering.loadtest.engine.ui;
 
+import com.smartitengineering.loadtest.engine.LoadTestEngine;
+import com.smartitengineering.loadtest.engine.persistence.PersistenceEngine;
+import java.util.Properties;
+
 /**
  *
  * @author imyousuf
  */
 public interface UserInterfaceEngine {
+
+    /**
+     * Initialize the UI engine with the persistence engine which HAS to be in
+     * initialized state or else the UI engine can not initialize. It will use
+     * the load test engine of the persistence engine to execute the test suite.
+     * 
+     * @param persistenceEngine The engine which will provide the load test
+     *                          engine and persist the results of the test. UI
+     *                          engine will used the this engine's load test
+     *                          engine to run and use the test and its results.
+     * @param initProperties Properties to be used initialization
+     * @throws IllegalStateException If persistenceEngine is not in INITIALIZED
+     *                               state
+     */
+    public void init(PersistenceEngine persistenceEngine,
+                     Properties initProperties)
+        throws IllegalStateException;
+
+    /**
+     * Initialize the UI Engine with load test engine only and this signifies
+     * that there is no persistence engine available for the user to save the
+     * results to.
+     * 
+     * @param loadTestEngine Engine that will be directed and used by the UI
+     * @param initProperties Properties to be used initialization
+     * @throws IllegalStateException If loadTestEngine is not in INITIALIZED
+     *                               state
+     */
+    public void init(LoadTestEngine loadTestEngine,
+                     Properties initProperties)
+        throws IllegalStateException;
 
     /**
      * Starts the UI Engine and it is expected that the UI Engine will guide the
@@ -32,5 +67,6 @@ public interface UserInterfaceEngine {
      * @throws java.lang.IllegalStateException If the load test engine has been
      * started or if the UI is still not configured properly.
      */
-    public void start() throws IllegalStateException;
+    public void start()
+        throws IllegalStateException;
 }

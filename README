@@ -1,0 +1,8 @@
+This framework is meant to be used for load testing. Use the following command to get quick start with it:
+
+java -jar smart-load-test-engine-app-0.1-SNAPSHOT.jar 
+
+from this directory.
+
+The following section discusses about the configurations:
+

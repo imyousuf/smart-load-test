@@ -27,13 +27,11 @@
     <groupId>com.smartitengineering.smart-load-test-engine</groupId>
     <artifactId>smart-load-test-engine-impl</artifactId>
     <name>smart-load-test-engine-impl</name>
-    <version>0.1-SNAPSHOT</version>
+    <version>${parent.version}</version>
     <url>http://code.google.com/p/smart-load-test/</url>
-    <description>
-        This module will contain the default implementation of the different
+    <description>This module will contain the default implementation of the different
         engines, namingly it will contain the db persistence, file system
-        persistence, engine impl and console UI impl.
-    </description>
+        persistence, engine impl and console UI impl.</description>
     <developers>
         <developer>
             <name>Imran M Yousuf</name>
@@ -58,6 +56,21 @@
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.smartitengineering</groupId>
+            <artifactId>smart-load-test-engine</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.smartitengineering</groupId>
+            <artifactId>smart-abstract-dao</artifactId>
+            <version>${abstract-dao-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.smartitengineering</groupId>
+            <artifactId>smart-hibernate-abstract-dao</artifactId>
+            <version>${abstract-dao-version}</version>
         </dependency>
     </dependencies>
 </project>

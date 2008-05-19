@@ -1,0 +1,28 @@
+
+<assembly>
+    <id>distro</id>
+    <formats>
+        <format>zip</format>
+        <format>tar.bz2</format>
+    </formats>
+    <files>
+        <file>
+            <source>../../README</source>
+            <outputDirectory>/</outputDirectory>
+            <filtered>true</filtered>
+        </file>
+        <file>
+            <source>../gpl-3.0.txt</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
+            <source>./target/smart-load-test-engine-app-0.1-SNAPSHOT.jar</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+    </files>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+        </dependencySet>
+    </dependencySets>
+</assembly>

@@ -78,4 +78,7 @@
         <module>smart-load-test-engine-app</module>
         <module>smart-load-test-engine-impl</module>
     </modules>
+    <properties>
+        <abstract-dao-version>0.3-SNAPSHOT</abstract-dao-version>
+    </properties>
 </project>

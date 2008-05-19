@@ -27,10 +27,9 @@
     <groupId>com.smartitengineering</groupId>
     <artifactId>smart-load-test-engine-app</artifactId>
     <name>smart-load-test-engine-app</name>
-    <version>0.1-SNAPSHOT</version>
+    <version>${parent.version}</version>
     <url>http://code.google.com/p/smart-load-test/</url>
-    <description>
-        This module will be the application for the test engine
+    <description>This module will be the application for the test engine
         framework. It will combine the default implementations
         of the API and will provide the user an easy way to
         integrate their implementation and perform load
@@ -52,6 +51,42 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.smartitengineering.loadtest.engine.app.App</mainClass>
+                            <packageName>com.smartitengineering.loadtest.engine.app</packageName>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                        </manifest>
+                        <manifestEntries>
+                            <mode>development</mode>
+                            <url>${project.url}</url>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/assemble/assemble-bin.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>directory-inline</goal>
+                            <goal>assembly</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -60,6 +95,12 @@
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.smartitengineering.smart-load-test-engine</groupId>
+            <artifactId>smart-load-test-engine-impl</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

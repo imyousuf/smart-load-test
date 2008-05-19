@@ -2,7 +2,35 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <book>
-  <title>API Design</title>
+  <title>Smart Load Test Engine</title>
+
+  <subtitle>API Goal &amp; Design</subtitle>
+
+  <bookinfo>
+    <date>May 17, 2008</date>
+
+    <author>
+      <firstname>Imran</firstname>
+
+      <surname>M Yousuf</surname>
+
+      <email>imran@smartitengineering.com</email>
+    </author>
+
+    <releaseinfo>This documented is released under the terms and conditions of
+    GPLv3</releaseinfo>
+
+    <productname>Smart Load Test Engine</productname>
+  </bookinfo>
+
+  <preface>
+    <title>Preface</title>
+
+    <para>This document is meant to serve as a source of what the project
+    wants to achieve at different stages and the choices it made in its
+    course. We are open to feedback and we welcome them at
+    smart-load-testing@smartitengineering.com.</para>
+  </preface>
 
   <chapter>
     <title>Requirements specification</title>

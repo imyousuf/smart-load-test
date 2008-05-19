@@ -1,6 +1,5 @@
 /**
- * 
- *    This module represents an engine for the load testing framework
+ *    This module represents an engine IMPL for the load testing framework
  *    Copyright (C) 2008  Imran M Yousuf (imran@smartitengineering.com)
  *
  *    This program is free software: you can redistribute it and/or modify

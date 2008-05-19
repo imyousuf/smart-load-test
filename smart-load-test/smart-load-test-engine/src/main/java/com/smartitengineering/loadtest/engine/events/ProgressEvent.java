@@ -28,7 +28,10 @@ public class ProgressEvent
     extends AbstractStateChangeEvent<PersistenceEngine, Double, Double> {
 
     /**
-     * Constructor of the event representing load test engine state change
+     * Constructor of the event representing load test engine state change.
+     * Progress value will be greater than or equal to 0.0 and smaller than or
+     * equal to 1.0.
+     * 
      * @param source Load test engine of which state has changed
      * @param oldValue Old Old progress value
      * @param newValue New Old progress value

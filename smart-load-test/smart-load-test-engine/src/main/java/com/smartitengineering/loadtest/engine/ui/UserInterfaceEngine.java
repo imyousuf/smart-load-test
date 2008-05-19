@@ -23,4 +23,14 @@ package com.smartitengineering.loadtest.engine.ui;
  * @author imyousuf
  */
 public interface UserInterfaceEngine {
+
+    /**
+     * Starts the UI Engine and it is expected that the UI Engine will guide the
+     * whole load testing and its result persistence and user should not worry
+     * about how the test is to be executed
+     * 
+     * @throws java.lang.IllegalStateException If the load test engine has been
+     * started or if the UI is still not configured properly.
+     */
+    public void start() throws IllegalStateException;
 }

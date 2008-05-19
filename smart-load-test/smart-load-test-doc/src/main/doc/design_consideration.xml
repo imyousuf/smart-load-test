@@ -3,8 +3,10 @@
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <book>
   <title>API Design</title>
+
   <chapter>
     <title>Requirements specification</title>
+
     <section>
       <title>What inspired me?</title>
 
@@ -76,6 +78,15 @@
         <listitem>
           <para>Add an basic UI for monitoring test and showing test results,
           in this release the UI will be console based.</para>
+        </listitem>
+      </orderedlist>
+
+      <para><emphasis role="bold">Release 0.2</emphasis></para>
+
+      <orderedlist>
+        <listitem>
+          <para>Add OSGi implementation to the Engine implementation for
+          dynamic loading of different engines and binding them</para>
         </listitem>
       </orderedlist>
 

@@ -21,6 +21,7 @@ package com.smartitengineering.loadtest.engine.result;
 import com.smartitengineering.domain.PersistentDTO;
 import com.smartitengineering.loadtest.engine.TestCase;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -38,12 +39,36 @@ public class TestCaseInstanceResult
     private Set<KeyedInformation> otherInfomations;
 
     public boolean isValid() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (startTime != null && endTime != null && endState != null &&
+            instanceNumber > 0 && testCaseResult != null) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     public Object clone() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TestCaseInstanceResult instanceResult = new TestCaseInstanceResult();
+        super.clone(instanceResult);
+        instanceResult.setTestCaseResult(testCaseResult);
+        instanceResult.setEndState(endState);
+        if (endTime != null) {
+            instanceResult.setEndTime(new Date(endTime.getTime()));
+        }
+        if (startTime != null) {
+            instanceResult.setStartTime(new Date(startTime.getTime()));
+        }
+        instanceResult.setInstanceNumber(instanceNumber);
+        if (otherInfomations != null) {
+            Set<KeyedInformation> keyedInformations =
+                new HashSet<KeyedInformation>(otherInfomations.size());
+            for (KeyedInformation keyedInformation : otherInfomations) {
+                keyedInformations.add(
+                    (KeyedInformation) keyedInformation.clone());
+            }
+            instanceResult.setOtherInfomations(keyedInformations);
+        }
+        return instanceResult;
     }
 
     protected String getEndState() {

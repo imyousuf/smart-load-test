@@ -32,12 +32,20 @@ public class TestProperty
     private String value;
 
     public boolean isValid() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if(testCaseResult != null && key != null && value != null) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     public Object clone() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TestProperty property = new TestProperty();
+        super.clone(property);
+        property.setTestCaseResult(testCaseResult);
+        property.setKey(key);
+        property.setValue(value);
+        return property;
     }
 
     public String getKey() {

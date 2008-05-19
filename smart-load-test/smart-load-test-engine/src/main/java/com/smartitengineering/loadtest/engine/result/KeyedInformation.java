@@ -32,12 +32,18 @@ public class KeyedInformation
     private String value;
 
     public boolean isValid() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if(key != null && value != null) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     public Object clone() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        KeyedInformation keyedInformation = new KeyedInformation();
+        keyedInformation.setKey(key);
+        keyedInformation.setValue(value);
+        return keyedInformation;
     }
 
     public String getKey() {

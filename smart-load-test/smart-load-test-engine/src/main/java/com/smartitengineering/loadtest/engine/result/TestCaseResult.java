@@ -19,6 +19,7 @@
 package com.smartitengineering.loadtest.engine.result;
 
 import com.smartitengineering.domain.PersistentDTO;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -28,7 +29,6 @@ import java.util.Set;
 public class TestCaseResult
     extends PersistentDTO<TestCaseResult> {
 
-    
     private String name;
     private String instanceFactoryClassName;
     private String stepDelayConfiguration;
@@ -39,12 +39,54 @@ public class TestCaseResult
     private Set<KeyedInformation> otherInfomations;
 
     public boolean isValid() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (name != null && instanceFactoryClassName != null && stepSize >= 1 &&
+            stepCount >= 1 && testCaseInstanceResults != null &&
+            testCaseInstanceResults.size() > 0) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     public Object clone() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TestCaseResult caseResult = new TestCaseResult();
+        super.clone(caseResult);
+        caseResult.setInstanceFactoryClassName(instanceFactoryClassName);
+        caseResult.setName(name);
+        if (otherInfomations != null) {
+            Set<KeyedInformation> otherInfomationsClone =
+                new HashSet<KeyedInformation>(otherInfomations.size());
+            for (KeyedInformation otherInformation : otherInfomations) {
+                final KeyedInformation otherInformationClone =
+                    (KeyedInformation) otherInformation.clone();
+                otherInfomationsClone.add(otherInformationClone);
+            }
+            caseResult.setOtherInfomations(otherInfomationsClone);
+        }
+        if (testProperties != null) {
+            Set<TestProperty> testPropertiesClone = new HashSet<TestProperty>(
+                testProperties.size());
+            for (TestProperty testProperty : testProperties) {
+                final TestProperty testPropertyClone =
+                    (TestProperty) testProperty.clone();
+                testPropertyClone.setTestCaseResult(caseResult);
+                testPropertiesClone.add(testPropertyClone);
+            }
+            caseResult.setTestProperties(testPropertiesClone);
+        }
+        if (testCaseInstanceResults != null) {
+            Set<TestCaseInstanceResult> testCaseInstanceResultsClone =
+                new HashSet<TestCaseInstanceResult>(
+                testCaseInstanceResults.size());
+            for (TestCaseInstanceResult testCaseInstanceResult : testCaseInstanceResults) {
+                final TestCaseInstanceResult testCaseInstanceResultClone =
+                    (TestCaseInstanceResult) testCaseInstanceResult.clone();
+                testCaseInstanceResultClone.setTestCaseResult(caseResult);
+                testCaseInstanceResultsClone.add(testCaseInstanceResultClone);
+            }
+            caseResult.setTestCaseInstanceResults(testCaseInstanceResultsClone);
+        }
+        return caseResult;
     }
 
     public String getInstanceFactoryClassName() {

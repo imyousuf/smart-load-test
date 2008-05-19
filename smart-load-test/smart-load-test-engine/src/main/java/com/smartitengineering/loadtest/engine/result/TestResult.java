@@ -60,6 +60,7 @@ public class TestResult
     @Override
     public Object clone() {
         TestResult testResult = new TestResult();
+        super.clone(testResult);
         testResult.startDateTime =
             startDateTime != null ? new Date(startDateTime.getTime()) : null;
         testResult.endDateTime =

@@ -93,6 +93,9 @@ public interface TestCase
     public void removeTestCaseStateChangeListener(
         TestCaseStateChangeListener changeListener);
 
+    /**
+     * Represents the state a test can attain
+     */
     public enum State {
 
         /**
@@ -115,13 +118,22 @@ public interface TestCase
          * If the test case finishes normally
          */
         FINISHED(4);
-        
+
+        /**
+         * The step at which this state will be attained by the engine
+         */
         private int stateStep;
 
         State(int stateStep) {
             this.stateStep = stateStep;
         }
 
+        /**
+         * Return the step of the state, that is which step in the lifecycle
+         * this step is attained.
+         * 
+         * @return The step of this state
+         */
         public int getStateStep() {
             return stateStep;
         }

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<book>
+  <title>API Design</title>
+  <chapter>
+    <title>Requirements specification</title>
+    <section>
+      <title>What inspired me?</title>
+
+      <para>We had to do perform load and stress testing of our JAX-WS API and
+      tag libraries. In doing so we found different tools for performing the
+      tasks we needed to for our purpose. For example, for web service we
+      could have used soapUI, for tag lib tesing we could have used either
+      JMeter or HttpUnit. Though the tag lib testing was quite obvious the
+      JAX-WS API testing was not that obvious and we need to ensure the API
+      was supposed to handle what its supposed to recieve. Doing so would have
+      required writing over-complicated XML authoring, whereas it could be
+      achieved entirely by pure Java code. So we also needed to be able to
+      test them. Adding more challenge to it was being able to test creation
+      of different entities with different randomized values and execution of
+      different test cases with delay with respect to starting point. Also I
+      wanted to perform all the tests from one platfor rather than using
+      multiple of them; please note that all the tools mentioned earlier are
+      great tools in their own but using them all together was a distant
+      possibility.</para>
+    </section>
+
+    <section>
+      <title>Goal</title>
+
+      <para>The goal of the project is quite large in deed, but I want to
+      achieve it in different steps rather than going for at once. So I would
+      in fact represent the goal in a roadmap fashion.</para>
+
+      <para><emphasis role="bold">Release 0.1</emphasis></para>
+
+      <orderedlist>
+        <listitem>
+          <para>Add an API for adding load testing engines</para>
+
+          <orderedlist>
+            <listitem>
+              <para>Default Engine implementation will be provided.</para>
+            </listitem>
+
+            <listitem>
+              <para>It will support time-thread based test case
+              execution.</para>
+            </listitem>
+          </orderedlist>
+        </listitem>
+
+        <listitem>
+          <para>Add an API for adding test instances for any API, for example,
+          soapUI, JMeter, HttpUnit, etc.</para>
+
+          <orderedlist>
+            <listitem>
+              <para>There will be API implementation for executing pure Java
+              codes only in this release</para>
+            </listitem>
+
+            <listitem>
+              <para>Support for HttpUnit is probable for enabling www
+              pages.</para>
+            </listitem>
+          </orderedlist>
+        </listitem>
+
+        <listitem>
+          <para>Add an API for persisting test results to DB, FileSystem
+          etc.</para>
+        </listitem>
+
+        <listitem>
+          <para>Add an basic UI for monitoring test and showing test results,
+          in this release the UI will be console based.</para>
+        </listitem>
+      </orderedlist>
+
+      <para><emphasis role="bold">Release 0.5</emphasis></para>
+
+      <orderedlist>
+        <listitem>
+          <para>Add NetBeans RCP support in UI layer</para>
+        </listitem>
+
+        <listitem>
+          <para>Add JMeter test cases support</para>
+        </listitem>
+
+        <listitem>
+          <para>Add graphical representation for test results</para>
+        </listitem>
+      </orderedlist>
+
+      <para><emphasis role="bold">Release 0.8</emphasis></para>
+
+      <orderedlist>
+        <listitem>
+          <para>Add soapUI support for test cases support</para>
+        </listitem>
+
+        <listitem>
+          <para>Enhance UI support for the framework</para>
+        </listitem>
+      </orderedlist>
+
+      <para><emphasis role="bold">Release 1.0</emphasis></para>
+
+      <orderedlist>
+        <listitem>
+          <para>Enhance the UI further.</para>
+        </listitem>
+
+        <listitem>
+          <para>Have bugs fixes</para>
+        </listitem>
+      </orderedlist>
+    </section>
+  </chapter>
+</book>

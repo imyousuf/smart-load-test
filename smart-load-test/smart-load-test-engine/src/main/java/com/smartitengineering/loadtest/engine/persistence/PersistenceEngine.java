@@ -106,19 +106,45 @@ public interface PersistenceEngine {
      */
     public PersistentTestResultEngine getPersistentTestResultEngine();
 
+    /**
+     * State for representing the persistence engine state
+     */
     public enum State {
-
+        /**
+         * Represents the created state of the persistence engine
+         */
         CREATED(1),
+        /**
+         * Represents the initialized state of the persistence engine
+         */
         INITIALIZED(2),
+        /**
+         * Represents the ready to start state of the persistence engine
+         */
         READY_TO_START(3),
+        /**
+         * Represents the started state of the persistence engine
+         */
         STARTED(4),
+        /**
+         * Represents the finished state of the persistence engine
+         */
         FINISHED(5);
+        
+        /**
+         * The step of the lifecycle that this state will show up
+         */
         private int stateStep;
 
         State(int stateStep) {
             this.stateStep = stateStep;
         }
 
+        /**
+         * Returns the state step count for the current state.
+         * 
+         * @return The state step
+         */
         public int getStateStep() {
             return stateStep;
         }

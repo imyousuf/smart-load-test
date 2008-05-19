@@ -46,6 +46,13 @@ public interface LoadTestEngine {
      * @return Current state of the engine
      */
     public LoadTestEngine.State getState();
+    
+    /**
+     * This method will set the status ot CREATED and ensure that the engine can
+     * be reused for another test. It will ensure that the same engine can be
+     * used to either repeast the test or perform new set of tests.
+     */
+    public void reinstanteCreatedState();
 
     /**
      * Starts the engine; that is it starts executing the test instances as they

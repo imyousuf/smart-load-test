@@ -21,11 +21,14 @@ package com.smartitengineering.loadtest.engine.result;
 import com.smartitengineering.domain.PersistentDTO;
 import java.util.HashSet;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  *
  * @author imyousuf
  */
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class TestCaseResult
     extends PersistentDTO<TestCaseResult> {
 

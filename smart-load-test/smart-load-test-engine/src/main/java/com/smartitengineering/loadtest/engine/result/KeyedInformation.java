@@ -19,11 +19,14 @@
 package com.smartitengineering.loadtest.engine.result;
 
 import com.smartitengineering.domain.PersistentDTO;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  *
  * @author imyousuf
  */
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class KeyedInformation
     extends PersistentDTO<KeyedInformation> {
     

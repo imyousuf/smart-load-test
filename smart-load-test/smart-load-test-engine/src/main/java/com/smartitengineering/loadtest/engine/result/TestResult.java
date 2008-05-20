@@ -22,11 +22,16 @@ import com.smartitengineering.domain.PersistentDTO;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author imyousuf
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class TestResult
     extends PersistentDTO<TestResult> {
 

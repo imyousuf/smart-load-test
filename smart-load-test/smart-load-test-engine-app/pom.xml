@@ -74,6 +74,7 @@
                 <configuration>
                     <descriptors>
                         <descriptor>src/assemble/assemble-bin.xml</descriptor>
+                        <descriptor>src/assemble/assemble-bin-with-dependency.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>

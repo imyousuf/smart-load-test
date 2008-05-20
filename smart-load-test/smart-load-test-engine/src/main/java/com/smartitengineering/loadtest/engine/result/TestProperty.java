@@ -30,12 +30,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class TestProperty
     extends PersistentDTO<TestProperty> {
 
-    private TestCaseResult testCaseResult;
     private String key;
     private String value;
 
     public boolean isValid() {
-        if(testCaseResult != null && key != null && value != null) {
+        if(key != null && value != null) {
             return true;
         }
         return false;
@@ -45,7 +44,6 @@ public class TestProperty
     public Object clone() {
         TestProperty property = new TestProperty();
         super.clone(property);
-        property.setTestCaseResult(testCaseResult);
         property.setKey(key);
         property.setValue(value);
         return property;
@@ -57,14 +55,6 @@ public class TestProperty
 
     public void setKey(String key) {
         this.key = key;
-    }
-
-    public TestCaseResult getTestCaseResult() {
-        return testCaseResult;
-    }
-
-    public void setTestCaseResult(TestCaseResult testCaseResult) {
-        this.testCaseResult = testCaseResult;
     }
 
     public String getValue() {

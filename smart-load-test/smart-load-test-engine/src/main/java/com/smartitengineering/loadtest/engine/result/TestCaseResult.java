@@ -72,7 +72,6 @@ public class TestCaseResult
             for (TestProperty testProperty : testProperties) {
                 final TestProperty testPropertyClone =
                     (TestProperty) testProperty.clone();
-                testPropertyClone.setTestCaseResult(caseResult);
                 testPropertiesClone.add(testPropertyClone);
             }
             caseResult.setTestProperties(testPropertiesClone);
@@ -84,7 +83,6 @@ public class TestCaseResult
             for (TestCaseInstanceResult testCaseInstanceResult : testCaseInstanceResults) {
                 final TestCaseInstanceResult testCaseInstanceResultClone =
                     (TestCaseInstanceResult) testCaseInstanceResult.clone();
-                testCaseInstanceResultClone.setTestCaseResult(caseResult);
                 testCaseInstanceResultsClone.add(testCaseInstanceResultClone);
             }
             caseResult.setTestCaseInstanceResults(testCaseInstanceResultsClone);

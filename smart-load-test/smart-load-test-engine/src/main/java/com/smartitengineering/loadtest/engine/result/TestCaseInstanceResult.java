@@ -34,7 +34,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class TestCaseInstanceResult
     extends PersistentDTO<TestCaseInstanceResult> {
 
-    private TestCaseResult testCaseResult;
     private Date startTime;
     private Date endTime;
     private int instanceNumber;
@@ -43,7 +42,7 @@ public class TestCaseInstanceResult
 
     public boolean isValid() {
         if (startTime != null && endTime != null && endState != null &&
-            instanceNumber > 0 && testCaseResult != null) {
+            instanceNumber > 0) {
             return true;
         }
         return false;
@@ -53,7 +52,6 @@ public class TestCaseInstanceResult
     public Object clone() {
         TestCaseInstanceResult instanceResult = new TestCaseInstanceResult();
         super.clone(instanceResult);
-        instanceResult.setTestCaseResult(testCaseResult);
         instanceResult.setEndState(endState);
         if (endTime != null) {
             instanceResult.setEndTime(new Date(endTime.getTime()));
@@ -114,14 +112,6 @@ public class TestCaseInstanceResult
 
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
-    }
-
-    public TestCaseResult getTestCaseResult() {
-        return testCaseResult;
-    }
-
-    public void setTestCaseResult(TestCaseResult testCaseResult) {
-        this.testCaseResult = testCaseResult;
     }
 
     public Set<KeyedInformation> getOtherInfomations() {

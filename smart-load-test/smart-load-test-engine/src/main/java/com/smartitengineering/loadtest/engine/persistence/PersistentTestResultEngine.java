@@ -58,11 +58,11 @@ public interface PersistentTestResultEngine {
 
     /**
      * Retrieve all test result between specified date range. All test that
-     * starts greater or equal to startDate or ends lesser or equal to endDate
+     * starts greater or equal to startDate or lesser or equal to startDate
      * will be returned in this result.
      * 
-     * @param startDate Start datetime of the search
-     * @param endDate End datetime of the search
+     * @param startDate Start datetime of the search. Ignored if null.
+     * @param endDate End datetime of the search. Ignored if null.
      * @return All test results within the range
      */
     public List<TestResult> getAllResultWithinDateRange(Date startDate,
@@ -70,11 +70,11 @@ public interface PersistentTestResultEngine {
 
     /**
      * Retrieve all test result between specified date range. All test that
-     * starts greater or equal to startDate or ends lesser or equal to endDate
+     * starts greater or equal to startDate or lesser or equal to startDate
      * and has the name testName will be returned in this result.
      * 
-     * @param startDate Start datetime of the search
-     * @param endDate End datetime of the search
+     * @param startDate Start datetime of the search. Ignored if null.
+     * @param endDate End datetime of the search. Ignored if null.
      * @param testName Name of the test
      * @return All test results within the range and with testName. Empty list
      * if no such result.

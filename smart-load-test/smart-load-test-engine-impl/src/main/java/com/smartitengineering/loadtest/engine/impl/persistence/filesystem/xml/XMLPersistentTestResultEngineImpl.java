@@ -112,8 +112,8 @@ public class XMLPersistentTestResultEngineImpl
     public List<TestResult> getAllResultWithinDateRange(String testName,
                                                         Date startDate,
                                                         Date endDate) {
-        return getAllResultsWithinDateRange(getTestResultsForName(
-            getAllResults(), testName), startDate, endDate);
+        return getAllResultsWithinDateRange(getAllForTestName(testName),
+            startDate, endDate);
     }
 
     public List<TestResult> getTestResults(Map<String, ? extends Object> filters)
@@ -128,8 +128,9 @@ public class XMLPersistentTestResultEngineImpl
         ArrayList<TestResult> filteredResults =
             new ArrayList<TestResult>();
         for (TestResult testResult : testResults) {
-            if (testResult.getStartDateTime().after(startDate) || testResult.
-                getEndDateTime().before(endDate)) {
+            if ((startDate == null || !testResult.getStartDateTime().before(
+                startDate)) || (endDate == null || !testResult.getStartDateTime().
+                after(endDate))) {
                 filteredResults.add(testResult);
             }
         }

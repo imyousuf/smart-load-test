@@ -36,12 +36,17 @@ public interface LoadTestEngine {
      * ready to be started. Please note that to invoke start, init must be
      * invoked earlier.
      * 
+     * @param testName Name of the corresponding test result
      * @param testInstances A collection of instances that this engine will
      *                      execute
      * @param initProperties Properties to be used initialization
+     * @throws IllegalArgumentException If the testName is null or depends on
+     *                                  the specification of the implementor
      */
-    public void init(Set<UnitTestInstance> testInstances,
-                     Properties initProperties);
+    public void init(String testName,
+                     Set<UnitTestInstance> testInstances,
+                     Properties initProperties)
+        throws IllegalArgumentException;
 
     /**
      * Returns the current state of the engine.

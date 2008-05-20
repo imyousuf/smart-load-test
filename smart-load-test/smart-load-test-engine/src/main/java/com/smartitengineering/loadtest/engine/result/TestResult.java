@@ -35,13 +35,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class TestResult
     extends PersistentDTO<TestResult> {
 
+    private String testName;
     private Date startDateTime;
     private Date endDateTime;
     private Set<TestCaseResult> testCaseRunResults;
     private Set<KeyedInformation> otherInfomations;
 
     public boolean isValid() {
-        if (startDateTime == null || endDateTime == null) {
+        if (startDateTime == null || endDateTime == null || testName == null) {
             return false;
         }
         if (testCaseRunResults == null || testCaseRunResults.size() < 1) {
@@ -84,6 +85,7 @@ public class TestResult
                     (KeyedInformation) keyInfo.clone());
             }
         }
+        testResult.setTestName(testName);
         return testResult;
     }
 
@@ -117,5 +119,13 @@ public class TestResult
 
     public void setTestCaseRunResults(Set<TestCaseResult> testCaseRunResults) {
         this.testCaseRunResults = testCaseRunResults;
+    }
+
+    public String getTestName() {
+        return testName;
+    }
+
+    public void setTestName(String testName) {
+        this.testName = testName;
     }
 }

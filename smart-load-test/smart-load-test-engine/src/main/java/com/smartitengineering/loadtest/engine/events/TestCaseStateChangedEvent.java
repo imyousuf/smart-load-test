@@ -30,8 +30,8 @@ public class TestCaseStateChangedEvent
     /**
      * Constructor of the event representing test case state change
      * @param source Test case of which state has changed
-     * @param oldValue Old state
-     * @param newValue New state
+     * @param oldState Old state
+     * @param newState New state
      */
     public TestCaseStateChangedEvent(TestCase source,
                                      TestCase.State oldState,

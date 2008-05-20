@@ -108,14 +108,6 @@ public class TestCaseResult
         this.name = name;
     }
 
-    public Set<TestProperty> getProperties() {
-        return testProperties;
-    }
-
-    public void setProperties(Set<TestProperty> properties) {
-        this.testProperties = properties;
-    }
-
     public int getStepCount() {
         return stepCount;
     }

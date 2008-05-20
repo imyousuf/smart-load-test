@@ -28,6 +28,7 @@ import com.smartitengineering.loadtest.engine.result.TestCaseInstanceResult;
 import com.smartitengineering.loadtest.engine.result.TestCaseResult;
 import com.smartitengineering.loadtest.engine.result.TestProperty;
 import com.smartitengineering.loadtest.engine.result.TestResult;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Properties;
@@ -149,17 +150,20 @@ public class XMLPersistenceEngineImplTest
                         new TestCaseInstanceResult();
                     instanceResult.setEndTestCaseState(
                         com.smartitengineering.loadtest.engine.TestCase.State.FINISHED);
-                    instanceResult.setEndTime(new Date(System.currentTimeMillis() + 10000));
+                    instanceResult.setEndTime(new Date(
+                        System.currentTimeMillis() + 10000));
                     instanceResult.setId(1);
                     instanceResult.setInstanceNumber(1);
                     instanceResult.setOtherInfomations(infos);
                     instanceResult.setStartTime(new Date());
                     instanceResults.add(instanceResult);
-                    instanceResult = (TestCaseInstanceResult) instanceResult.clone();
+                    instanceResult = (TestCaseInstanceResult) instanceResult.
+                        clone();
                     instanceResult.setId(2);
                     instanceResult.setInstanceNumber(2);
                     instanceResults.add(instanceResult);
-                    instanceResult = (TestCaseInstanceResult) instanceResult.clone();
+                    instanceResult = (TestCaseInstanceResult) instanceResult.
+                        clone();
                     instanceResult.setId(22);
                     instanceResult.setInstanceNumber(3);
                     instanceResults.add(instanceResult);
@@ -209,10 +213,27 @@ public class XMLPersistenceEngineImplTest
             };
         }
         if (initProperties == null) {
-            initProperties = new Properties();
-            initProperties.setProperty(
-                AbstractFileSystemPersistenceEngine.RESULTS_ROOT_DIRECTORY_PROP,
-                "/home/imyousuf/projects/tests/");
+            try {
+                InputStream input = getClass().getClassLoader().
+                    getResourceAsStream(
+                    "test-config.properties");
+                Properties tempProperties = new Properties();
+                tempProperties.load(input);
+                if (tempProperties.size() > 0) {
+                    initProperties = tempProperties;
+                }
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            finally {
+                if (initProperties == null) {
+                    initProperties = new Properties();
+                    initProperties.setProperty(
+                        AbstractFileSystemPersistenceEngine.RESULTS_ROOT_DIRECTORY_PROP,
+                        System.getProperty("user.home"));
+                }
+            }
         }
     }
 

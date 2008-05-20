@@ -67,6 +67,7 @@ public class XMLPersistenceEngineImpl
             persistOperationResult = true;
         }
         catch (Exception ex) {
+            ex.printStackTrace();
             throw new UnsupportedOperationException(ex);
         }
         return persistOperationResult;

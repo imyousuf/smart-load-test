@@ -42,7 +42,8 @@ public class XMLPersistenceEngineImpl
 
     @Override
     protected void specializedFileSystemInit(Properties properties) {
-        //Nothing to do for this XML implementation
+        setPersistentTestResultEngine(new XMLPersistentTestResultEngineImpl(
+            getResultsRootDirectory()));
     }
 
     public boolean persistTestResult()

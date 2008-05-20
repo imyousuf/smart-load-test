@@ -50,8 +50,8 @@ public abstract class AbstractPersistenceEngine
     public void init(LoadTestEngine loadTestEngine,
                      Properties initProperties)
         throws IllegalStateException {
-        if (loadTestEngine == null || loadTestEngine.getState() !=
-            LoadTestEngine.State.INITIALIZED) {
+        if (loadTestEngine == null || loadTestEngine.getState().getStateStep() <
+            LoadTestEngine.State.INITIALIZED.getStateStep()) {
             throw new IllegalStateException(
                 "Load Test Engine not initialized or is null!");
         }
@@ -105,6 +105,11 @@ public abstract class AbstractPersistenceEngine
     }
 
     public PersistentTestResultEngine getPersistentTestResultEngine() {
+        if (persistentTestResultEngine == null && currentState.getStateStep() <
+            PersistenceEngine.State.INITIALIZED.getStateStep()) {
+            throw new UnsupportedOperationException(
+                "Persistence Engine not initialized!");
+        }
         return persistentTestResultEngine;
     }
 

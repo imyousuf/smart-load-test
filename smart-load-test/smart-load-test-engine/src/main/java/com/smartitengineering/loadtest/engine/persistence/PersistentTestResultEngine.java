@@ -50,8 +50,11 @@ public interface PersistentTestResultEngine {
      * 
      * @param testResultId ID of test result to retrieve
      * @return test result specified by id; null if no such test result
+     * @throws UnsupportedOperationException If this operation is not supported
+     *                                       by the persistent engine
      */
-    public TestResult getTestResultById(int testResultId);
+    public TestResult getTestResultById(int testResultId)
+        throws UnsupportedOperationException;
 
     /**
      * Retrieve all test result between specified date range. All test that

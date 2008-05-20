@@ -28,7 +28,7 @@ import java.util.Map;
  * @author imyousuf
  */
 public interface PersistentTestResultEngine {
-    
+
     /**
      * Return all the results in this persitent storage
      * 
@@ -87,6 +87,9 @@ public interface PersistentTestResultEngine {
      * 
      * @param filters Containing coditions to be used for search
      * @return The search result; empty list if none.
+     * @throws UnsupportedOperationException If the implementor does not want to
+     *                                       support this operation
      */
-    public List<TestResult> getTestResults(Map<String, ? extends Object> filters);
+    public List<TestResult> getTestResults(Map<String, ? extends Object> filters)
+        throws UnsupportedOperationException;
 }

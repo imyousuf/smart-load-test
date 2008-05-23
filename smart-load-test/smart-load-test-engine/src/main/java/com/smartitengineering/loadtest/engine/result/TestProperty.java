@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class TestProperty
     extends PersistentDTO<TestProperty> {
 
+    private int testCaseResultId;
     private String key;
     private String value;
 
@@ -46,6 +47,7 @@ public class TestProperty
         super.clone(property);
         property.setKey(key);
         property.setValue(value);
+        property.setTestCaseResultId(testCaseResultId);
         return property;
     }
 
@@ -63,5 +65,13 @@ public class TestProperty
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public int getTestCaseResultId() {
+        return testCaseResultId;
+    }
+
+    public void setTestCaseResultId(int testCaseResultId) {
+        this.testCaseResultId = testCaseResultId;
     }
 }

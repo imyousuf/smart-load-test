@@ -92,10 +92,10 @@ public class XMLPersistenceEngineImplTest
                     throws IllegalStateException {
                     TestResult testResult = new TestResult();
                     testResult.setTestName("Test Name");
+                    testResult.setId(100);
                     testResult.setStartDateTime(new Date());
                     testResult.setEndDateTime(new Date(
                         System.currentTimeMillis() + 10000));
-                    testResult.setId(12);
                     testResult.setVersion(13);
                     HashSet<KeyedInformation> infos =
                         new HashSet<KeyedInformation>();
@@ -119,6 +119,7 @@ public class XMLPersistenceEngineImplTest
                         new HashSet<TestCaseResult>();
                     TestCaseResult result = new TestCaseResult();
                     result.setId(1);
+                    result.setTestResultId(testResult.getId());
                     result.setInstanceFactoryClassName(
                         "instanceFactoryClassName");
                     result.setName("Test Case Name");
@@ -127,16 +128,19 @@ public class XMLPersistenceEngineImplTest
                         new HashSet<TestProperty>();
                     TestProperty property = new TestProperty();
                     property.setId(1);
+                    property.setTestCaseResultId(result.getId());
                     property.setKey("test prop key 1");
                     property.setValue("test prop val 1");
                     properties.add(property);
                     property = new TestProperty();
                     property.setId(2);
+                    property.setTestCaseResultId(result.getId());
                     property.setKey("test prop key 2");
                     property.setValue("test prop val 2");
                     properties.add(property);
                     property = new TestProperty();
                     property.setId(3);
+                    property.setTestCaseResultId(result.getId());
                     property.setKey("test prop key 3");
                     property.setValue("test prop val 3");
                     properties.add(property);
@@ -153,6 +157,7 @@ public class XMLPersistenceEngineImplTest
                     instanceResult.setEndTime(new Date(
                         System.currentTimeMillis() + 10000));
                     instanceResult.setId(1);
+                    instanceResult.setTestCaseResultId(result.getId());
                     instanceResult.setInstanceNumber(1);
                     instanceResult.setOtherInfomations(infos);
                     instanceResult.setStartTime(new Date());
@@ -160,11 +165,13 @@ public class XMLPersistenceEngineImplTest
                     instanceResult = (TestCaseInstanceResult) instanceResult.
                         clone();
                     instanceResult.setId(2);
+                    instanceResult.setTestCaseResultId(result.getId());
                     instanceResult.setInstanceNumber(2);
                     instanceResults.add(instanceResult);
                     instanceResult = (TestCaseInstanceResult) instanceResult.
                         clone();
                     instanceResult.setId(22);
+                    instanceResult.setTestCaseResultId(result.getId());
                     instanceResult.setInstanceNumber(3);
                     instanceResults.add(instanceResult);
                     result.setTestCaseInstanceResults(instanceResults);

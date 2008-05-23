@@ -38,6 +38,7 @@ public class TestCaseInstanceResult
     private Date endTime;
     private int instanceNumber;
     private String endState;
+    private int testCaseResultId;
     private Set<KeyedInformation> otherInfomations;
 
     public boolean isValid() {
@@ -69,6 +70,7 @@ public class TestCaseInstanceResult
             }
             instanceResult.setOtherInfomations(keyedInformations);
         }
+        instanceResult.setTestCaseResultId(testCaseResultId);
         return instanceResult;
     }
 
@@ -120,5 +122,13 @@ public class TestCaseInstanceResult
 
     public void setOtherInfomations(Set<KeyedInformation> otherInfomations) {
         this.otherInfomations = otherInfomations;
+    }
+
+    public int getTestCaseResultId() {
+        return testCaseResultId;
+    }
+
+    public void setTestCaseResultId(int testCaseResultId) {
+        this.testCaseResultId = testCaseResultId;
     }
 }

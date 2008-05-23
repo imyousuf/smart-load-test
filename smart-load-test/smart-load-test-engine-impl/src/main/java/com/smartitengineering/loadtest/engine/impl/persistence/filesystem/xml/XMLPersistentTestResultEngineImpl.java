@@ -28,8 +28,10 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
@@ -52,44 +54,7 @@ public class XMLPersistentTestResultEngineImpl
     }
 
     public List<TestResult> getAllResults() {
-        File sourceDir = new File(testResultSourceDir);
-        if (sourceDir.isDirectory()) {
-            File[] xmlFiles = sourceDir.listFiles(new FilenameFilter() {
-
-                public boolean accept(File dir,
-                                      String name) {
-                    return name.endsWith(".xml");
-                }
-            });
-            ArrayList<TestResult> allResults = new ArrayList<TestResult>(
-                xmlFiles.length);
-            try {
-                JAXBContext jc = JAXBContext.newInstance(TestResult.class,
-                    TestCaseResult.class, TestProperty.class,
-                    TestCaseInstanceResult.class, KeyedInformation.class);
-                Unmarshaller unmarshaller = jc.createUnmarshaller();
-                for (File xmlFile : xmlFiles) {
-                    try {
-                        JAXBElement<TestResult> root = unmarshaller.<TestResult>
-                            unmarshal(
-                            new StreamSource(xmlFile),
-                            TestResult.class);
-                        TestResult unmarshalledTestResult = root.getValue();
-                        allResults.add(unmarshalledTestResult);
-                    }
-                    catch (Exception ex) {
-                        ex.printStackTrace();
-                        return allResults;
-                    }
-                }
-                return allResults;
-            }
-            catch (Exception ex) {
-                ex.printStackTrace();
-                return allResults;
-            }
-        }
-        return Collections.<TestResult>emptyList();
+        return new ArrayList<TestResult>(getAllTestResultMapToFile().values());
     }
 
     public List<TestResult> getAllForTestName(String testName) {
@@ -137,6 +102,51 @@ public class XMLPersistentTestResultEngineImpl
         return filteredResults;
     }
 
+    protected Map<File, TestResult> getAllTestResultMapToFile() {
+        File sourceDir = new File(testResultSourceDir);
+        if (sourceDir.isDirectory()) {
+            File[] xmlFiles =
+                sourceDir.listFiles(new FilenameFilter() {
+
+                public boolean accept(File dir,
+                                      String name) {
+                    return name.endsWith(".xml");
+                }
+            });
+            HashMap<File, TestResult> allResults =
+                new HashMap<File, TestResult>(xmlFiles.length);
+            try {
+                JAXBContext jc =
+                    JAXBContext.newInstance(TestResult.class,
+                    TestCaseResult.class,
+                    TestProperty.class,
+                    TestCaseInstanceResult.class,
+                    KeyedInformation.class);
+                Unmarshaller unmarshaller = jc.createUnmarshaller();
+                for (File xmlFile : xmlFiles) {
+                    try {
+                        JAXBElement<TestResult> root =
+                            unmarshaller.<TestResult>unmarshal(new StreamSource(
+                            xmlFile),
+                            TestResult.class);
+                        TestResult unmarshalledTestResult = root.getValue();
+                        allResults.put(xmlFile, unmarshalledTestResult);
+                    }
+                    catch (Exception ex) {
+                        ex.printStackTrace();
+                        return allResults;
+                    }
+                }
+                return allResults;
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+                return allResults;
+            }
+        }
+        return Collections.<File, TestResult>emptyMap();
+    }
+
     protected List<TestResult> getTestResultsForName(
         List<TestResult> testResults,
         String testName) {
@@ -148,5 +158,41 @@ public class XMLPersistentTestResultEngineImpl
             }
         }
         return filteredResults;
+    }
+
+    public boolean deleteTestResult(TestResult testResult)
+        throws IllegalArgumentException,
+               UnsupportedOperationException {
+        String testName = testResult.getTestName();
+        List<TestResult> foundResults;
+        Map<File, TestResult> allResults = getAllTestResultMapToFile();
+        if (testName != null) {
+            foundResults = getAllResultsWithinDateRange(getTestResultsForName(
+                new ArrayList<TestResult>(allResults.values()), testName),
+                testResult.getStartDateTime(), testResult.getStartDateTime());
+        }
+        else {
+            foundResults = getAllResultsWithinDateRange(
+                new ArrayList<TestResult>(allResults.values()), testResult.
+                getStartDateTime(), testResult.getStartDateTime());
+        }
+        if (foundResults != null && foundResults.size() > 0) {
+            Set<File> keySet = allResults.keySet();
+            for(TestResult result : foundResults) {
+                for(File xmlFile : keySet) {
+                    /**
+                     * Reference check is deliberate as the same reference is in
+                     * all the collections
+                     */
+                    if(allResults.get(xmlFile) == result) {
+                        if(xmlFile.exists()) {
+                            xmlFile.delete();
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }

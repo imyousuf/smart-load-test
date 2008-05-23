@@ -1,10 +1,19 @@
 
 <assembly>
-    <id>distro-with-dependency</id>
+    <id>distro-with-dependencies</id>
     <formats>
         <format>zip</format>
         <format>tar.bz2</format>
     </formats>
+    <fileSets>
+        <fileSet>
+            <directory>../smart-load-test-engine-impl/target/</directory>
+            <includes>
+                <include>**/*.sql</include>
+            </includes>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+    </fileSets>
     <files>
         <file>
             <source>../../README</source>

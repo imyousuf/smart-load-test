@@ -31,7 +31,8 @@
     <url>http://code.google.com/p/smart-load-test/</url>
     <description>This module will contain the default implementation of the different
         engines, namingly it will contain the db persistence, file system
-        persistence, engine impl and console UI impl.</description>
+        persistence, engine impl and console UI impl.
+    </description>
     <developers>
         <developer>
             <name>Imran M Yousuf</name>
@@ -47,6 +48,136 @@
                     <source>1.5</source>
                     <target>1.5</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>src/database/db-connection-params.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>ddlutils-compile</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <tasks>
+                                <taskdef classname="org.apache.ddlutils.task.DdlToDatabaseTask"
+                                         name="ddlToDatabase"
+                                         classpathref="maven.compile.classpath"/>
+                                <mkdir dir="${project.build.directory}/database"/>
+                                <ddlToDatabase usedelimitedsqlidentifiers="true">
+                                    <database driverclassname="${db.mysql.driver}"
+                                              url="${db.mysql.url}"
+                                              username="${db.mysql.username}"
+                                              password="${db.mysql.password}"/>
+                                    <fileset dir="./src/database/">
+                                        <include name="schema.xml"/>
+                                    </fileset>
+                                    <writeschemasqltofile outputfile="${project.build.directory}/database/${db.mysql.product_name}-ddl.sql" alterdatabase="false" />
+                                </ddlToDatabase>
+                                <ddlToDatabase usedelimitedsqlidentifiers="true">
+                                    <database driverclassname="${db.pgsql.driver}"
+                                              url="${db.pgsql.url}"
+                                              username="${db.pgsql.username}"
+                                              password="${db.pgsql.password}"/>
+                                    <fileset dir="./src/database/">
+                                        <include name="schema.xml"/>
+                                    </fileset>
+                                    <writeschemasqltofile outputfile="${project.build.directory}/database/${db.pgsql.product_name}-ddl.sql" alterdatabase="false" />
+                                </ddlToDatabase>
+                            </tasks>
+                            
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>ddlutils-install</id>
+                        <phase>install</phase>
+                        <configuration>
+                            <tasks>
+                                <taskdef classname="org.apache.ddlutils.task.DdlToDatabaseTask"
+                                         name="ddlToDatabase"
+                                         classpathref="maven.compile.classpath"/>
+                                <mkdir dir="${project.build.directory}/database"/>
+                                <ddlToDatabase usedelimitedsqlidentifiers="true">
+                                    <database driverclassname="${db.mysql.driver}"
+                                              url="${db.mysql.url}"
+                                              username="${db.mysql.username}"
+                                              password="${db.mysql.password}"/>
+                                    <fileset dir="./src/database/">
+                                        <include name="schema.xml"/>
+                                    </fileset>
+                                    <writeschemasqltofile outputfile="${project.build.directory}/database/${db.mysql.product_name}-alter-ddl.sql" alterdatabase="true" />
+                                </ddlToDatabase>
+                                <ddlToDatabase usedelimitedsqlidentifiers="true">
+                                    <database driverclassname="${db.pgsql.driver}"
+                                              url="${db.pgsql.url}"
+                                              username="${db.pgsql.username}"
+                                              password="${db.pgsql.password}"/>
+                                    <fileset dir="./src/database/">
+                                        <include name="schema.xml"/>
+                                    </fileset>
+                                    <writeschemasqltofile outputfile="${project.build.directory}/database/${db.pgsql.product_name}-alter-ddl.sql" alterdatabase="true" />
+                                </ddlToDatabase>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>ddlutils-deploy</id>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <tasks>
+                                <taskdef classname="org.apache.ddlutils.task.DdlToDatabaseTask"
+                                         name="ddlToDatabase"
+                                         classpathref="maven.compile.classpath"/>
+                                <ddlToDatabase usedelimitedsqlidentifiers="true">
+                                    <database driverclassname="${db.pgsql.driver}"
+                                              url="${db.pgsql.url}"
+                                              username="${db.pgsql.username}"
+                                              password="${db.pgsql.password}"/>
+                                    <fileset dir="./src/database/">
+                                        <include name="schema.xml"/>
+                                    </fileset>
+                                    <createDatabase failonerror="false" />
+                                    <writeSchemaToDatabase alterdatabase="true" />
+                                </ddlToDatabase>
+                                 <ddlToDatabase usedelimitedsqlidentifiers="true">
+                                    <database driverclassname="${db.mysql.driver}"
+                                              url="${db.mysql.url}"
+                                              username="${db.mysql.username}"
+                                              password="${db.mysql.password}"/>
+                                    <fileset dir="./src/database/">
+                                        <include name="schema.xml"/>
+                                    </fileset>
+                                    <createDatabase failonerror="false" />
+                                    <writeSchemaToDatabase alterdatabase="true" />
+                                </ddlToDatabase>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -71,6 +202,26 @@
             <groupId>com.smartitengineering</groupId>
             <artifactId>smart-hibernate-abstract-dao</artifactId>
             <version>${abstract-dao-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>8.2-507.jdbc3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ddlutils</groupId>
+            <artifactId>ddlutils</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.9</version>
         </dependency>
     </dependencies>
 </project>

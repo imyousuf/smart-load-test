@@ -1,0 +1,10 @@
+db.mysql.product_name=MySQL
+db.mysql.driver=com.mysql.jdbc.Driver
+db.mysql.url=jdbc:mysql://localhost/ddlutils_demo
+db.mysql.username=root
+db.mysql.password=
+db.pgsql.product_name=PostgreSQL
+db.pgsql.driver=org.postgresql.Driver
+db.pgsql.url=jdbc:postgresql://localhost:5432/smart_load_test
+db.pgsql.username=test
+db.pgsql.password=test

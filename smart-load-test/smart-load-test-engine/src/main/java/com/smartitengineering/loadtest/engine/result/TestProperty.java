@@ -30,7 +30,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class TestProperty
     extends PersistentDTO<TestProperty> {
 
-    private int testCaseResultId;
     private String key;
     private String value;
 
@@ -47,7 +46,6 @@ public class TestProperty
         super.clone(property);
         property.setKey(key);
         property.setValue(value);
-        property.setTestCaseResultId(testCaseResultId);
         return property;
     }
 
@@ -55,8 +53,7 @@ public class TestProperty
     public boolean equals(Object obj) {
         if (super.equals(obj) && obj instanceof TestProperty) {
             TestProperty resultObj = (TestProperty) obj;
-            if (testCaseResultId == resultObj.testCaseResultId && 
-                key != null && resultObj.key != null &&
+            if (key != null && resultObj.key != null &&
                 key.equals(resultObj.key)) {
                 return true;
             }
@@ -80,11 +77,4 @@ public class TestProperty
         this.value = value;
     }
 
-    public int getTestCaseResultId() {
-        return testCaseResultId;
-    }
-
-    public void setTestCaseResultId(int testCaseResultId) {
-        this.testCaseResultId = testCaseResultId;
-    }
 }

@@ -57,7 +57,6 @@
             <key column="test_case_result_id" />
             <composite-element class="com.smartitengineering.loadtest.engine.result.TestProperty">
                 <property name="key" />
-                <property name="testCaseResultId" column="test_case_result_id" />
                 <property name="value" />
             </composite-element>
         </set>

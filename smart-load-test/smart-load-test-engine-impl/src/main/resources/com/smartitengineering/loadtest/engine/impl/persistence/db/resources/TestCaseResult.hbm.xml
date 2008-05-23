@@ -48,22 +48,21 @@
         <property name="stepDelayConfiguration" column="step_delay_config" type="java.lang.String" length="255" />
         <property name="stepSize" column="step_size" type="java.lang.Integer" />
         <property name="stepCount" column="step_count" type="java.lang.Integer" />
-        <property name="testResultId" column="test_result_id" type="java.lang.Integer" />
         <set name="testCaseInstanceResults" lazy="false" outer-join="true" inverse="false" cascade="all">
             <key column="test_case_result_id" />
             <one-to-many class="com.smartitengineering.loadtest.engine.result.TestCaseInstanceResult" />
         </set>
-        <set name="testProperties" table="test_case_result_properties" lazy="false" outer-join="true" cascade="all">
+        <set name="testProperties" table="test_case_result_properties" inverse="false" lazy="false" outer-join="true" cascade="all">
             <key column="test_case_result_id" />
             <composite-element class="com.smartitengineering.loadtest.engine.result.TestProperty">
-                <property name="key" />
+                <property name="key" column="key_col" />
                 <property name="value" />
             </composite-element>
         </set>
-        <set name="otherInfomations" table="test_case_result_extra_info" lazy="false" outer-join="true" cascade="all">
+        <set name="otherInfomations" table="test_case_result_extra_info" inverse="false" lazy="false" outer-join="true" cascade="all">
             <key column="test_case_result_id" />
             <composite-element class="com.smartitengineering.loadtest.engine.result.KeyedInformation">
-                <property name="key" />
+                <property name="key" column="key_col" />
                 <property name="value" />
             </composite-element>
         </set>

@@ -65,10 +65,10 @@
             <key column="test_result_id" />
             <one-to-many class="com.smartitengineering.loadtest.engine.result.TestCaseResult" />
         </set>
-        <set name="otherInfomations" table="test_result_extra_info" lazy="false" outer-join="true" cascade="all">
+        <set name="otherInfomations" table="test_result_extra_info" inverse="false" lazy="false" outer-join="true" cascade="all">
             <key column="test_result_id" />
             <composite-element class="com.smartitengineering.loadtest.engine.result.KeyedInformation">
-                <property name="key" />
+                <property name="key" column="key_col" />
                 <property name="value" />
             </composite-element>
         </set>

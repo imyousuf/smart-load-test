@@ -38,7 +38,6 @@ public class TestCaseInstanceResult
     private Date endTime;
     private int instanceNumber;
     private String endState;
-    private int testCaseResultId;
     private Set<KeyedInformation> otherInfomations;
 
     public boolean isValid() {
@@ -77,7 +76,6 @@ public class TestCaseInstanceResult
             }
             instanceResult.setOtherInfomations(keyedInformations);
         }
-        instanceResult.setTestCaseResultId(testCaseResultId);
         return instanceResult;
     }
 
@@ -85,8 +83,7 @@ public class TestCaseInstanceResult
     public boolean equals(Object obj) {
         if (super.equals(obj) && obj instanceof TestCaseInstanceResult) {
             TestCaseInstanceResult resultObj = (TestCaseInstanceResult) obj;
-            if (testCaseResultId == resultObj.testCaseResultId &&
-                instanceNumber == resultObj.instanceNumber) {
+            if (instanceNumber == resultObj.instanceNumber) {
                 return true;
             }
         }
@@ -143,11 +140,4 @@ public class TestCaseInstanceResult
         this.otherInfomations = otherInfomations;
     }
 
-    public int getTestCaseResultId() {
-        return testCaseResultId;
-    }
-
-    public void setTestCaseResultId(int testCaseResultId) {
-        this.testCaseResultId = testCaseResultId;
-    }
 }

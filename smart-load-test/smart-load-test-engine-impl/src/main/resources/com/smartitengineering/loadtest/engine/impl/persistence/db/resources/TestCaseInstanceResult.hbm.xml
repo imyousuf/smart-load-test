@@ -55,11 +55,6 @@
             type="java.lang.Integer"
         />
         <property
-            name="testCaseResultId"
-            column="test_case_result_id"
-            type="java.lang.Integer"
-        />
-        <property
             name="endTime"
             column="end_time"
             type="java.util.Date"
@@ -69,10 +64,10 @@
             column="start_time"
             type="java.util.Date"
         />
-        <set name="otherInfomations" table="test_case_instance_result_extra_info" lazy="false" outer-join="true" cascade="all">
+        <set name="otherInfomations" table="test_case_instance_result_extra_info" inverse="false" lazy="false" outer-join="true" cascade="all">
             <key column="test_case_instance_result_id" />
             <composite-element class="com.smartitengineering.loadtest.engine.result.KeyedInformation">
-                <property name="key" />
+                <property name="key" column="key_col" />
                 <property name="value" />
             </composite-element>
         </set>

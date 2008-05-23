@@ -120,7 +120,6 @@ public class XMLPersistenceEngineImplTest
                         new HashSet<TestCaseResult>();
                     TestCaseResult result = new TestCaseResult();
                     result.setId(1);
-                    result.setTestResultId(testResult.getId());
                     result.setInstanceFactoryClassName(
                         "instanceFactoryClassName");
                     result.setName("Test Case Name");
@@ -155,7 +154,6 @@ public class XMLPersistenceEngineImplTest
                     instanceResult.setEndTime(new Date(
                         System.currentTimeMillis() + 10000));
                     instanceResult.setId(1);
-                    instanceResult.setTestCaseResultId(result.getId());
                     instanceResult.setInstanceNumber(1);
                     instanceResult.setOtherInfomations(infos);
                     instanceResult.setStartTime(new Date());
@@ -163,13 +161,11 @@ public class XMLPersistenceEngineImplTest
                     instanceResult = (TestCaseInstanceResult) instanceResult.
                         clone();
                     instanceResult.setId(2);
-                    instanceResult.setTestCaseResultId(result.getId());
                     instanceResult.setInstanceNumber(2);
                     instanceResults.add(instanceResult);
                     instanceResult = (TestCaseInstanceResult) instanceResult.
                         clone();
                     instanceResult.setId(22);
-                    instanceResult.setTestCaseResultId(result.getId());
                     instanceResult.setInstanceNumber(3);
                     instanceResults.add(instanceResult);
                     result.setTestCaseInstanceResults(instanceResults);

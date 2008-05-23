@@ -37,7 +37,6 @@ public class TestCaseResult
     private String stepDelayConfiguration;
     private int stepSize;
     private int stepCount;
-    private int testResultId;
     private Set<TestProperty> testProperties;
     private Set<TestCaseInstanceResult> testCaseInstanceResults;
     private Set<KeyedInformation> otherInfomations;
@@ -107,7 +106,6 @@ public class TestCaseResult
             }
             caseResult.setTestCaseInstanceResults(testCaseInstanceResultsClone);
         }
-        caseResult.setTestResultId(testResultId);
         caseResult.setStepCount(stepCount);
         caseResult.setStepSize(stepSize);
         caseResult.setStepDelayConfiguration(stepDelayConfiguration);
@@ -191,11 +189,4 @@ public class TestCaseResult
         this.otherInfomations = otherInfomations;
     }
 
-    public int getTestResultId() {
-        return testResultId;
-    }
-
-    public void setTestResultId(int testResultId) {
-        this.testResultId = testResultId;
-    }
 }

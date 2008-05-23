@@ -17,35 +17,18 @@
  */
 package com.smartitengineering.loadtest.engine.impl.persistence.db;
 
-import com.smartitengineering.dao.common.CommonDaoWithVarArgs;
-import com.smartitengineering.loadtest.engine.impl.persistence.AbstractPersistenceEngine;
+import com.smartitengineering.dao.impl.hibernate.AbstractCommonDaoImpl;
 import com.smartitengineering.loadtest.engine.result.TestResult;
-import java.util.Properties;
 
 /**
  *
  * @author imyousuf
  */
-public class DatabasePersistenceEngineImpl
-    extends AbstractPersistenceEngine {
+public class PersistenceEngineDaoImpl
+    extends AbstractCommonDaoImpl<TestResult> {
+
+    public PersistenceEngineDaoImpl() {
+        setEntityClass(TestResult.class);
+    }
     
-    private CommonDaoWithVarArgs<TestResult> commonDao;
-
-    @Override
-    protected void specializedInit(Properties properties) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean persistTestResult()
-        throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public CommonDaoWithVarArgs<TestResult> getCommonDao() {
-        return commonDao;
-    }
-
-    public void setCommonDao(CommonDaoWithVarArgs<TestResult> commonDao) {
-        this.commonDao = commonDao;
-    }
 }

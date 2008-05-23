@@ -20,6 +20,7 @@ package com.smartitengineering.loadtest.engine.impl.persistence.db;
 import com.smartitengineering.dao.common.CommonDaoWithVarArgs;
 import com.smartitengineering.loadtest.engine.impl.persistence.AbstractPersistenceEngine;
 import com.smartitengineering.loadtest.engine.result.TestResult;
+import com.smartitengineering.loadtest.engine.LoadTestEngine;
 import java.util.Properties;
 
 /**
@@ -33,12 +34,23 @@ public class DatabasePersistenceEngineImpl
 
     @Override
     protected void specializedInit(Properties properties) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public boolean persistTestResult()
         throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (getLoadTestEngine().getState() != LoadTestEngine.State.FINISHED) {
+            throw new UnsupportedOperationException(
+                "Load Test Engine is not done yet!");
+        }
+        boolean persistOperationResult = false;
+        try {
+            persistentEngineDao.save(getLoadTestEngine().getTestResult());
+            persistOperationResult = true;
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
+        return persistOperationResult;
     }
 
     public CommonDaoWithVarArgs<TestResult> getPersistentEngineDao() {

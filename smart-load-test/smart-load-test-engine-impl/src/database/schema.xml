@@ -33,6 +33,9 @@
             type="INTEGER"
             primaryKey="true"
             required="true"/>
+        <column name="version"
+            type="INTEGER"
+            required="true"/>
         <column name="test_name"
             type="VARCHAR"
             size="255"
@@ -60,6 +63,121 @@
             required="true" />
         <foreign-key foreignTable="test_result" name="test_result_keys" onDelete="cascade" onUpdate="cascade">
             <reference local="test_result_id" foreign="id"/>
+        </foreign-key>
+    </table>
+    <table name="test_case_result">
+        <column name="id"
+            type="INTEGER"
+            primaryKey="true"
+            required="true"/>
+        <column name="version"
+            type="INTEGER"
+            required="true"/>
+        <column name="test_case_name"
+            type="VARCHAR"
+            size="255"
+            required="true"/>
+        <column name="step_count"
+            type="INTEGER"
+            required="false"/>
+        <column name="step_size"
+            type="INTEGER"
+            required="false"/>
+        <column name="instance_factory_class_name"
+            type="VARCHAR"
+            size="255"
+            required="false"/>
+        <column name="step_delay_config"
+            type="VARCHAR"
+            size="255"
+            required="false"/>
+        <column name="test_result_id"
+            type="INTEGER"
+            required="true"/>
+        <foreign-key foreignTable="test_result" name="test_result_refs" onDelete="cascade" onUpdate="cascade">
+            <reference local="test_result_id" foreign="id"/>
+        </foreign-key>
+    </table>
+    <table name="test_case_result_extra_info">
+        <column name="test_case_result_id"
+            type="INTEGER"
+            required="true"
+            primaryKey="true"/>
+        <column name="key"    
+            type="VARCHAR"
+            size="255"
+            required="true"
+            primaryKey="true"/>
+        <column name="value"
+            type="VARCHAR"
+            size="255"
+            required="true" />
+        <foreign-key foreignTable="test_case_result" name="test_case_result_keys" onDelete="cascade" onUpdate="cascade">
+            <reference local="test_case_result_id" foreign="id"/>
+        </foreign-key>
+    </table>
+    <table name="test_case_result_properties">
+        <column name="test_case_result_id"
+            type="INTEGER"
+            required="true"
+            primaryKey="true"/>
+        <column name="key"    
+            type="VARCHAR"
+            size="255"
+            required="true"
+            primaryKey="true"/>
+        <column name="value"
+            type="VARCHAR"
+            size="255"
+            required="true" />
+        <foreign-key foreignTable="test_case_result" name="test_case_result_props" onDelete="cascade" onUpdate="cascade">
+            <reference local="test_case_result_id" foreign="id"/>
+        </foreign-key>
+    </table>
+    <table name="test_case_instance_result">
+        <column name="id"
+            type="INTEGER"
+            primaryKey="true"
+            required="true"/>
+        <column name="version"
+            type="INTEGER"
+            required="true"/>
+        <column name="end_state"
+            type="VARCHAR"
+            size="255"
+            required="false"/>
+        <column name="instance_number"
+            type="INTEGER"
+            required="false"/>
+        <column name="start_time"
+            type="TIMESTAMP"
+            required="false"/>
+        <column name="end_time"
+            type="TIMESTAMP"
+            required="false"/>
+        <column name="test_case_result_id"
+            type="INTEGER"
+            required="true"/>
+        <foreign-key foreignTable="test_case_result" name="test_case_result_ref" onDelete="cascade" onUpdate="cascade">
+            <reference local="test_case_result_id" foreign="id"/>
+        </foreign-key>
+    </table>
+    <table name="test_case_instance_result_extra_info">
+        <column name="test_case_instance_result_id"
+            type="INTEGER"
+            required="true"
+            primaryKey="true"/>
+        <column name="key"    
+            type="VARCHAR"
+            size="255"
+            required="true"
+            primaryKey="true"/>
+        <column name="value"
+            type="VARCHAR"
+            size="255"
+            required="true" />
+        <foreign-key foreignTable="test_case_instance_result" name="test_case_instance_result_keys" onDelete="cascade" onUpdate="cascade">
+            <reference local="test_case_instance_result_id" foreign="id"/>
         </foreign-key>
     </table>
 </database>

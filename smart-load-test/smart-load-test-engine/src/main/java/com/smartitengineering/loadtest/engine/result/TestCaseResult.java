@@ -46,6 +46,25 @@ public class TestCaseResult
         if (name != null && instanceFactoryClassName != null && stepSize >= 1 &&
             stepCount >= 1 && testCaseInstanceResults != null &&
             testCaseInstanceResults.size() > 0) {
+            for (TestCaseInstanceResult instanceResult : testCaseInstanceResults) {
+                if (!instanceResult.isValid()) {
+                    return false;
+                }
+                if (otherInfomations != null) {
+                    for (KeyedInformation keyedInformation : otherInfomations) {
+                        if (!keyedInformation.isValid()) {
+                            return false;
+                        }
+                    }
+                }
+                if (testProperties != null) {
+                    for (TestProperty testProperty : testProperties) {
+                        if (!testProperty.isValid()) {
+                            return false;
+                        }
+                    }
+                }
+            }
             return true;
         }
         return false;
@@ -89,6 +108,9 @@ public class TestCaseResult
             caseResult.setTestCaseInstanceResults(testCaseInstanceResultsClone);
         }
         caseResult.setTestResultId(testResultId);
+        caseResult.setStepCount(stepCount);
+        caseResult.setStepSize(stepSize);
+        caseResult.setStepDelayConfiguration(stepDelayConfiguration);
         return caseResult;
     }
 

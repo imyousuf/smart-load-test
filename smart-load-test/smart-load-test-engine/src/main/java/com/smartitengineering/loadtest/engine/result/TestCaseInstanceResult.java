@@ -42,6 +42,13 @@ public class TestCaseInstanceResult
     private Set<KeyedInformation> otherInfomations;
 
     public boolean isValid() {
+        if (otherInfomations != null) {
+            for (KeyedInformation keyedInformation : otherInfomations) {
+                if (!keyedInformation.isValid()) {
+                    return false;
+                }
+            }
+        }
         if (startTime != null && endTime != null && endState != null &&
             instanceNumber > 0) {
             return true;

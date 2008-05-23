@@ -55,7 +55,7 @@
             type="INTEGER"
             required="true"
             primaryKey="true"/>
-        <column name="key"    
+        <column name="key_col"    
             type="VARCHAR"
             size="255"
             required="true"
@@ -96,7 +96,7 @@
             required="false"/>
         <column name="test_result_id"
             type="INTEGER"
-            required="true"/>
+            required="false"/>
         <foreign-key foreignTable="test_result" name="test_result_refs" onDelete="cascade" onUpdate="cascade">
             <reference local="test_result_id" foreign="id"/>
         </foreign-key>
@@ -106,7 +106,7 @@
             type="INTEGER"
             required="true"
             primaryKey="true"/>
-        <column name="key"    
+        <column name="key_col"    
             type="VARCHAR"
             size="255"
             required="true"
@@ -124,7 +124,7 @@
             type="INTEGER"
             required="true"
             primaryKey="true"/>
-        <column name="key"    
+        <column name="key_col"    
             type="VARCHAR"
             size="255"
             required="true"
@@ -160,7 +160,7 @@
             required="false"/>
         <column name="test_case_result_id"
             type="INTEGER"
-            required="true"/>
+            required="false"/>
         <foreign-key foreignTable="test_case_result" name="test_case_result_ref" onDelete="cascade" onUpdate="cascade">
             <reference local="test_case_result_id" foreign="id"/>
         </foreign-key>
@@ -170,7 +170,7 @@
             type="INTEGER"
             required="true"
             primaryKey="true"/>
-        <column name="key"    
+        <column name="key_col"    
             type="VARCHAR"
             size="255"
             required="true"

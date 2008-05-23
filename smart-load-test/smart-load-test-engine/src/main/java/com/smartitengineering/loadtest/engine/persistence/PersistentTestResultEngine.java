@@ -73,7 +73,7 @@ public interface PersistentTestResultEngine {
 
     /**
      * Retrieve all test result between specified date range. All test that
-     * starts greater or equal to startDate or lesser or equal to startDate
+     * starts greater or equal to startDate and lesser or equal to startDate
      * will be returned in this result.
      * 
      * @param startDate Start datetime of the search. Ignored if null.
@@ -85,7 +85,7 @@ public interface PersistentTestResultEngine {
 
     /**
      * Retrieve all test result between specified date range. All test that
-     * starts greater or equal to startDate or lesser or equal to startDate
+     * starts greater or equal to startDate and lesser or equal to startDate
      * and has the name testName will be returned in this result.
      * 
      * @param startDate Start datetime of the search. Ignored if null.

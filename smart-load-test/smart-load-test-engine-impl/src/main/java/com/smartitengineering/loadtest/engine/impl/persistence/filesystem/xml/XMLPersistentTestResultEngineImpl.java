@@ -94,7 +94,7 @@ public class XMLPersistentTestResultEngineImpl
             new ArrayList<TestResult>();
         for (TestResult testResult : testResults) {
             if ((startDate == null || !testResult.getStartDateTime().before(
-                startDate)) || (endDate == null || !testResult.getStartDateTime().
+                startDate)) && (endDate == null || !testResult.getStartDateTime().
                 after(endDate))) {
                 filteredResults.add(testResult);
             }

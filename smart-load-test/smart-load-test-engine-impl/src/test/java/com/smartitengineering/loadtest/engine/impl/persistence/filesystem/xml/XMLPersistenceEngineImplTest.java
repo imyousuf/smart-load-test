@@ -31,6 +31,7 @@ import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import junit.framework.TestCase;
@@ -254,7 +255,11 @@ public class XMLPersistenceEngineImplTest
         boolean expResult = true;
         boolean result = instance.persistTestResult();
         assertEquals(expResult, result);
-        System.out.println(instance.getPersistentTestResultEngine().
-            getAllResults());
+        final List<TestResult> allResults =
+            instance.getPersistentTestResultEngine().getAllResults();
+        System.out.println(allResults);
+        assertEquals(expResult, instance.getPersistentTestResultEngine().
+            deleteTestResult(allResults.get(
+            0)));
     }
 }

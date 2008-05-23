@@ -17,7 +17,6 @@
  */
 package com.smartitengineering.loadtest.engine.impl.persistence.filesystem.xml;
 
-import com.smartitengineering.loadtest.engine.LoadTestEngine;
 import com.smartitengineering.loadtest.engine.impl.persistence.filesystem.AbstractFileSystemPersistenceEngine;
 import com.smartitengineering.loadtest.engine.result.KeyedInformation;
 import com.smartitengineering.loadtest.engine.result.TestCaseInstanceResult;
@@ -46,30 +45,27 @@ public class XMLPersistenceEngineImpl
             getResultsRootDirectory()));
     }
 
-    public boolean persistTestResult()
-        throws UnsupportedOperationException {
-        if (getLoadTestEngine().getState() != LoadTestEngine.State.FINISHED) {
-            throw new UnsupportedOperationException(
-                "Load Test Engine is not done yet!");
-        }
-        boolean persistOperationResult = false;
+    protected void doPersist()
+        throws RuntimeException {
         try {
             TestResult testResult = getLoadTestEngine().getTestResult();
-            JAXBContext jc = JAXBContext.newInstance(TestResult.class,
-                TestCaseResult.class, TestProperty.class,
-                TestCaseInstanceResult.class, KeyedInformation.class);
+            JAXBContext jc =
+                JAXBContext.newInstance(TestResult.class,
+                TestCaseResult.class,
+                TestProperty.class,
+                TestCaseInstanceResult.class,
+                KeyedInformation.class);
             Marshaller m = jc.createMarshaller();
-            OutputStream os = new FileOutputStream(new File(
-                getResultsRootDirectory(), new StringBuilder().append(System.
-                currentTimeMillis()).append(".xml").toString()));
+            OutputStream os =
+                new FileOutputStream(new File(getResultsRootDirectory(),
+                new StringBuilder().append(System.currentTimeMillis()).
+                append(".xml").toString()));
             m.marshal(new JAXBElement<TestResult>(new QName("testResult"),
                 TestResult.class, testResult), os);
-            persistOperationResult = true;
         }
         catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         }
-        return persistOperationResult;
     }
 }

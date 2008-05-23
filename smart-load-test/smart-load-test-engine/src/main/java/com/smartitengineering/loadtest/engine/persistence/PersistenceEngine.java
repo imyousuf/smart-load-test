@@ -57,9 +57,17 @@ public interface PersistenceEngine {
      * @return true if persistence succeeded or else false
      * @throws java.lang.UnsupportedOperationException If state is not 
      *                                                  INITIALIZED
+     * @throws java.lang.RuntimeException If there is any exception in the
+     *                                      persistence process
+     * @throws java.lang.IllegalArgumentException If the test result state is
+     *                                            not valid, i.e. LoadTestEngine
+     *                                            didn't form TestResult as per
+     *                                            API guideline
      */
     public boolean persistTestResult()
-        throws UnsupportedOperationException;
+        throws UnsupportedOperationException,
+               IllegalArgumentException,
+               RuntimeException;
 
     /**
      * Returns the current state of the persistence engine

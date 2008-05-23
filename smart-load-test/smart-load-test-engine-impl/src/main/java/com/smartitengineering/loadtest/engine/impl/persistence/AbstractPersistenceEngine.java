@@ -75,14 +75,14 @@ public abstract class AbstractPersistenceEngine
     }
 
     public void addProgressListener(ProgressListener progressListener) {
-        if(progressListener == null) {
+        if (progressListener == null) {
             return;
         }
         progressListeners.add(progressListener);
     }
 
     public void removeProgressListener(ProgressListener progressListener) {
-        if(progressListener == null) {
+        if (progressListener == null) {
             return;
         }
         progressListeners.remove(progressListener);
@@ -90,7 +90,7 @@ public abstract class AbstractPersistenceEngine
 
     public void addLoadTestEngineStateChangeListener(
         PersistenceEngineStateChangeListener listener) {
-        if(listener == null) {
+        if (listener == null) {
             return;
         }
         persistenceEngineStateChangeListeners.add(listener);
@@ -98,7 +98,7 @@ public abstract class AbstractPersistenceEngine
 
     public void removeLoadTestEngineStateChangeListener(
         PersistenceEngineStateChangeListener listener) {
-        if(listener == null) {
+        if (listener == null) {
             return;
         }
         persistenceEngineStateChangeListeners.remove(listener);
@@ -111,6 +111,29 @@ public abstract class AbstractPersistenceEngine
                 "Persistence Engine not initialized!");
         }
         return persistentTestResultEngine;
+    }
+
+    public boolean persistTestResult()
+        throws UnsupportedOperationException,
+               IllegalArgumentException,
+               RuntimeException {
+        if (!getState().equals(PersistenceEngine.State.INITIALIZED)) {
+            throw new UnsupportedOperationException(
+                "Persistence Engine is not ready to start!");
+        }
+        if (getLoadTestEngine().getState() != LoadTestEngine.State.FINISHED) {
+            throw new UnsupportedOperationException(
+                "Load Test Engine is not done yet!");
+        }
+        if (!getLoadTestEngine().getTestResult().isValid()) {
+            throw new IllegalArgumentException("Test reuslt state is not valid!");
+        }
+        setStatus(PersistenceEngine.State.STARTED);
+        boolean persistOperationResult = false;
+        doPersist();
+        setStatus(PersistenceEngine.State.FINISHED);
+        persistOperationResult = true;
+        return persistOperationResult;
     }
 
     public void setPersistentTestResultEngine(
@@ -144,4 +167,7 @@ public abstract class AbstractPersistenceEngine
     }
 
     protected abstract void specializedInit(Properties properties);
+
+    protected abstract void doPersist()
+        throws RuntimeException;
 }

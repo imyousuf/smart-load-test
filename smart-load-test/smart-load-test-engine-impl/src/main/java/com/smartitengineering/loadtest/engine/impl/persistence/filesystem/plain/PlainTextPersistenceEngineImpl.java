@@ -20,8 +20,10 @@ public class PlainTextPersistenceEngineImpl
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public boolean persistTestResult()
-        throws UnsupportedOperationException {
+    @Override
+    protected void doPersist()
+        throws RuntimeException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
 }

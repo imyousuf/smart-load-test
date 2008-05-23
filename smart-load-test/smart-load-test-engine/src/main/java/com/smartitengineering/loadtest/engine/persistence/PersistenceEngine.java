@@ -56,7 +56,7 @@ public interface PersistenceEngine {
      * 
      * @return true if persistence succeeded or else false
      * @throws java.lang.UnsupportedOperationException If state is not 
-     *                                                  READY_TO_START
+     *                                                  INITIALIZED
      */
     public boolean persistTestResult()
         throws UnsupportedOperationException;
@@ -128,15 +128,11 @@ public interface PersistenceEngine {
         /**
          * Represents the ready to start state of the persistence engine
          */
-        READY_TO_START(3),
-        /**
-         * Represents the started state of the persistence engine
-         */
-        STARTED(4),
+        STARTED(3),
         /**
          * Represents the finished state of the persistence engine
          */
-        FINISHED(5);
+        FINISHED(4);
         /**
          * The step of the lifecycle that this state will show up
          */

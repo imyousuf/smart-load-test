@@ -9,6 +9,8 @@ import com.smartitengineering.loadtest.engine.TestCaseThreadPolicy;
 import com.smartitengineering.loadtest.engine.UnitTestInstance;
 import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangeListener;
 import com.smartitengineering.loadtest.engine.events.TestCaseTransitionListener;
+import com.smartitengineering.loadtest.engine.persistence.PersistenceEngine;
+import com.smartitengineering.loadtest.engine.persistence.PersistentTestResultEngine;
 import com.smartitengineering.loadtest.engine.result.KeyedInformation;
 import com.smartitengineering.loadtest.engine.result.TestCaseInstanceResult;
 import com.smartitengineering.loadtest.engine.result.TestCaseResult;
@@ -16,6 +18,7 @@ import com.smartitengineering.loadtest.engine.result.TestProperty;
 import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import junit.framework.TestCase;
@@ -30,6 +33,7 @@ public class DatabasePersistenceEngineImplTest
     extends TestCase {
 
     private static LoadTestEngine loadTestEngine;
+    private static PersistenceEngine dbImpl;
 
     public DatabasePersistenceEngineImplTest(String testName) {
         super(testName);
@@ -188,21 +192,29 @@ public class DatabasePersistenceEngineImplTest
                 }
             };
         }
+        if (dbImpl == null) {
+            System.setProperty(
+                "com.smartitengineering.loadtest.engine.persistence.db.props_file",
+                "classpath:db-test-config.properties");
+            ApplicationContext context =
+                new ClassPathXmlApplicationContext(
+                "com/smartitengineering/loadtest/engine/impl/persistence/db/db-beanfactory.xml");
+            dbImpl = (PersistenceEngine) context.getBean("persistenceEngine");
+        }
     }
 
     /**
      * Test of doPersist method, of class DatabasePersistenceEngineImpl.
      */
     public void testDoPersist() {
-        System.setProperty(
-            "com.smartitengineering.loadtest.engine.persistence.db.props_file",
-            "classpath:db-test-config.properties");
-        ApplicationContext context =
-            new ClassPathXmlApplicationContext(
-            "com/smartitengineering/loadtest/engine/impl/persistence/db/db-beanfactory.xml");
-        DatabasePersistenceEngineImpl dbImpl =
-            (DatabasePersistenceEngineImpl) context.getBean("persistenceEngine");
         dbImpl.init(loadTestEngine, new Properties());
         dbImpl.persistTestResult();
+
+    }
+
+    public void testGetAll() {
+        PersistentTestResultEngine engine =
+            dbImpl.getPersistentTestResultEngine();
+        //List<TestResult> allResults = engine.getAllResults();
     }
 }

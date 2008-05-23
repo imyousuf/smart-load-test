@@ -53,9 +53,9 @@ public class TestResult
                 return false;
             }
         }
-        if(otherInfomations != null) {
+        if (otherInfomations != null) {
             for (KeyedInformation keyedInformation : otherInfomations) {
-                if(!keyedInformation.isValid()) {
+                if (!keyedInformation.isValid()) {
                     return false;
                 }
             }
@@ -87,6 +87,22 @@ public class TestResult
         }
         testResult.setTestName(testName);
         return testResult;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj) && obj instanceof TestResult) {
+            TestResult resultObj = (TestResult) obj;
+            if (testName != null && resultObj.testName != null && testName.
+                equals(resultObj.testName) && startDateTime != null &&
+                resultObj.startDateTime != null && startDateTime.equals(
+                resultObj.startDateTime) && endDateTime != null &&
+                resultObj.endDateTime != null && endDateTime.equals(
+                resultObj.endDateTime)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Date getEndDateTime() {

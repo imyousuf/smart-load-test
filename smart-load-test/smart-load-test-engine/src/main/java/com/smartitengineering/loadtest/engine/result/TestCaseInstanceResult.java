@@ -74,6 +74,18 @@ public class TestCaseInstanceResult
         return instanceResult;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj) && obj instanceof TestCaseInstanceResult) {
+            TestCaseInstanceResult resultObj = (TestCaseInstanceResult) obj;
+            if (testCaseResultId == resultObj.testCaseResultId &&
+                instanceNumber == resultObj.instanceNumber) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected String getEndState() {
         return endState;
     }

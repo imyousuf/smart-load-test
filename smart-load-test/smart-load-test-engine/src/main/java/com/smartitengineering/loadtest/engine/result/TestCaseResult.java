@@ -92,6 +92,18 @@ public class TestCaseResult
         return caseResult;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj) && obj instanceof TestCaseResult) {
+            TestCaseResult resultObj = (TestCaseResult) obj;
+            if (name != null && resultObj.name != null &&
+                name.equals(resultObj.name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getInstanceFactoryClassName() {
         return instanceFactoryClassName;
     }

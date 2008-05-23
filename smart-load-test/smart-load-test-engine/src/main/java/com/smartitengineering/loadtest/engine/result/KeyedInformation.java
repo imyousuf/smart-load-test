@@ -29,13 +29,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class KeyedInformation
     extends PersistentDTO<KeyedInformation> {
-    
+
     private String key;
-    
     private String value;
 
     public boolean isValid() {
-        if(key != null && value != null) {
+        if (key != null && value != null) {
             return true;
         }
         return false;
@@ -47,6 +46,18 @@ public class KeyedInformation
         keyedInformation.setKey(key);
         keyedInformation.setValue(value);
         return keyedInformation;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj) && obj instanceof KeyedInformation) {
+            KeyedInformation resultObj = (KeyedInformation) obj;
+            if (key != null && resultObj.key != null &&
+                key.equals(resultObj.key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getKey() {

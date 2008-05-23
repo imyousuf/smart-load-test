@@ -35,7 +35,7 @@ public class TestProperty
     private String value;
 
     public boolean isValid() {
-        if(key != null && value != null) {
+        if (key != null && value != null) {
             return true;
         }
         return false;
@@ -49,6 +49,19 @@ public class TestProperty
         property.setValue(value);
         property.setTestCaseResultId(testCaseResultId);
         return property;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj) && obj instanceof TestProperty) {
+            TestProperty resultObj = (TestProperty) obj;
+            if (testCaseResultId == resultObj.testCaseResultId && 
+                key != null && resultObj.key != null &&
+                key.equals(resultObj.key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getKey() {

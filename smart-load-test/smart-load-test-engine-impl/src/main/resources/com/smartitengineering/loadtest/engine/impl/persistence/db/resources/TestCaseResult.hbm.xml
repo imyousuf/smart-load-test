@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : TestCaseResult.hbm.xml
+    Created on : May 20, 2008, 8:22 PM
+    Author     : imyousuf
+    Description:
+        This XML contains the hibernate mapping info for TestCaseResult
+-->
+<!--
+ * 
+ *    This module represents an engine for the load testing framework
+ *    Copyright (C) 2008  Imran M Yousuf (imran@smartitengineering.com)
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+    <class
+        name="com.smartitengineering.loadtest.engine.result.TestCaseResult"
+        table="test_case_result"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+        <id
+            name="id"
+            column="id"
+            type="java.lang.Integer"
+        >
+            <generator class = "increment">
+            </generator>
+        </id>
+        <version name="version" column="version" />
+        <property name="instanceFactoryClassName" column="instance_factory_class_name" type="java.lang.String" length="255" />
+        <property name="name" column="test_case_name" type="java.lang.String" length="255" />
+        <property name="stepDelayConfiguration" column="step_delay_config" type="java.lang.String" length="255" />
+        <property name="stepSize" column="step_size" type="java.lang.Integer" />
+        <property name="stepCount" column="step_count" type="java.lang.Integer" />
+        <property name="testResultId" column="test_result_id" type="java.lang.Integer" />
+        <set name="testCaseInstanceResults" lazy="false" outer-join="true" inverse="false" cascade="all">
+            <key column="test_case_result_id" />
+            <one-to-many class="com.smartitengineering.loadtest.engine.result.TestCaseInstanceResult" />
+        </set>
+        <set name="testProperties" table="test_case_result_properties" lazy="false" outer-join="true" cascade="all">
+            <key column="test_case_result_id" />
+            <composite-element class="com.smartitengineering.loadtest.engine.result.TestProperty">
+                <property name="key" />
+                <property name="testCaseResultId" column="test_case_result_id" />
+                <property name="value" />
+            </composite-element>
+        </set>
+        <set name="otherInfomations" table="test_case_result_extra_info" lazy="false" outer-join="true" cascade="all">
+            <key column="test_case_result_id" />
+            <composite-element class="com.smartitengineering.loadtest.engine.result.KeyedInformation">
+                <property name="key" />
+                <property name="value" />
+            </composite-element>
+        </set>
+    </class>
+</hibernate-mapping>

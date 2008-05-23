@@ -148,7 +148,7 @@
             required="true"/>
         <column name="end_state"
             type="VARCHAR"
-            size="255"
+            size="100"
             required="false"/>
         <column name="instance_number"
             type="INTEGER"

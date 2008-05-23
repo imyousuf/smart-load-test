@@ -38,7 +38,8 @@ public interface PersistentTestResultEngine {
 
     /**
      * Get all results for the specified test name. Return empty list if no
-     * resutls.
+     * resutls. If the testName is null in that case all test results will be
+     * returned.
      * 
      * @param testName The test name to retrieve
      * @return List of results, empty list if none
@@ -55,6 +56,20 @@ public interface PersistentTestResultEngine {
      */
     public TestResult getTestResultById(int testResultId)
         throws UnsupportedOperationException;
+
+    /**
+     * Delete the result from the persistent repository.
+     * 
+     * @param testResult Result to be deleted
+     * @return True if deleted. False if could not delete or test result does
+     *          not exist
+     * @throws IllegalArgumentException If testResult is null
+     * @throws UnsupportedOperationException If this persistence engine does not
+     *                                      support it.
+     */
+    public boolean deleteTestResult(TestResult testResult)
+        throws IllegalArgumentException,
+               UnsupportedOperationException;
 
     /**
      * Retrieve all test result between specified date range. All test that

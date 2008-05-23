@@ -25,6 +25,10 @@
             <outputDirectory>/</outputDirectory>
         </file>
         <file>
+            <source>../smart-load-test-engine-impl/hibernate-mapping-3.0.dtd</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
             <source>./target/smart-load-test-engine-app-0.1-SNAPSHOT.jar</source>
             <outputDirectory>/</outputDirectory>
         </file>

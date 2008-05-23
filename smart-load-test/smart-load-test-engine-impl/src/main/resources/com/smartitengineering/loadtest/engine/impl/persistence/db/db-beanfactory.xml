@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : db-beanfactory.xml
+    Created on : May 20, 2008, 8:21 PM
+    Author     : imyousuf
+    Description:
+        This document will contain the Spring Application Context for the DB
+        Persistene Engine Implementation
+-->
+<!--
+ * 
+ *    This module represents an engine for the load testing framework
+ *    Copyright (C) 2008  Imran M Yousuf (imran@smartitengineering.com)
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd"  >
+<beans>
+    <!-- 
+        Please make sure the following properties are availabe to the context
+        com.smartitengineering.loadtest.engine.persistence.db.connection.driver_class
+        com.smartitengineering.loadtest.engine.persistence.db.connection.url
+        com.smartitengineering.loadtest.engine.persistence.db.connection.username
+        com.smartitengineering.loadtest.engine.persistence.db.connection.password
+        com.smartitengineering.loadtest.engine.persistence.db.dialect
+        com.smartitengineering.loadtest.engine.persistence.db.show_sql
+    -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>${com.smartitengineering.loadtest.engine.persistence.db.props_file}</value>
+            </list>
+        </property>
+        <property name="properties" >
+            <props>
+                <prop key="hibernate.connection.driver_class">${com.smartitengineering.loadtest.engine.persistence.db.connection.driver_class}</prop>
+                <prop key="hibernate.connection.url">${com.smartitengineering.loadtest.engine.persistence.db.connection.url}</prop>
+                <prop key="hibernate.connection.username">${com.smartitengineering.loadtest.engine.persistence.db.connection.username}</prop>
+                <prop key="hibernate.connection.password">${com.smartitengineering.loadtest.engine.persistence.db.connection.password}</prop>
+                <prop key="hibernate.dialect">${com.smartitengineering.loadtest.engine.persistence.db.dialect}</prop>
+                <prop key="hibernate.show_sql">${com.smartitengineering.loadtest.engine.persistence.db.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Local C3P0 DataSource that works in any environment -->
+    <!-- (Both DataSource implementations have a "close" method to be called on shutdown) -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass">
+            <value>${hibernate.connection.driver_class}</value>
+        </property>
+        <property name="jdbcUrl">
+            <value>${hibernate.connection.url}</value>
+        </property>
+        <property name="user">
+            <value>${hibernate.connection.username}</value>
+        </property>
+        <property name="password">
+            <value>${hibernate.connection.password}</value>
+        </property>
+        <property name="acquireIncrement">
+            <value>5</value>
+        </property>
+        <property name="checkoutTimeout">
+            <value>5000</value>
+        </property>
+        <property name="initialPoolSize">
+            <value>20</value>
+        </property>
+        <property name="maxIdleTime">
+            <value>120</value>
+        </property>
+        <!-- Will never expire (seconds)-->
+        <property name="maxPoolSize">
+            <value>30</value>
+        </property>
+        <property name="maxStatements">
+            <value>500</value>
+        </property>
+        <property name="maxStatementsPerConnection">
+            <value>12</value>
+        </property>
+        <property name="minPoolSize">
+            <value>10</value>
+        </property>
+        <property name="numHelperThreads">
+            <value>4</value>
+        </property>
+    </bean>
+    
+    <!-- Hibernate SessionFactory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource">
+            <ref local="dataSource" />
+        </property>
+        <property name="mappingResources">
+            <list>
+                <value>com/smartitengineering/loadtest/engine/impl/persistence/db/resources/TestResult.hbm.xml</value>
+                <value>com/smartitengineering/loadtest/engine/impl/persistence/db/resources/TestCaseResult.hbm.xml</value>
+                <value>com/smartitengineering/loadtest/engine/impl/persistence/db/resources/TestCaseInstanceResult.hbm.xml</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}
+                </prop>
+                <prop key="hibernate.autoCommit">true
+                </prop>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}
+                </prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="persistentEngineDao" class="com.smartitengineering.loadtest.engine.impl.persistence.db.PersistenceEngineDaoImpl">
+        <property name="sessionFactory">
+            <ref local="sessionFactory" />
+        </property>
+    </bean>
+    <bean id="persistentTestResultEngine" class="com.smartitengineering.loadtest.engine.impl.persistence.db.DatabasePersistentTestResultEngineImpl">
+        <property name="persistentEngineDao">
+            <ref local="persistentEngineDao" />
+        </property>
+    </bean>
+    <bean id="persistenceEngine" class="com.smartitengineering.loadtest.engine.impl.persistence.db.DatabasePersistenceEngineImpl">
+        <property name="persistentEngineDao">
+            <ref local="persistentEngineDao" />
+        </property>
+        <property name="persistentTestResultEngine">
+            <ref local="persistentTestResultEngine" />
+        </property>
+    </bean>
+</beans>

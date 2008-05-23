@@ -1,0 +1,6 @@
+com.smartitengineering.loadtest.engine.persistence.db.connection.driver_class=com.mysql.jdbc.Driver
+com.smartitengineering.loadtest.engine.persistence.db.connection.url=jdbc:mysql://localhost/smart_load_test
+com.smartitengineering.loadtest.engine.persistence.db.connection.username=loadtest
+com.smartitengineering.loadtest.engine.persistence.db.connection.password=loadtest
+com.smartitengineering.loadtest.engine.persistence.db.dialect=org.hibernate.dialect.MySQLDialect
+com.smartitengineering.loadtest.engine.persistence.db.show_sql=false

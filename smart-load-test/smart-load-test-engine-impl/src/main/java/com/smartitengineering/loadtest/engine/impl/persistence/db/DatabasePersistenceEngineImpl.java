@@ -29,7 +29,7 @@ import java.util.Properties;
 public class DatabasePersistenceEngineImpl
     extends AbstractPersistenceEngine {
     
-    private CommonDaoWithVarArgs<TestResult> commonDao;
+    private CommonDaoWithVarArgs<TestResult> persistentEngineDao;
 
     @Override
     protected void specializedInit(Properties properties) {
@@ -41,11 +41,12 @@ public class DatabasePersistenceEngineImpl
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public CommonDaoWithVarArgs<TestResult> getCommonDao() {
-        return commonDao;
+    public CommonDaoWithVarArgs<TestResult> getPersistentEngineDao() {
+        return persistentEngineDao;
     }
 
-    public void setCommonDao(CommonDaoWithVarArgs<TestResult> commonDao) {
-        this.commonDao = commonDao;
+    public void setPersistentEngineDao(CommonDaoWithVarArgs<TestResult> persistentEngineDao) {
+        this.persistentEngineDao = persistentEngineDao;
     }
+
 }

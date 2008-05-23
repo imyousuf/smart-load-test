@@ -1,4 +1,5 @@
 smart-load-test/smart-load-test-engine-impl/src/test/resources/test-config.properties
+smart-load-test/smart-load-test-engine-impl/src/test/resources/db-test-config.properties
 smart-load-test/smart-load-test-engine-impl/src/database/db-connection-params.properties
 target
 *~

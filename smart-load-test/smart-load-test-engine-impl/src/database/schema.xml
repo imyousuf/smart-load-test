@@ -36,6 +36,10 @@
         <column name="version"
             type="INTEGER"
             required="true"/>
+        <column name="long_id"
+            type="BIGINT"
+            primaryKey="true"
+            required="true"/>
         <column name="test_name"
             type="VARCHAR"
             size="255"

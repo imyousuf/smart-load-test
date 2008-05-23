@@ -40,6 +40,7 @@ public class TestResult
     private Date endDateTime;
     private Set<TestCaseResult> testCaseRunResults;
     private Set<KeyedInformation> otherInfomations;
+    private long longId;
 
     public boolean isValid() {
         if (startDateTime == null || endDateTime == null || testName == null) {
@@ -143,5 +144,13 @@ public class TestResult
 
     public void setTestName(String testName) {
         this.testName = testName;
+    }
+
+    public long getLongId() {
+        return longId;
+    }
+
+    public void setLongId(long longId) {
+        this.longId = longId;
     }
 }

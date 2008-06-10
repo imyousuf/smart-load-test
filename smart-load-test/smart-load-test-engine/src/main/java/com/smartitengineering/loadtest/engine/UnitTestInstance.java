@@ -1,5 +1,4 @@
 /**
- * 
  *    This module represents an engine for the load testing framework
  *    Copyright (C) 2008  Imran M Yousuf (imran@smartitengineering.com)
  *
@@ -21,16 +20,41 @@ package com.smartitengineering.loadtest.engine;
 import java.util.Properties;
 
 /**
+ * This class contains all the information for a test case instance. Any such
+ * instance is represented by TestCaseResult in the result API of Engine. Prior
+ * to configuring one should check the instances the class name required.<p />
+ * The properties referred in this object should contain all necessary
+ * properties for instance factory, delay provider and increment size provider.
  *
  * @author imyousuf
  */
 public class UnitTestInstance {
     
+    /**
+     * Name of the test suite instance. A test suite in this case wraps a single
+     * test case but their execution and increment is determined by other API
+     * objects.
+     */
     private String name;
+    /**
+     * Name of the class that would create the test case to be used by engine
+     * to perform stress test. Please note that the class referred to in by this
+     * class should be an instance of TestCaseCreationFactory
+     */
     private String instanceFactoryClassName;
-    private String stepDelayConfiguration;
-    private int stepSize;
-    private int stepCount;
+    /**
+     * Delay for next group execution provider. This should be an instance of
+     * DelayProvider.
+     */
+    private String delayTimeProviderClassName;
+    /**
+     * Increment size provider class name. This should be an instance of
+     * NextStepSizeProvider.
+     */
+    private String incrementSizeProviderClassName;
+    /**
+     * Properties that would be used by all the 3 classes referred as above.
+     */
     private Properties properties;
 
     public Properties getProperties() {
@@ -57,28 +81,20 @@ public class UnitTestInstance {
         this.name = name;
     }
 
-    public int getStepCount() {
-        return stepCount;
+    public String getDelayTimeProviderClassName() {
+        return delayTimeProviderClassName;
     }
 
-    public void setStepCount(int stepCount) {
-        this.stepCount = stepCount;
+    public void setDelayTimeProviderClassName(String delayTimeProviderClassName) {
+        this.delayTimeProviderClassName = delayTimeProviderClassName;
     }
 
-    public String getStepDelayConfiguration() {
-        return stepDelayConfiguration;
+    public String getIncrementSizeProviderClassName() {
+        return incrementSizeProviderClassName;
     }
 
-    public void setStepDelayConfiguration(String stepDelayConfiguration) {
-        this.stepDelayConfiguration = stepDelayConfiguration;
+    public void setIncrementSizeProviderClassName(String incrementSizeProviderClassName) {
+        this.incrementSizeProviderClassName = incrementSizeProviderClassName;
     }
 
-    public int getStepSize() {
-        return stepSize;
-    }
-
-    public void setStepSize(int stepSize) {
-        this.stepSize = stepSize;
-    }
-    
 }

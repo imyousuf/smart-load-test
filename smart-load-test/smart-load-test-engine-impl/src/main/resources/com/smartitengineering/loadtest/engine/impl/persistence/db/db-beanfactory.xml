@@ -78,7 +78,7 @@
             <value>5000</value>
         </property>
         <property name="initialPoolSize">
-            <value>20</value>
+            <value>5</value>
         </property>
         <property name="maxIdleTime">
             <value>120</value>
@@ -94,7 +94,7 @@
             <value>12</value>
         </property>
         <property name="minPoolSize">
-            <value>10</value>
+            <value>3</value>
         </property>
         <property name="numHelperThreads">
             <value>4</value>

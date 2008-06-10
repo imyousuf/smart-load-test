@@ -137,6 +137,25 @@
             <reference local="test_case_result_id" foreign="id"/>
         </foreign-key>
     </table>
+    <table name="test_case_result_step_config">
+        <column name="test_case_result_id"
+            type="INTEGER"
+            required="true"
+            primaryKey="true"/>
+        <column name="step_number"    
+            type="INTEGER"
+            required="true"
+            primaryKey="true"/>
+        <column name="delay_in_millis"    
+            type="INTEGER"
+            required="true"/>
+        <column name="step_size"
+            type="INTEGER"
+            required="true" />
+        <foreign-key foreignTable="test_case_result" name="test_case_result_step_configs" onDelete="cascade" onUpdate="cascade">
+            <reference local="test_case_result_id" foreign="id"/>
+        </foreign-key>
+    </table>
     <table name="test_case_instance_result">
         <column name="id"
             type="INTEGER"

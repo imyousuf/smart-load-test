@@ -25,10 +25,59 @@
     <version>0.1-SNAPSHOT</version>
     <name>smart-load-test</name>
     <url>http://code.google.com/p/smart-load-test/</url>
+    <inceptionYear>2008</inceptionYear>
+    <description>
+        This framework is intended to make load testing simple, especially the
+        logging of the results, persisting them and later representing them to
+        the user. It is intended to be developed as a NetBeans Module and Stand
+        alone application and incorporating profiling into it is also in our
+        plans.
+        Also we want to integrate other great load testing tools such as JMeter,
+        Selenium, soapUI, HttpUnit. Enabling users to mix load testing for
+        different types. Not only existing frameworks, but by implementing some
+        key API interfaces users can create their own test cases, which is of
+        extreme benefit when it comes to testing Web Services.
+    </description>
+    <issueManagement>
+        <system>Google Code Issue Tracker</system>
+        <url>http://code.google.com/p/smart-load-test/issues/</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>User List</name>
+            <archive>http://groups.google.com/group/smart-load-test-users</archive>
+            <post>smart-load-test-users@googlegroups.com</post>
+        </mailingList>
+        <mailingList>
+            <name>Developer List</name>
+            <archive>http://groups.google.com/group/smart-load-test-dev</archive>
+            <post>smart-load-test-dev@googlegroups.com</post>
+        </mailingList>
+    </mailingLists>
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo and manual</distribution>
+            <url>http://www.gnu.org/licenses/</url>
+        </license>
+    </licenses>
+    <scm>
+        <connection>http://smart-load-test.googlecode.com/svn/trunk/smart-load-test</connection>
+        <developerConnection>https://smart-load-test.googlecode.com/svn/trunk/smart-load-test</developerConnection>
+        <url>http://code.google.com/p/smart-load-test/source/browse</url>
+    </scm>
     <developers>
         <developer>
+            <id>imyousuf</id>
             <name>Imran M Yousuf</name>
             <email>imyousuf@smartitengineering.com</email>
+            <organization>Smart IT Engineering</organization>
+            <timezone>GMT +0600</timezone>
+            <roles>
+                <role>Project Owner</role>
+                <role>Developer</role>
+                <role>Maintainer</role>
+            </roles>
         </developer>
     </developers>
     <distributionManagement>
@@ -54,7 +103,47 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <connectionType>developerConnection</connectionType>
+                    <username>${gcode.username}</username>
+                    <password>${gcode.password}</password>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.0.4</version>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.jvnet.wagon-svn</groupId>
+                <artifactId>wagon-svn</artifactId>
+                <version>1.8</version>
+            </extension>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>1.0-alpha-6</version>
+            </extension>
+        </extensions>
     </build>
     <repositories>
         <repository>
@@ -62,6 +151,17 @@
             <name>Java.net Repository for Maven</name>
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>smart-it-snapshot-repo</id>
+            <name>Smart IT Engineering snapshot repo</name>
+            <url>http://imyousuf.100webspace.net/maven-repo/snapshot/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
     <dependencies>

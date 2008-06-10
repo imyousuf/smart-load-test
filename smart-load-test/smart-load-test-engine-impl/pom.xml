@@ -29,12 +29,14 @@
     <name>smart-load-test-engine-impl</name>
     <version>${parent.version}</version>
     <url>http://code.google.com/p/smart-load-test/</url>
-    <description>This module will contain the default implementation of the different
+    <description>
+        This module will contain the default implementation of the different
         engines, namingly it will contain the db persistence, file system
         persistence, engine impl and console UI impl.
     </description>
     <developers>
         <developer>
+            <id>imyousuf</id>
             <name>Imran M Yousuf</name>
             <email>imyousuf@smartitengineering.com</email>
         </developer>

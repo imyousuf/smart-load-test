@@ -208,13 +208,25 @@ public class DatabasePersistenceEngineImplTest
      */
     public void testDoPersist() {
         dbImpl.init(loadTestEngine, new Properties());
-        dbImpl.persistTestResult();
+        assertEquals(true, dbImpl.persistTestResult());
 
     }
 
     public void testGetAll() {
         PersistentTestResultEngine engine =
             dbImpl.getPersistentTestResultEngine();
-        //List<TestResult> allResults = engine.getAllResults();
+        List<TestResult> allResults = engine.getAllResults();
+        if(allResults.isEmpty()) {
+            fail("All can not be null");
+        }
+    }
+
+    public void testDeleteTestResult() {
+        PersistentTestResultEngine engine =
+            dbImpl.getPersistentTestResultEngine();
+        List<TestResult> allResults = engine.getAllResults();
+        for (TestResult testResult : allResults) {
+            assertEquals(true, dbImpl.getPersistentTestResultEngine().deleteTestResult(testResult));
+        }
     }
 }

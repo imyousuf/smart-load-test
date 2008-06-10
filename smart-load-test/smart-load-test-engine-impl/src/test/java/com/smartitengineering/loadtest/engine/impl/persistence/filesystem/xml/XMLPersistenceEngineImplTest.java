@@ -24,6 +24,7 @@ import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangeLi
 import com.smartitengineering.loadtest.engine.events.TestCaseTransitionListener;
 import com.smartitengineering.loadtest.engine.impl.persistence.filesystem.AbstractFileSystemPersistenceEngine;
 import com.smartitengineering.loadtest.engine.result.KeyedInformation;
+import com.smartitengineering.loadtest.engine.result.StepConfiguration;
 import com.smartitengineering.loadtest.engine.result.TestCaseInstanceResult;
 import com.smartitengineering.loadtest.engine.result.TestCaseResult;
 import com.smartitengineering.loadtest.engine.result.TestProperty;
@@ -142,9 +143,15 @@ public class XMLPersistenceEngineImplTest
                     property.setValue("test prop val 3");
                     properties.add(property);
                     result.setTestProperties(properties);
-                    result.setStepCount(2);
-                    result.setStepDelayConfiguration("hhh mm ss");
-                    result.setStepSize(3);
+                    HashSet<StepConfiguration> configSet = new HashSet<StepConfiguration>();
+                    StepConfiguration configuration = new StepConfiguration();
+                    configuration.setDelayInMillis(1000);
+                    configuration.setStepNumber(1);
+                    configuration.setStepSize(4);
+                    configSet.add(configuration);
+                    configuration = (StepConfiguration) configuration.clone();
+                    configuration.setStepNumber(2);
+                    result.setStepConfigurations(configSet);
                     HashSet<TestCaseInstanceResult> instanceResults =
                         new HashSet<TestCaseInstanceResult>();
                     TestCaseInstanceResult instanceResult =

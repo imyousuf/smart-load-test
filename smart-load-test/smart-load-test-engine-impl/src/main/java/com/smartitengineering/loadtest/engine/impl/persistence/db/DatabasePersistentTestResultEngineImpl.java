@@ -17,8 +17,9 @@
  */
 package com.smartitengineering.loadtest.engine.impl.persistence.db;
 
+import com.smartitengineering.dao.common.CommonReadDao;
+import com.smartitengineering.dao.common.CommonWriteDao;
 import com.smartitengineering.dao.common.QueryParameter;
-import com.smartitengineering.dao.impl.hibernate.AbstractCommonDaoImpl;
 import com.smartitengineering.loadtest.engine.persistence.PersistentTestResultEngine;
 import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.ArrayList;
@@ -35,7 +36,9 @@ import java.util.Map;
 public class DatabasePersistentTestResultEngineImpl
     implements PersistentTestResultEngine {
 
-    private AbstractCommonDaoImpl<TestResult> persistentEngineDao;
+    private CommonReadDao<TestResult> persistentEngineDao;
+    
+    private CommonWriteDao<TestResult> persistentWriteEngineDao;
 
     public List<TestResult> getAllResults() {
         List<TestResult> allResults;
@@ -65,7 +68,7 @@ public class DatabasePersistentTestResultEngineImpl
             throw new IllegalArgumentException();
         }
         try {
-            persistentEngineDao.delete(testResult);
+            persistentWriteEngineDao.delete(testResult);
             return true;
         }
         catch (Exception ex) {
@@ -90,12 +93,20 @@ public class DatabasePersistentTestResultEngineImpl
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public AbstractCommonDaoImpl<TestResult> getPersistentEngineDao() {
+    public CommonReadDao<TestResult> getPersistentEngineDao() {
         return persistentEngineDao;
     }
 
     public void setPersistentEngineDao(
-        AbstractCommonDaoImpl<TestResult> persistentEngineDao) {
+        CommonReadDao<TestResult> persistentEngineDao) {
         this.persistentEngineDao = persistentEngineDao;
+    }
+
+    public CommonWriteDao<TestResult> getPersistentWriteEngineDao() {
+        return persistentWriteEngineDao;
+    }
+
+    public void setPersistentWriteEngineDao(CommonWriteDao<TestResult> persistentWriteEngineDao) {
+        this.persistentWriteEngineDao = persistentWriteEngineDao;
     }
 }

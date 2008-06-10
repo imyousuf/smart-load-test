@@ -17,7 +17,7 @@
  */
 package com.smartitengineering.loadtest.engine.impl.persistence.db;
 
-import com.smartitengineering.dao.common.CommonDaoWithVarArgs;
+import com.smartitengineering.dao.common.CommonWriteDao;
 import com.smartitengineering.loadtest.engine.impl.persistence.AbstractPersistenceEngine;
 import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.Properties;
@@ -29,17 +29,17 @@ import java.util.Properties;
 public class DatabasePersistenceEngineImpl
     extends AbstractPersistenceEngine {
     
-    private CommonDaoWithVarArgs<TestResult> persistentEngineDao;
+    private CommonWriteDao<TestResult> persistentEngineDao;
 
     @Override
     protected void specializedInit(Properties properties) {
     }
 
-    public CommonDaoWithVarArgs<TestResult> getPersistentEngineDao() {
+    public CommonWriteDao<TestResult> getPersistentEngineDao() {
         return persistentEngineDao;
     }
 
-    public void setPersistentEngineDao(CommonDaoWithVarArgs<TestResult> persistentEngineDao) {
+    public void setPersistentEngineDao(CommonWriteDao<TestResult> persistentEngineDao) {
         this.persistentEngineDao = persistentEngineDao;
     }
 

@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    Document   : db-beanfactory.xml
-    Created on : May 20, 2008, 8:21 PM
-    Author     : imyousuf
-    Description:
-        This document will contain the Spring Application Context for the DB
-        Persistene Engine Implementation
--->
-<!--
  * 
  *    This module represents an engine for the load testing framework
  *    Copyright (C) 2008  Imran M Yousuf (imran@smartitengineering.com)
@@ -27,6 +19,14 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<!--
+    Document   : db-beanfactory.xml
+    Created on : May 20, 2008, 8:21 PM
+    Author     : imyousuf
+    Description:
+        This document will contain the Spring Application Context for the DB
+        Persistene Engine Implementation
+-->
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd"  >
 <beans>
     <!-- 
@@ -128,6 +128,9 @@
     </bean>
     <bean id="persistentTestResultEngine" class="com.smartitengineering.loadtest.engine.impl.persistence.db.DatabasePersistentTestResultEngineImpl">
         <property name="persistentEngineDao">
+            <ref local="persistentEngineDao" />
+        </property>
+        <property name="persistentWriteEngineDao">
             <ref local="persistentEngineDao" />
         </property>
     </bean>

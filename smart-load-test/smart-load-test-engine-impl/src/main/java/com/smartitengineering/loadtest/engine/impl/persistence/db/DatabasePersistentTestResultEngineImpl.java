@@ -23,6 +23,7 @@ import com.smartitengineering.dao.common.QueryParameter;
 import com.smartitengineering.loadtest.engine.persistence.PersistentTestResultEngine;
 import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -52,13 +53,67 @@ public class DatabasePersistentTestResultEngineImpl
         return new ArrayList<TestResult>(new HashSet<TestResult>(allResults));
     }
 
-    public List<TestResult> getAllForTestName(String testName) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<TestResult> getAllForTestName(final String testName) {
+        QueryParameter<String> param = 
+            getNameParam(testName);
+        List<TestResult> searchResults;
+        try {
+            searchResults = persistentEngineDao.getList(param);
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            searchResults = Collections.<TestResult>emptyList();
+        }
+        return new ArrayList<TestResult>(new HashSet<TestResult>(searchResults));
     }
 
     public TestResult getTestResultById(int testResultId)
         throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        QueryParameter<Integer> param = 
+            new QueryParameter<Integer>(
+                "id", 
+                QueryParameter.PARAMETER_TYPE_PROPERTY, 
+                QueryParameter.OPERATOR_EQUAL, 
+                testResultId
+            );
+        TestResult searchResult;
+        try {
+            searchResult = persistentEngineDao.getSingle(param);
+            return searchResult;
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<TestResult> getAllResultWithinDateRange(Date startDate,
+                                                        Date endDate) {
+        QueryParameter<Date> param = getDateParam(startDate, endDate);
+        List<TestResult> searchResults;
+        try {
+            searchResults = persistentEngineDao.getList(param);
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            searchResults = Collections.<TestResult>emptyList();
+        }
+        return new ArrayList<TestResult>(new HashSet<TestResult>(searchResults));
+    }
+
+    public List<TestResult> getAllResultWithinDateRange(String testName,
+                                                        Date startDate,
+                                                        Date endDate) {
+        List<TestResult> searchResults;
+        try {
+            searchResults = persistentEngineDao.getList(getNameParam(testName),
+                                              getDateParam(startDate, endDate));
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            searchResults = Collections.<TestResult>emptyList();
+        }
+        return new ArrayList<TestResult>(new HashSet<TestResult>(searchResults));
     }
 
     public boolean deleteTestResult(TestResult testResult)
@@ -77,20 +132,36 @@ public class DatabasePersistentTestResultEngineImpl
         }
     }
 
-    public List<TestResult> getAllResultWithinDateRange(Date startDate,
-                                                        Date endDate) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public List<TestResult> getAllResultWithinDateRange(String testName,
-                                                        Date startDate,
-                                                        Date endDate) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    /**
+     * It works assuming that the filter is of Entry<String, QueryParameter>.
+     * Please check the specification of QueryParamater of Smart Dao to know how
+     * to use it. Any value that is not QueryParamater will be ignored.
+     * @param filters Map of QueryParameter keyed by String
+     * @return Filtered list. Collections.emptyList if filters is null or there
+     *         is any exception in the search process
+     * @throws java.lang.UnsupportedOperationException Does not throw this
+     *                                                 exception
+     */
     public List<TestResult> getTestResults(Map<String, ? extends Object> filters)
         throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if(filters == null) {
+            return Collections.<TestResult>emptyList();
+        }
+        ArrayList<QueryParameter> params = new ArrayList<QueryParameter>();
+        for (Map.Entry<String, ? extends Object> entry : filters.entrySet()) {
+            if(entry.getValue() instanceof QueryParameter) {
+                params.add((QueryParameter) entry.getValue());
+            }
+        }
+        List<TestResult> searchResults;
+        try {
+            searchResults = persistentEngineDao.getList(params);
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            searchResults = Collections.<TestResult>emptyList();
+        }
+        return new ArrayList<TestResult>(new HashSet<TestResult>(searchResults));
     }
 
     public CommonReadDao<TestResult> getPersistentEngineDao() {
@@ -108,5 +179,37 @@ public class DatabasePersistentTestResultEngineImpl
 
     public void setPersistentWriteEngineDao(CommonWriteDao<TestResult> persistentWriteEngineDao) {
         this.persistentWriteEngineDao = persistentWriteEngineDao;
+    }
+
+    protected QueryParameter<Date> getDateParam(Date startDate,
+                                                Date endDate) {
+        Calendar calendar = Calendar.getInstance();
+        if (startDate == null) {
+            startDate = new Date();
+            calendar.setTimeInMillis(startDate.getTime());
+            calendar.set(Calendar.HOUR, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startDate = calendar.getTime();
+        }
+        if (endDate == null) {
+            endDate = new Date();
+        }
+        QueryParameter<Date> param =
+            new QueryParameter<Date>("startDateTime",
+            QueryParameter.PARAMETER_TYPE_PROPERTY,
+            QueryParameter.OPERATOR_BETWEEN, startDate);
+        param.setParameter2(endDate);
+        return param;
+    }
+
+    protected QueryParameter<String> getNameParam(final String testName) {
+        QueryParameter<String> param =
+            new QueryParameter<String>("testName",
+            QueryParameter.PARAMETER_TYPE_PROPERTY,
+            QueryParameter.OPERATOR_STRING_LIKE,
+            testName == null ? "" : testName);
+        param.setMatchMode(QueryParameter.MatchMode.START);
+        return param;
     }
 }

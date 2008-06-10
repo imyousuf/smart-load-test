@@ -87,7 +87,6 @@ public class DatabasePersistenceEngineImplTest
                     testResult.setStartDateTime(new Date());
                     testResult.setEndDateTime(new Date(
                         System.currentTimeMillis() + 10000));
-                    testResult.setVersion(13);
                     HashSet<KeyedInformation> infos =
                         new HashSet<KeyedInformation>();
                     KeyedInformation info = new KeyedInformation();
@@ -214,26 +213,76 @@ public class DatabasePersistenceEngineImplTest
      * Test of doPersist method, of class DatabasePersistenceEngineImpl.
      */
     public void testDoPersist() {
+        System.out.println("----------- START ------------");
         dbImpl.init(loadTestEngine, new Properties());
         assertEquals(true, dbImpl.persistTestResult());
+        System.out.println("------------ END -------------");
 
     }
 
     public void testGetAll() {
+        System.out.println("----------- START ------------");
         PersistentTestResultEngine engine =
             dbImpl.getPersistentTestResultEngine();
         List<TestResult> allResults = engine.getAllResults();
+        System.out.println("------------ END -------------");
         if(allResults.isEmpty()) {
-            fail("All can not be null");
+            fail("All can not be null!");
+        }
+    }
+
+    public void testGetTestResultByName() {
+        System.out.println("----------- START ------------");
+        PersistentTestResultEngine engine =
+            dbImpl.getPersistentTestResultEngine();
+        List<TestResult> allResults = engine.getAllForTestName("Test Name");
+        System.out.println("------------ END -------------");
+        if(allResults.isEmpty()) {
+            fail("Get by name can not be null!");
+        }
+    }
+    
+    public void testGetTestResultById() {
+        System.out.println("----------- START ------------");
+        PersistentTestResultEngine engine =
+            dbImpl.getPersistentTestResultEngine();
+        TestResult result = engine.getTestResultById(1);
+        System.out.println("------------ END -------------");
+        if(result == null) {
+            fail("Get by id can not be null!");
+        }
+    }
+    
+    public void testGetTestResultsByDateRange() {
+        System.out.println("----------- START ------------");
+        PersistentTestResultEngine engine =
+            dbImpl.getPersistentTestResultEngine();
+        List<TestResult> results = engine.getAllResultWithinDateRange(null, null);
+        System.out.println("------------ END -------------");
+        if(results.isEmpty()) {
+            fail("Get by name can not be null!");
+        }
+    }
+    
+    public void testGetTestResultByDateRangeAndName() {
+        System.out.println("----------- START ------------");
+        PersistentTestResultEngine engine =
+            dbImpl.getPersistentTestResultEngine();
+        List<TestResult> results = engine.getAllResultWithinDateRange("Test ", null, null);
+        System.out.println("------------ END -------------");
+        if(results.isEmpty()) {
+            fail("Get by name can not be null!");
         }
     }
 
     public void testDeleteTestResult() {
+        System.out.println("----------- START ------------");
         PersistentTestResultEngine engine =
             dbImpl.getPersistentTestResultEngine();
         List<TestResult> allResults = engine.getAllResults();
         for (TestResult testResult : allResults) {
             assertEquals(true, dbImpl.getPersistentTestResultEngine().deleteTestResult(testResult));
         }
+        System.out.println("------------ END -------------");
     }
 }

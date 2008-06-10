@@ -34,17 +34,17 @@ public class TestCaseResult
 
     private String name;
     private String instanceFactoryClassName;
-    private String stepDelayConfiguration;
-    private int stepSize;
-    private int stepCount;
+    private Set<StepConfiguration> stepConfigurations;
     private Set<TestProperty> testProperties;
     private Set<TestCaseInstanceResult> testCaseInstanceResults;
     private Set<KeyedInformation> otherInfomations;
 
     public boolean isValid() {
-        if (name != null && instanceFactoryClassName != null && stepSize >= 1 &&
-            stepCount >= 1 && testCaseInstanceResults != null &&
-            testCaseInstanceResults.size() > 0) {
+        if (name != null && instanceFactoryClassName != null 
+            && stepConfigurations != null 
+            && stepConfigurations.size() > 0 
+            && testCaseInstanceResults != null 
+            && testCaseInstanceResults.size() > 0) {
             for (TestCaseInstanceResult instanceResult : testCaseInstanceResults) {
                 if (!instanceResult.isValid()) {
                     return false;
@@ -106,9 +106,13 @@ public class TestCaseResult
             }
             caseResult.setTestCaseInstanceResults(testCaseInstanceResultsClone);
         }
-        caseResult.setStepCount(stepCount);
-        caseResult.setStepSize(stepSize);
-        caseResult.setStepDelayConfiguration(stepDelayConfiguration);
+        if(stepConfigurations != null) {
+            HashSet<StepConfiguration> configurations = new HashSet<StepConfiguration>();
+            for(StepConfiguration configuration : stepConfigurations) {
+                configurations.add((StepConfiguration) configuration.clone());
+            }
+            caseResult.setStepConfigurations(configurations);
+        }
         return caseResult;
     }
 
@@ -140,30 +144,6 @@ public class TestCaseResult
         this.name = name;
     }
 
-    public int getStepCount() {
-        return stepCount;
-    }
-
-    public void setStepCount(int stepCount) {
-        this.stepCount = stepCount;
-    }
-
-    public String getStepDelayConfiguration() {
-        return stepDelayConfiguration;
-    }
-
-    public void setStepDelayConfiguration(String stepDelayConfiguration) {
-        this.stepDelayConfiguration = stepDelayConfiguration;
-    }
-
-    public int getStepSize() {
-        return stepSize;
-    }
-
-    public void setStepSize(int stepSize) {
-        this.stepSize = stepSize;
-    }
-
     public Set<TestCaseInstanceResult> getTestCaseInstanceResults() {
         return testCaseInstanceResults;
     }
@@ -187,6 +167,14 @@ public class TestCaseResult
 
     public void setOtherInfomations(Set<KeyedInformation> otherInfomations) {
         this.otherInfomations = otherInfomations;
+    }
+
+    public Set<StepConfiguration> getStepConfigurations() {
+        return stepConfigurations;
+    }
+
+    public void setStepConfigurations(Set<StepConfiguration> stepConfigurations) {
+        this.stepConfigurations = stepConfigurations;
     }
 
 }

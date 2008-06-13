@@ -158,7 +158,7 @@
         <repository>
             <id>smart-it-snapshot-repo</id>
             <name>Smart IT Engineering snapshot repo</name>
-            <url>http://imyousuf.100webspace.net/maven-repo/snapshot/</url>
+            <url>http://dev.smartitengineering.com/maven-repo/snapshot</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>

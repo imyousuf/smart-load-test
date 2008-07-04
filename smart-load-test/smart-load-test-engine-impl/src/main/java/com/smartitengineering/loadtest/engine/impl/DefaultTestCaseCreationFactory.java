@@ -28,6 +28,8 @@ import java.util.Properties;
 public class DefaultTestCaseCreationFactory
     implements TestCaseCreationFactory {
 
+    public static final String CLASS_NAME_PROPS =
+        "com.smartitengineering.loadtest.engine.defaultTestCaseFactoryClass";
     private Class<? extends TestCase> testCaseClass;
 
     public DefaultTestCaseCreationFactory() {
@@ -55,6 +57,7 @@ public class DefaultTestCaseCreationFactory
     public TestCase getTestCase(Properties properties)
         throws IllegalArgumentException {
         TestCase type = null;
+        checkForNewTestCaseClass(properties);
         if (testCaseClass != null) {
             try {
                 type = testCaseClass.getConstructor(Properties.class).
@@ -82,5 +85,17 @@ public class DefaultTestCaseCreationFactory
 
     public void setTestCaseClass(Class<? extends TestCase> testCaseClass) {
         this.testCaseClass = testCaseClass;
+    }
+
+    private void checkForNewTestCaseClass(Properties properties) {
+        if (properties.contains(CLASS_NAME_PROPS)) {
+            try {
+                setTestCaseClass((Class<? extends TestCase>) Class.forName(properties.
+                    getProperty(CLASS_NAME_PROPS)));
+            }
+            catch (ClassNotFoundException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }

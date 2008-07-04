@@ -38,7 +38,22 @@ public class DefaultTestCaseCreationFactory
         this.testCaseClass = testCaseClass;
     }
 
-    public TestCase getTestCase(Properties properties) {
+    /**
+     * This is the default test creation factory which initializes test cases
+     * instances either by their constructor with single arg (Properties object)
+     * or no args constructor (respectively). If neither of the constructor is
+     * available then it will throw a illegal arguments exception
+     * 
+     * @see com.smartitengineering.loadtest.engine.TestCaseCreationFactory#getTestCase(java.util.Properties) 
+     * @param properties Properties object to be used by contructor if exists.
+     * @return Instance of the test case to be used by engine. Will never be NULL.
+     * @throws java.lang.IllegalArgumentException If the class specfied is NULL
+     *                                            or it does not contain no args
+     *                                            or single properties argument
+     *                                            constructor.
+     */
+    public TestCase getTestCase(Properties properties)
+        throws IllegalArgumentException {
         TestCase type = null;
         if (testCaseClass != null) {
             try {

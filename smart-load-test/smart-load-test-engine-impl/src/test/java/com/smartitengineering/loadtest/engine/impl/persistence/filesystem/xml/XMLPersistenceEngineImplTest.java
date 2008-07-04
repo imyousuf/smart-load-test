@@ -18,6 +18,8 @@
 package com.smartitengineering.loadtest.engine.impl.persistence.filesystem.xml;
 
 import com.smartitengineering.loadtest.engine.LoadTestEngine;
+import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
+import com.smartitengineering.loadtest.engine.management.TestCaseThreadManager;
 import com.smartitengineering.loadtest.engine.management.TestCaseThreadPolicy;
 import com.smartitengineering.loadtest.engine.UnitTestInstance;
 import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangeListener;
@@ -216,6 +218,27 @@ public class XMLPersistenceEngineImplTest
 
                 public void removeTestCaseTransitionListener(
                     TestCaseTransitionListener listener) {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+
+                public void setTestCaseBatchCreator(Class<? extends TestCaseBatchCreator> batchCreator) {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+
+                public void setTestCaseBatchCreator(String batchCreator)
+                    throws IllegalArgumentException {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+
+                public Class<? extends TestCaseBatchCreator> getTestCaseBatchCreator() {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+
+                public void setTestCaseThreadManager(TestCaseThreadManager threadManager) {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+
+                public TestCaseThreadManager getTestCaseThreadManager() {
                     throw new UnsupportedOperationException("Not supported yet.");
                 }
             };

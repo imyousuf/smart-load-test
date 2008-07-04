@@ -1,5 +1,4 @@
 /**
- * 
  *    This module represents an engine for the load testing framework
  *    Copyright (C) 2008  Imran M Yousuf (imran@smartitengineering.com)
  *
@@ -18,16 +17,26 @@
  */
 package com.smartitengineering.loadtest.engine;
 
-import com.smartitengineering.loadtest.engine.management.TestCaseThreadPolicy;
 import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangeListener;
 import com.smartitengineering.loadtest.engine.events.TestCaseTransitionListener;
+import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
+import com.smartitengineering.loadtest.engine.management.TestCaseThreadManager;
 import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Set;
 
 /**
- *
+ * This is the central engine that will control the flow of the executing the
+ * tests and finally forming and returning the test result. After initialization
+ * and before inoking other operations. The test creator class should be
+ * provided to the engine so that it can delegate test instance creation to it.
+ * Thread manager should be provided so that it can manage all threads created
+ * by the engine. Once all information are available start operations should be
+ * used to start the testing. In order to reuse the engine please use the
+ * reinstanteCreatedState operation. Test result is available only once the
+ * test engine finishes its testing operation. Use the appropriate listeners to
+ * get updates on test engine's state and its test cases states.
  * @author imyousuf
  */
 public interface LoadTestEngine {
@@ -110,28 +119,6 @@ public interface LoadTestEngine {
         throws IllegalStateException;
 
     /**
-     * Sets the thread policy for this engine. The policy will decide whether
-     * the thread should be killed or not. It will be used by the egnine's
-     * thread monitor. Please not that if policy is null the previous policy
-     * will not be overwritten.
-     * 
-     * @param policy Policy for the thread-killing, i.e. when to terminate
-     */
-    public void setTestCaseThreadPolicy(TestCaseThreadPolicy policy);
-
-    /**
-     * Returns the current thread policy for the engine.
-     * 
-     * @return Current policy, returns null if no policy is available
-     */
-    public TestCaseThreadPolicy getTestCaseThreadPolicy();
-
-    /**
-     * Unset the current thread policy and set null, i.e. no policy, instead
-     */
-    public void unsetTestCaseThreadPolicy();
-
-    /**
      * Adds state change listener if listener is not null
      * 
      * @param listener Listener to add
@@ -163,6 +150,45 @@ public interface LoadTestEngine {
      */
     public void removeTestCaseTransitionListener(
         TestCaseTransitionListener listener);
+
+    /**
+     * Sets the batch creator class that is responsible for creating batches of
+     * test case and thread tor execute. Please note that the batch creator
+     * must have no-args constructor.
+     *
+     * @param batchCreator
+     */
+    public void setTestCaseBatchCreator(
+        Class<? extends TestCaseBatchCreator> batchCreator);
+
+    /**
+     * Sets the fully qualified class for the batch creator responsible for
+     * craeting test case batches. 
+     * 
+     * @param batchCreator The fully qualified batch creator class name
+     * @throws java.lang.IllegalArgumentException If string is not a valid batch
+     *                                            creator
+     */
+    public void setTestCaseBatchCreator(String batchCreator)
+        throws IllegalArgumentException;
+
+    /**
+     * Retreive the batch creator class for this test case engine.
+     * @return Batch creator class
+     */
+    public Class<? extends TestCaseBatchCreator> getTestCaseBatchCreator();
+
+    /**
+     * Sets the thread manager for this test engine
+     * @param threadManager Manager for test case threads
+     */
+    public void setTestCaseThreadManager(TestCaseThreadManager threadManager);
+
+    /**
+     * Returns the manager for this test engine.
+     * @return Manager for managing threads
+     */
+    public TestCaseThreadManager getTestCaseThreadManager();
 
     /**
      * Enum for representing the state of this load test engine

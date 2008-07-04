@@ -47,7 +47,9 @@ public interface TestCaseBatchCreator {
      * successful.
      * @param testInstance For which to create batches.
      * @throws IllegalArgumentException If testInstance is null or any
-     *                                  information of it is improper.
+     *                                  information of it is improper, e.g. if
+     *                                  delay and step size provider size is not
+     *                                  equal.
      */
     public void init(UnitTestInstance testInstance)
         throws IllegalArgumentException;
@@ -99,7 +101,8 @@ public interface TestCaseBatchCreator {
      * Return the next batches of Thread and test cases to start executing. It
      * is to be noted that once batch is return it is ready to be started. Also
      * to be noted that it is safer to invoke isNextBatchAvailable before trying
-     * to retrieve the next batch
+     * to retrieve the next batch. Implementor might choose to make current
+     * batch unavailable once all observers are available.
      * @return The batch to be started
      * @throws java.lang.IllegalStateException If init is not called and/or
      *                                         batch is not available yet

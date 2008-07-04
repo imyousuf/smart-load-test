@@ -19,22 +19,25 @@ package com.smartitengineering.loadtest.engine.impl.management;
 
 import com.smartitengineering.loadtest.engine.TestCase;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
+import java.lang.ref.WeakReference;
 import java.util.Map;
 
 /**
- * Default implementation of Batch to be used by SPI batch creator
- * implementations.
+ * Default implementation of Batch to be used by SPI batch creator. It uses weak
+ * references to the creator and batch thus this object will stop from them
+ * being garbage collected.
  * @author imyousuf
  */
 public class SimpleBatch
     implements TestCaseBatchCreator.Batch {
 
     private boolean batchStarted;
-    private Map.Entry<ThreadGroup, Map<Thread, TestCase>> batch;
-    private TestCaseBatchCreator creator;
+    private WeakReference<Map.Entry<ThreadGroup, Map<Thread, TestCase>>> batch;
+    private WeakReference<TestCaseBatchCreator> creator;
 
     /**
-     * Construct the simple batch with its creator and batch threads itself
+     * Construct the simple batch with its creator and batch threads itself. It
+     * uses weak references to the creator and batch.
      * @param creator The batch creator creating the batch threads
      * @param batch The batch threads to be wrapped by this batch.
      * @throws java.lang.IllegalArgumentException If creator or batch is null.
@@ -45,8 +48,9 @@ public class SimpleBatch
         if (batch == null || creator == null) {
             throw new IllegalArgumentException();
         }
-        this.creator = creator;
-        this.batch = batch;
+        this.creator = new WeakReference<TestCaseBatchCreator>(creator);
+        this.batch = new WeakReference<Map.Entry<ThreadGroup, Map<Thread, TestCase>>>(
+            batch);
         this.batchStarted = false;
     }
 
@@ -59,10 +63,10 @@ public class SimpleBatch
     }
 
     public Map.Entry<ThreadGroup, Map<Thread, TestCase>> getBatch() {
-        return batch;
+        return batch.get();
     }
 
     public TestCaseBatchCreator getBatchCreator() {
-        return creator;
+        return creator.get();
     }
 }

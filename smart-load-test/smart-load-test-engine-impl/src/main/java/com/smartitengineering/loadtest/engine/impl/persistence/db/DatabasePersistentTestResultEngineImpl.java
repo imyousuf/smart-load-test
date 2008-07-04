@@ -44,7 +44,7 @@ public class DatabasePersistentTestResultEngineImpl
     public List<TestResult> getAllResults() {
         List<TestResult> allResults;
         try {
-            allResults = persistentEngineDao.getList(Collections.<QueryParameter>emptyList());
+            allResults = new ArrayList<TestResult>(persistentEngineDao.getAll());
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -69,22 +69,7 @@ public class DatabasePersistentTestResultEngineImpl
 
     public TestResult getTestResultById(int testResultId)
         throws UnsupportedOperationException {
-        QueryParameter<Integer> param = 
-            new QueryParameter<Integer>(
-                "id", 
-                QueryParameter.PARAMETER_TYPE_PROPERTY, 
-                QueryParameter.OPERATOR_EQUAL, 
-                testResultId
-            );
-        TestResult searchResult;
-        try {
-            searchResult = persistentEngineDao.getSingle(param);
-            return searchResult;
-        }
-        catch(Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+        return persistentEngineDao.getById(testResultId);
     }
 
     public List<TestResult> getAllResultWithinDateRange(Date startDate,

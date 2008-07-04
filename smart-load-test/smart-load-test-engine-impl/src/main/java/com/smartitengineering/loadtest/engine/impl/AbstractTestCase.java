@@ -39,10 +39,10 @@ public abstract class AbstractTestCase
     private Set<TestCaseStateChangeListener> changeListeners;
 
     public AbstractTestCase() {
+        changeListeners = new HashSet<TestCaseStateChangeListener>();
         setStoppable(false);
         setInterruptable(true);
         setState(State.CREATED);
-        changeListeners = new HashSet<TestCaseStateChangeListener>();
     }
 
     public Date getStartTimeOfTest()
@@ -124,7 +124,7 @@ public abstract class AbstractTestCase
         }
     }
 
-    protected abstract void extendRun();
+    protected abstract void extendRun() throws Exception;
 
     protected void setInterruptable(boolean interruptable) {
         this.interruptable = interruptable;

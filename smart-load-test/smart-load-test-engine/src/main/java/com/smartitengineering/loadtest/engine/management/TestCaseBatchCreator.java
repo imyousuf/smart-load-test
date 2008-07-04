@@ -17,7 +17,10 @@
  */
 package com.smartitengineering.loadtest.engine.management;
 
+import com.smartitengineering.loadtest.engine.DelayProvider;
+import com.smartitengineering.loadtest.engine.NextStepSizeProvider;
 import com.smartitengineering.loadtest.engine.TestCase;
+import com.smartitengineering.loadtest.engine.TestCaseCreationFactory;
 import com.smartitengineering.loadtest.engine.UnitTestInstance;
 import com.smartitengineering.loadtest.engine.events.TestCaseBatchListener;
 import java.util.Map;
@@ -38,10 +41,16 @@ public interface TestCaseBatchCreator {
     /**
      * Initialie the batch creator with a test instance for which it is to
      * create batches. This should be the first operation after initializing the
-     * batch creator.
+     * batch creator. It is to be noted that unless initialization is successful
+     * no other operation should be called and it can be safely assumed that if
+     * no exception is thrown from init operation than initialization is
+     * successful.
      * @param testInstance For which to create batches.
+     * @throws IllegalArgumentException If testInstance is null or any
+     *                                  information of it is improper.
      */
-    public void init(UnitTestInstance testInstance);
+    public void init(UnitTestInstance testInstance)
+        throws IllegalArgumentException;
 
     /**
      * Operation for starting batch creations. It has to be invoked in order to
@@ -52,6 +61,30 @@ public interface TestCaseBatchCreator {
      *                                          or it is already started
      */
     public void start()
+        throws IllegalStateException;
+
+    /**
+     * Return the test case creation factory for this batch creator.
+     * @return Case creator for this batch creator
+     * @throws java.lang.IllegalStateException If batch creator isn't intialized
+     */
+    public TestCaseCreationFactory getCreationFactory()
+        throws IllegalStateException;
+
+    /**
+     * Returns the delay provider for this batch creator.
+     * @return The delay provider
+     * @throws java.lang.IllegalStateException If batch creator isn't intialized
+     */
+    public DelayProvider getDelayProvider()
+        throws IllegalStateException;
+
+    /**
+     * Returns the configured next step size provider for this batch creator
+     * @return The step size provider
+     * @throws java.lang.IllegalStateException If batch creator isn't intialized
+     */
+    public NextStepSizeProvider getNextStepSizeProvider()
         throws IllegalStateException;
 
     /**

@@ -16,9 +16,19 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.smartitengineering.loadtest.engine;
+package com.smartitengineering.loadtest.engine.management;
+
+import com.smartitengineering.loadtest.engine.*;
 
 /**
+ * This API Interface represents an thread kill policy maker. It basically is a
+ * helper for LoadTestEngine to decide whether to stop a thread based on a
+ * particular rational provided by the client.<p/>
+ * This API should be used in sequential and iterative manner. That is thread
+ * monitor API should first call getNextCheckDuration to know when to check, if
+ * it returns -1 then do not proceed else wait for the milliseconds specified
+ * and then invoke shouldTestCaseBeStopped. This iteration should continue till
+ * next interval is -1.
  *
  * @author imyousuf
  */
@@ -26,7 +36,8 @@ public interface TestCaseThreadPolicy {
 
     /**
      * Check the thread and the test case for deciding whether the thread should
-     * be stopped or not.
+     * be stopped or not. Policy may take into account whether the test case is
+     * stoppable or not and return flag based on that.
      * 
      * @param testCaseThread Thread executing the test case
      * @param testCase The test case being executed by the thread
@@ -34,11 +45,15 @@ public interface TestCaseThreadPolicy {
      */
     public boolean shouldTestCaseBeStopped(Thread testCaseThread,
                                            TestCase testCase);
+
     /**
      * If the client wants to know after how long more to check the thread then
      * this method can be used to find out a sleep duration for the thread-stop
      * monitor.
-     * @return Duration in milisecond
+     * @param testCase The test case being executed by the thread
+     * @param testCaseThread Thread executing the test case
+     * @return Duration in milisecond, -1 if no further check is required
      */
-    public long getNextCheckDuration();
+    public int getNextCheckDuration(Thread testCaseThread,
+                                    TestCase testCase);
 }

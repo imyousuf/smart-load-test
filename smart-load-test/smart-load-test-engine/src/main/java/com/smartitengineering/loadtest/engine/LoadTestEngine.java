@@ -18,6 +18,7 @@
  */
 package com.smartitengineering.loadtest.engine;
 
+import com.smartitengineering.loadtest.engine.management.TestCaseThreadPolicy;
 import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangeListener;
 import com.smartitengineering.loadtest.engine.events.TestCaseTransitionListener;
 import com.smartitengineering.loadtest.engine.result.TestResult;

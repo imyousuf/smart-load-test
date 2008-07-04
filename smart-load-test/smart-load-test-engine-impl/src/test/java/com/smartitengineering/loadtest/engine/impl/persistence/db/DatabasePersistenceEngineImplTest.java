@@ -5,7 +5,7 @@
 package com.smartitengineering.loadtest.engine.impl.persistence.db;
 
 import com.smartitengineering.loadtest.engine.LoadTestEngine;
-import com.smartitengineering.loadtest.engine.TestCaseThreadPolicy;
+import com.smartitengineering.loadtest.engine.management.TestCaseThreadPolicy;
 import com.smartitengineering.loadtest.engine.UnitTestInstance;
 import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangeListener;
 import com.smartitengineering.loadtest.engine.events.TestCaseTransitionListener;

@@ -30,6 +30,13 @@ import com.smartitengineering.loadtest.engine.events.ThreadStateChangeListener;
 public interface TestCaseThreadManager {
     
     /**
+     * Notify the manager to start managing threads from now and onwards. Prior
+     * to invoking this operation manager will not monitor the threads even if
+     * they are added.
+     */
+    public void startManager();
+    
+    /**
      * Once a thread is created its management is handed over to the manager so
      * that it can monitor the thread and once it finishes or is terminated it
      * can notify all interesting parties that 'thread is done'.

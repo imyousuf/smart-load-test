@@ -173,19 +173,23 @@ public interface LoadTestEngine {
         throws IllegalArgumentException;
 
     /**
-     * Retreive the batch creator class for this test case engine.
+     * Retreive the batch creator class for this test case engine. It is to be
+     * noted that if creator is not set before initialize is called then it will
+     * be simply ignored and default batch creator might be returned.
      * @return Batch creator class
      */
     public Class<? extends TestCaseBatchCreator> getTestCaseBatchCreator();
 
     /**
-     * Sets the thread manager for this test engine
+     * Sets the thread manager for this test engine.
      * @param threadManager Manager for test case threads
      */
     public void setTestCaseThreadManager(TestCaseThreadManager threadManager);
 
     /**
-     * Returns the manager for this test engine.
+     * Returns the manager for this test engine. It is to be noted that if
+     * manager is not set before initialize is called then it will be simply
+     * ignored and default manager might be returned.
      * @return Manager for managing threads
      */
     public TestCaseThreadManager getTestCaseThreadManager();

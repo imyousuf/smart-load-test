@@ -20,8 +20,6 @@ package com.smartitengineering.loadtest.engine.impl;
 import com.smartitengineering.loadtest.engine.events.TestCaseStateChangeListener;
 import com.smartitengineering.loadtest.engine.events.TestCaseStateChangedEvent;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 /**
@@ -43,18 +41,7 @@ public class AbstractTestCaseTest
 
     private com.smartitengineering.loadtest.engine.TestCase getTestCase(
         final int sleep) {
-        return new AbstractTestCase() {
-
-            @Override
-            protected void extendRun()
-                throws Exception {
-                Thread.sleep(sleep);
-            }
-
-            public <InitParam> void initTestCase(InitParam... params) {
-                setState(State.INITIALIZED);
-            }
-        };
+        return new DummyTestCase(sleep);
     }
 
     public void testNotInitializedStart() {

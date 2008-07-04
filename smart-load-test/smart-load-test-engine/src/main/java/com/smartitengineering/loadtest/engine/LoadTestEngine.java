@@ -88,15 +88,19 @@ public interface LoadTestEngine {
      * Datetime stamp of commencing the tests.
      * 
      * @return Start time
+     * @throws java.lang.IllegalStateException If the engine state is not (or
+     *                                           after) STARTED
      */
-    public Date getStartTime();
+    public Date getStartTime() throws IllegalStateException;
 
     /**
      * Datetime stamp of the ending of the tests.
      * 
      * @return End time
+     * @throws java.lang.IllegalStateException If the engine state is not
+     *                                          FINISHED
      */
-    public Date getEndTime();
+    public Date getEndTime() throws IllegalStateException;
 
     /**
      * Returns the duration of the test once it is finished.

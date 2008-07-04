@@ -49,7 +49,10 @@ public interface TestCaseThreadPolicy {
     /**
      * If the client wants to know after how long more to check the thread then
      * this method can be used to find out a sleep duration for the thread-stop
-     * monitor.
+     * monitor. It is to be noted that it should always return the same duration
+     * between each shoutTestCaseBeStopped checks, e.g. if this operation is
+     * called 100 times between the 1st and second invokation of the check op
+     * then it should return same integer number.
      * @param testCase The test case being executed by the thread
      * @param testCaseThread Thread executing the test case
      * @return Duration in milisecond, -1 if no further check is required

@@ -38,6 +38,10 @@
         key API interfaces users can create their own test cases, which is of
         extreme benefit when it comes to testing Web Services.
     </description>
+    <organization>
+        <name>Smart IT Engineering</name>
+        <url>http://www.smartitengineering.com</url>
+    </organization>
     <issueManagement>
         <system>Google Code Issue Tracker</system>
         <url>http://code.google.com/p/smart-load-test/issues/</url>
@@ -58,12 +62,12 @@
         <license>
             <name>GNU General Public License v3</name>
             <distribution>repo and manual</distribution>
-            <url>http://www.gnu.org/licenses/</url>
+            <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
         </license>
     </licenses>
     <scm>
-        <connection>http://smart-load-test.googlecode.com/svn/trunk/smart-load-test</connection>
-        <developerConnection>https://smart-load-test.googlecode.com/svn/trunk/smart-load-test</developerConnection>
+        <connection>scm:svn:http://smart-load-test.googlecode.com/svn/trunk/smart-load-test</connection>
+        <developerConnection>scm:svn:https://smart-load-test.googlecode.com/svn/trunk/smart-load-test</developerConnection>
         <url>http://code.google.com/p/smart-load-test/source/browse</url>
     </scm>
     <developers>
@@ -145,6 +149,30 @@
             </extension>
         </extensions>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>${cobertura-version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jxr-maven-plugin</artifactId>
+                <version>2.0-beta-1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+        </plugins>
+    </reporting>
     <repositories>
         <repository>
             <id>maven2-repository.dev.java.net</id>
@@ -180,5 +208,6 @@
     </modules>
     <properties>
         <abstract-dao-version>0.3-SNAPSHOT</abstract-dao-version>
+        <cobertura-version>2.2</cobertura-version>
     </properties>
 </project>

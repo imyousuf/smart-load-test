@@ -26,7 +26,7 @@ import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
  */
 public class BatchEvent {
 
-    private TestCaseBatchCreator batchCreator;
+    private TestCaseBatchCreator.Batch batch;
 
     /**
      * Create a batch event with the provided batch creator. Observer can get
@@ -35,20 +35,19 @@ public class BatchEvent {
      * @param batchCreator The batch creator to provide to the observer
      * @throws java.lang.IllegalArgumentException if batchCreator is null
      */
-    public BatchEvent(TestCaseBatchCreator batchCreator)
+    public BatchEvent(TestCaseBatchCreator.Batch batch)
         throws IllegalArgumentException {
-        if (batchCreator == null) {
+        if (batch == null) {
             throw new IllegalArgumentException();
         }
-        this.batchCreator = batchCreator;
+        this.batch = batch;
     }
 
     /**
-     * Return the source batch creator of the event.
-     * @return The batch creator.
+     * Return the batch that triggered this event
+     * @return Current batch
      */
-    public TestCaseBatchCreator getBatchCreator() {
-        return batchCreator;
+    public TestCaseBatchCreator.Batch getBatch() {
+        return batch;
     }
-    
 }

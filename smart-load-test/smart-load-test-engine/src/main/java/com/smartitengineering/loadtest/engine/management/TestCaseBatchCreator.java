@@ -104,7 +104,7 @@ public interface TestCaseBatchCreator {
      * @throws java.lang.IllegalStateException If init is not called and/or
      *                                         batch is not available yet
      */
-    public Map<Thread, TestCase> getNextBatch()
+    public Batch getNextBatch()
         throws IllegalStateException;
 
     /**
@@ -120,4 +120,38 @@ public interface TestCaseBatchCreator {
      * @param batchListener The observer to remove
      */
     public void removeBatchCreatrorListener(TestCaseBatchListener batchListener);
+
+    /**
+     * Represents a batch craeted by the batch creator. This batch will be
+     * provided to the its client observers. Observers will use it to start the
+     * threads and notify the following observers that it has performed the
+     * start operation.
+     */
+    public static interface Batch {
+
+        /**
+         * Returns whether the batch has been started by any of the listeners
+         * @return True is threads started else false
+         */
+        public boolean isBatchStarted();
+
+        /**
+         * Set batch started status, that is rest of the observers in the chain
+         * will be notified that batch is started
+         */
+        public void setBatchStarted();
+
+        /**
+         * Returns all the threads and their representative thread group. Also
+         * returned is all test cases against their threads.
+         * @return Thread group and its threads with their respective test cases
+         */
+        public Map.Entry<ThreadGroup, Map<Thread, TestCase>> getBatch();
+
+        /**
+         * Return the batch creator that created this batch.
+         * @return Its creator
+         */
+        public TestCaseBatchCreator getBatchCreator();
+    }
 }

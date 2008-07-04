@@ -48,12 +48,7 @@ public abstract class AbstractTestCaseThreadManager
 
     public TestCaseThreadPolicy getThreadPolicy() {
         if (threadPolicy == null) {
-            final TimeoutThreadPolicy timeoutThreadPolicy =
-                new TimeoutThreadPolicy();
-            timeoutThreadPolicy.setTimeoutPeriod(5 * 60 * 1000);
-            timeoutThreadPolicy.setTestCaseStoppableStatusDisabled(false);
-            this.threadPolicy = timeoutThreadPolicy;
-            return timeoutThreadPolicy;
+            this.threadPolicy = ManagementFactory.getDefaultThreadPolicy();
         }
         return this.threadPolicy;
     }

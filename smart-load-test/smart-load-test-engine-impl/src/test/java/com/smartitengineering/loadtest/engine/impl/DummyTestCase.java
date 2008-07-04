@@ -21,10 +21,11 @@ package com.smartitengineering.loadtest.engine.impl;
  *
  * @author imyousuf
  */
-public class DummyTestCase extends AbstractTestCase {
-    
+public class DummyTestCase
+    extends AbstractTestCase {
+
     private int sleepTime = 10;
-    
+
     public DummyTestCase() {
     }
 
@@ -42,4 +43,7 @@ public class DummyTestCase extends AbstractTestCase {
         setState(State.INITIALIZED);
     }
 
+    @Override
+    protected void doInitializingTasksBeforeCreatedState() {
+    }
 }

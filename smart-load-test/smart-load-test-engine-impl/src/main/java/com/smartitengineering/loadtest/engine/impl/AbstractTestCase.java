@@ -38,12 +38,20 @@ public abstract class AbstractTestCase
     private Date stopTimeOfTest;
     private Set<TestCaseStateChangeListener> changeListeners;
 
-    public AbstractTestCase() {
+    protected AbstractTestCase() {
         changeListeners = new HashSet<TestCaseStateChangeListener>();
         setStoppable(false);
         setInterruptable(true);
+        doInitializingTasksBeforeCreatedState();
         setState(State.CREATED);
     }
+
+    /**
+     * If there is any resource which might be required before state is
+     * broadcasted to observers then this operation should be used to perform
+     * it. E.g., it might be used to add listeners from a central registry.
+     */
+    protected abstract void doInitializingTasksBeforeCreatedState();
 
     public Date getStartTimeOfTest()
         throws IllegalStateException {
@@ -124,7 +132,8 @@ public abstract class AbstractTestCase
         }
     }
 
-    protected abstract void extendRun() throws Exception;
+    protected abstract void extendRun()
+        throws Exception;
 
     protected void setInterruptable(boolean interruptable) {
         this.interruptable = interruptable;

@@ -71,6 +71,15 @@ public interface TestCase
      * @return true if the test case is stoppable
      */
     public boolean isStoppable();
+    
+    /**
+     * Returns whether the method supports Thread.interrupt() or not. If
+     * isStoppable false then one might decide on this result to determine
+     * whether interrupt the thread or not.
+     * 
+     * @return True if the test case is ready for interruption else false;
+     */
+    public boolean isInterruptable();
 
     /**
      * Returns the current state of the test case

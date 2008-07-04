@@ -19,6 +19,7 @@ package com.smartitengineering.loadtest.engine.impl.management;
 
 import com.smartitengineering.loadtest.engine.TestCase;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
+import com.smartitengineering.loadtest.engine.management.TestCaseThreadManager;
 import com.smartitengineering.loadtest.engine.management.TestCaseThreadPolicy;
 import java.util.Map;
 
@@ -67,5 +68,36 @@ public final class ManagementFactory {
             throw new IllegalArgumentException();
         }
         return new SimpleBatch(creator, batch);
+    }
+
+    /**
+     * Create a default thread manager that monitors thread at a definit
+     * interval. It check whether the thread is stoppable or interruptable or
+     * not and based on that it takes step. If a thread expires the thread
+     * policy then it is forcefully shutdown.
+     * @param pollInterval The interval for checking thread's condition and its
+     *                      relevant policy
+     * @return The default text case thread manager configured with definite
+     *          interval
+     */
+    public static TestCaseThreadManager getDefaultThreadManager(
+        final int pollInterval) {
+        DefaultTestCaseThreadManager manager =
+            new DefaultTestCaseThreadManager();
+        if (pollInterval > 0) {
+            manager.setPollInterval(pollInterval);
+        }
+        return manager;
+    }
+
+    /**
+     * Return default batch creator that will create the necessary threads for a
+     * given unit test instance provided during init-ialization of the thread.
+     * @return The default batch creator.
+     */
+    public static TestCaseBatchCreator getDefaultBatchCreator() {
+        DefaultTestCaseBatchCreator batchCreator =
+            new DefaultTestCaseBatchCreator();
+        return batchCreator;
     }
 }

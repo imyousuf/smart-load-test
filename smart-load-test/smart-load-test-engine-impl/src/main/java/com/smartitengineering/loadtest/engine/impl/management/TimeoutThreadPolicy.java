@@ -33,7 +33,7 @@ public class TimeoutThreadPolicy
 
     protected Map<Thread, Integer> checkCountMap;
     private int timeoutPeriod;
-    private boolean testCaseStoppableStatusEnabled;
+    private boolean testCaseStoppableStatusDisabled;
 
     public TimeoutThreadPolicy() {
         checkCountMap = new WeakHashMap<Thread, Integer>();
@@ -47,12 +47,12 @@ public class TimeoutThreadPolicy
             calendar.setTime(startDate);
             calendar.add(Calendar.MILLISECOND, timeoutPeriod);
             if (calendar.getTime().after(new Date())) {
-                return true && (testCase.isStoppable() ||
-                    isTestCaseStoppableStatusEnabled());
+                return testCase.isStoppable() ||
+                    isTestCaseStoppableStatusDisabled();
             }
         }
         Integer checkCount = checkCountMap.get(testCaseThread);
-        if(checkCount == null) {
+        if (checkCount == null) {
             checkCountMap.put(testCaseThread, 1);
         }
         else {
@@ -79,12 +79,12 @@ public class TimeoutThreadPolicy
         this.timeoutPeriod = timeoutPeriod;
     }
 
-    public boolean isTestCaseStoppableStatusEnabled() {
-        return testCaseStoppableStatusEnabled;
+    public boolean isTestCaseStoppableStatusDisabled() {
+        return testCaseStoppableStatusDisabled;
     }
 
-    public void setTestCaseStoppableStatusEnabled(
-        boolean testCaseStoppableStatusEnabled) {
-        this.testCaseStoppableStatusEnabled = testCaseStoppableStatusEnabled;
+    public void setTestCaseStoppableStatusDisabled(
+        boolean testCaseStoppableStatusDisabled) {
+        this.testCaseStoppableStatusDisabled = testCaseStoppableStatusDisabled;
     }
 }

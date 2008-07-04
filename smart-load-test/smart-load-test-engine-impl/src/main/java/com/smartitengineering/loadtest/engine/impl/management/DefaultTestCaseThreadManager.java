@@ -91,6 +91,7 @@ public class DefaultTestCaseThreadManager
                         getThreadPolicy().shouldTestCaseBeStopped(entry.getKey(),
                         entry.getValue());
                     boolean stopped = false;
+                    Thread.State threadState = entry.getKey().getState();
                     if (shouldTestCaseBeStopped) {
                         if (entry.getValue().isStoppable()) {
                             entry.getValue().stopTest();
@@ -118,6 +119,10 @@ public class DefaultTestCaseThreadManager
                         handleMonitorDeadlockCondition(entry.getKey(), entry.
                             getValue());
                     }
+                    else if (stopped) {
+                        fireThreadStoppedEvent(entry.getKey(), threadState,
+                            entry.getKey().getState());
+                    }
                 }
             }
         }
@@ -136,11 +141,13 @@ public class DefaultTestCaseThreadManager
     protected void handleMonitorDeadlockCondition(final Thread thread,
                                                   final TestCase testCase) {
         try {
+            Thread.State threadState = thread.getState();
             thread.interrupt();
-            if (!(testCase.getState().equals(TestCase.State.STOPPED) || testCase.
-                getState().equals(TestCase.State.FINISHED))) {
+            if (!(testCase.getState().equals(TestCase.State.STOPPED) 
+                || testCase.getState().equals(TestCase.State.FINISHED))) {
                 thread.stop();
             }
+            fireThreadStoppedEvent(thread, threadState, thread.getState());
         }
         catch (Exception ex) {
             ex.printStackTrace();

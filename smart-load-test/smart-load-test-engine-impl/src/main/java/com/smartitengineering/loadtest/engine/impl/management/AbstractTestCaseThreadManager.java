@@ -17,6 +17,7 @@
  */
 package com.smartitengineering.loadtest.engine.impl.management;
 
+import com.smartitengineering.loadtest.engine.events.ThreadStateChangeEvent;
 import com.smartitengineering.loadtest.engine.events.ThreadStateChangeListener;
 import com.smartitengineering.loadtest.engine.management.TestCaseThreadManager;
 import com.smartitengineering.loadtest.engine.management.TestCaseThreadPolicy;
@@ -68,6 +69,25 @@ public abstract class AbstractTestCaseThreadManager
         ThreadStateChangeListener changeListener) {
         if (changeListener != null) {
             listeners.remove(changeListener);
+        }
+    }
+
+    protected void fireThreadStoppedEvent(final Thread thread,
+                                          final Thread.State oldState,
+                                          final Thread.State currentState) {
+        if (thread == null || oldState == null) {
+            return;
+        }
+        fireThreadStoppedEvent(new ThreadStateChangeEvent(thread, oldState,
+            currentState == null ? Thread.State.TERMINATED : currentState));
+    }
+
+    protected void fireThreadStoppedEvent(ThreadStateChangeEvent changeEvent) {
+        if (changeEvent == null) {
+            return;
+        }
+        for (ThreadStateChangeListener listener : listeners) {
+            listener.stateChanged(changeEvent);
         }
     }
 }

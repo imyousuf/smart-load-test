@@ -87,6 +87,7 @@ public final class ManagementFactory {
         if (pollInterval > 0) {
             manager.setPollInterval(pollInterval);
         }
+        manager.setThreadPolicy(getDefaultThreadPolicy());
         return manager;
     }
 
@@ -99,5 +100,13 @@ public final class ManagementFactory {
         DefaultTestCaseBatchCreator batchCreator =
             new DefaultTestCaseBatchCreator();
         return batchCreator;
+    }
+
+    /**
+     * Return default batch creator class that might be used to initialize it.
+     * @return The default batch creator class
+     */
+    public static Class<? extends TestCaseBatchCreator> getDefaultBatchCreatorClass() {
+        return DefaultTestCaseBatchCreator.class;
     }
 }

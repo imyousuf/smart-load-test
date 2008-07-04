@@ -30,6 +30,7 @@ import java.util.Map;
  */
 public final class TestCaseFactoryRegister {
 
+    public static final String DEFAULT_FACTORY = "default_factory";
     /**
      * Registry storing the test case creation factory for a given test name.
      * Please note that a same factory object/instance can reside in the
@@ -52,10 +53,13 @@ public final class TestCaseFactoryRegister {
      * @return true if registry is updated else false
      * @throws java.lang.ClassNotFoundException If class is not found in
      *                                          classpath
+     * @throws java.lang.IllegalArgumentException If name is equal to 
+     *                                            "default_factory"
      */
     public static boolean addFactoryToRegistry(String name,
                                                String testCaseCreationFactoryClassName)
-        throws ClassNotFoundException {
+        throws ClassNotFoundException,
+               IllegalArgumentException {
         return addFactoryToRegistry(name, testCaseCreationFactoryClassName,
             Boolean.FALSE);
     }
@@ -71,11 +75,18 @@ public final class TestCaseFactoryRegister {
      * @return true if registry is updated else false
      * @throws java.lang.ClassNotFoundException If class is not found in
      *                                          classpath
+     * @throws java.lang.IllegalArgumentException If name is equal to 
+     *                                            "default_factory"
      */
     public static boolean addFactoryToRegistry(String name,
                                                String testCaseCreationFactoryClassName,
                                                boolean overwrite)
-        throws ClassNotFoundException {
+        throws ClassNotFoundException,
+               IllegalArgumentException {
+        if (name == null || testCaseCreationFactoryClassName == null) {
+            return Boolean.FALSE;
+        }
+        checkName(name);
         return addFactoryToRegistry(name, (Class) Class.forName(
             testCaseCreationFactoryClassName), overwrite);
     }
@@ -87,9 +98,12 @@ public final class TestCaseFactoryRegister {
      * @param name Name of test to register the class to
      * @param testCaseCreationFactoryClass
      * @return true if registry is updated else false
+     * @throws java.lang.IllegalArgumentException If name is equal to 
+     *                                            "default_factory"
      */
     public static boolean addFactoryToRegistry(String name,
-                                               Class<? extends TestCaseCreationFactory> testCaseCreationFactoryClass) {
+                                               Class<? extends TestCaseCreationFactory> testCaseCreationFactoryClass)
+        throws IllegalArgumentException {
         return addFactoryToRegistry(name, testCaseCreationFactoryClass,
             Boolean.FALSE);
     }
@@ -103,10 +117,17 @@ public final class TestCaseFactoryRegister {
      * @param overwrite notifying to update the entry for the test name if it
      *                  exists
      * @return true if registry is updated else false
+     * @throws java.lang.IllegalArgumentException If name is equal to 
+     *                                            "default_factory"
      */
     public static boolean addFactoryToRegistry(String name,
                                                Class<? extends TestCaseCreationFactory> testCaseCreationFactoryClazz,
-                                               boolean overwrite) {
+                                               boolean overwrite)
+        throws IllegalArgumentException {
+        if (name == null || testCaseCreationFactoryClazz == null) {
+            return Boolean.FALSE;
+        }
+        checkName(name);
         if (registry.containsKey(name) && !overwrite) {
             return Boolean.FALSE;
         }
@@ -128,15 +149,22 @@ public final class TestCaseFactoryRegister {
      * @param name Name of test to register the class to
      * @param testCaseCreationFactory The factory to associate to the test name
      * @return true if registry is updated else false
+     * @throws java.lang.IllegalArgumentException If name is equal to 
+     *                                            "default_factory"
      */
     public static boolean addFactoryToRegistry(String name,
-                                               TestCaseCreationFactory testCaseCreationFactory) {
+                                               TestCaseCreationFactory testCaseCreationFactory)
+        throws IllegalArgumentException {
+        if (name != null) {
+            checkName(name);
+        }
         return addFactoryToRegistry(name, testCaseCreationFactory, Boolean.FALSE);
     }
 
     /**
      * Add a factory, regardless of its pre existense, to the specified test
-     * name.
+     * name. It is the only method that can be used to add default creation
+     * factory.
      * 
      * @param name Name of test to register the class to
      * @param testCaseCreationFactory The factory to associate to the test name
@@ -147,6 +175,9 @@ public final class TestCaseFactoryRegister {
     public static boolean addFactoryToRegistry(String name,
                                                TestCaseCreationFactory testCaseCreationFactory,
                                                boolean overwrite) {
+        if (name == null || testCaseCreationFactory == null) {
+            return Boolean.FALSE;
+        }
         if (registry.containsKey(name) && !overwrite) {
             return Boolean.FALSE;
         }
@@ -155,11 +186,33 @@ public final class TestCaseFactoryRegister {
     }
 
     /**
+     * This operation removes creation factory from registry, it should be
+     * invoked once a creation factory becomes useless.
+     * @param name The name of the creation factory to be removed from registry.
+     * @return True if removed from registry else false
+     * @throws java.lang.IllegalArgumentException If name is equal to 
+     *                                            "default_factory" or is null
+     */
+    public static boolean removeFactory(String name)
+        throws IllegalArgumentException {
+        checkName(name);
+        if (registry.containsKey(name)) {
+            return registry.remove(name) != null;
+        }
+        return Boolean.FALSE;
+    }
+
+    /**
      * Checks whether the given test name is registered in the reistry.
      * @param name Test name to search
      * @return true if exists in registry else false
+     * @throws java.lang.IllegalArgumentException If name is null
      */
-    public static boolean hasFactory(String name) {
+    public static boolean hasFactory(String name)
+        throws IllegalArgumentException {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
         return registry.containsKey(name);
     }
 
@@ -171,5 +224,11 @@ public final class TestCaseFactoryRegister {
      */
     public static TestCaseCreationFactory getTestCaseFactory(String name) {
         return registry.get(name);
+    }
+
+    private static void checkName(String name) {
+        if (name == null || name.equals(DEFAULT_FACTORY)) {
+            throw new IllegalArgumentException();
+        }
     }
 }

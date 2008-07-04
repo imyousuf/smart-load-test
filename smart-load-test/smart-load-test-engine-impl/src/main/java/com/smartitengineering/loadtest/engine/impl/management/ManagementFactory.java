@@ -17,10 +17,14 @@
  */
 package com.smartitengineering.loadtest.engine.impl.management;
 
+import com.smartitengineering.loadtest.engine.TestCase;
+import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
 import com.smartitengineering.loadtest.engine.management.TestCaseThreadPolicy;
+import java.util.Map;
 
 /**
- *
+ * A simple factory for creating default instances of different SPI
+ * implementations.
  * @author imyousuf
  */
 public final class ManagementFactory {
@@ -28,11 +32,40 @@ public final class ManagementFactory {
     private ManagementFactory() {
     }
 
+    /**
+     * Create a timeout based thread policy with default timeout set to 5
+     * minutes.
+     * @return Default thread policy.
+     */
     public static TestCaseThreadPolicy getDefaultThreadPolicy() {
         final TimeoutThreadPolicy timeoutThreadPolicy =
             new TimeoutThreadPolicy();
         timeoutThreadPolicy.setTimeoutPeriod(5 * 60 * 1000);
         timeoutThreadPolicy.setTestCaseStoppableStatusDisabled(false);
         return timeoutThreadPolicy;
+    }
+
+    /**
+     * Return an instance of default Batch implemenation for the for this SPI
+     * implementation. Batch returned by this factory is intended to be used by
+     * a test case batch creator to trigger batch event and return getBatch from
+     * itself.
+     * @param creator The creator that created the test cases' thread group.
+     * @param batch The batch represented by its thread group, threads and test
+     *              cases.
+     * @return The batch that has the batch as its batch and creator as its
+     *          creator. Creator will use it as its batch and trigger event.
+     * @throws java.lang.IllegalArgumentException If creator or batch is null or
+     *                                              creator does not have next
+     *                                              batch available.
+     */
+    public static TestCaseBatchCreator.Batch getDefaultBatch(
+        final TestCaseBatchCreator creator,
+        final Map.Entry<ThreadGroup, Map<Thread, TestCase>> batch)
+        throws IllegalArgumentException {
+        if (creator == null || !creator.isNextBatchAvailable() || batch == null) {
+            throw new IllegalArgumentException();
+        }
+        return new SimpleBatch(creator, batch);
     }
 }

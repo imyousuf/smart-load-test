@@ -17,10 +17,42 @@
  */
 package com.smartitengineering.loadtest.engine.impl;
 
+import com.smartitengineering.loadtest.engine.UnitTestInstance;
+import com.smartitengineering.loadtest.engine.result.TestResult;
+import java.util.Properties;
+import java.util.Set;
+
 /**
  * Default implementation of the LoadTestEngine
  *
  */
-public class LoadTestEngineImpl 
-{
+public class LoadTestEngineImpl
+    extends AbstractLoadTestEngineImpl {
+
+    @Override
+    protected void rollBackToCreatedState() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void init(String testName,
+                     Set<UnitTestInstance> testInstances,
+                     Properties initProperties)
+        throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void start()
+        throws IllegalStateException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public TestResult getTestResult()
+        throws IllegalStateException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected void initializeBeforeCreatedState() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

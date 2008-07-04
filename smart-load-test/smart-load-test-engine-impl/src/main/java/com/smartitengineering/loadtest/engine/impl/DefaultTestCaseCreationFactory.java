@@ -19,25 +19,32 @@ package com.smartitengineering.loadtest.engine.impl;
 
 import com.smartitengineering.loadtest.engine.TestCase;
 import com.smartitengineering.loadtest.engine.TestCaseCreationFactory;
+import com.smartitengineering.loadtest.engine.TestCaseFactoryRegister;
 import java.util.Properties;
 
 /**
- *
+ * This Test case creation factory is the default implementation of its kind. It
+ * will be used by the registry if specified creation factory is not found. By
+ * design it is singleton and is registered with the factory registry.
  * @author imyousuf
  */
 public class DefaultTestCaseCreationFactory
     implements TestCaseCreationFactory {
 
+    private static TestCaseCreationFactory defaultFactory;
     public static final String CLASS_NAME_PROPS =
         "com.smartitengineering.loadtest.engine.defaultTestCaseFactoryClass";
-    private Class<? extends TestCase> testCaseClass;
 
-    public DefaultTestCaseCreationFactory() {
+    private DefaultTestCaseCreationFactory() {
+        TestCaseFactoryRegister.addFactoryToRegistry(
+            TestCaseFactoryRegister.DEFAULT_FACTORY, this, Boolean.TRUE);
     }
 
-    public DefaultTestCaseCreationFactory(
-        Class<? extends TestCase> testCaseClass) {
-        this.testCaseClass = testCaseClass;
+    public static TestCaseCreationFactory getInstance() {
+        if (defaultFactory == null) {
+            defaultFactory = new DefaultTestCaseCreationFactory();
+        }
+        return defaultFactory;
     }
 
     /**
@@ -57,7 +64,8 @@ public class DefaultTestCaseCreationFactory
     public TestCase getTestCase(Properties properties)
         throws IllegalArgumentException {
         TestCase type = null;
-        checkForNewTestCaseClass(properties);
+        Class<? extends TestCase> testCaseClass;
+        testCaseClass = checkForNewTestCaseClass(properties);
         if (testCaseClass != null) {
             try {
                 type = testCaseClass.getConstructor(Properties.class).
@@ -79,23 +87,20 @@ public class DefaultTestCaseCreationFactory
             ((testCaseClass != null) ? testCaseClass.getName() : "NULL"));
     }
 
-    public Class<? extends TestCase> getTestCaseClass() {
-        return testCaseClass;
-    }
-
-    public void setTestCaseClass(Class<? extends TestCase> testCaseClass) {
-        this.testCaseClass = testCaseClass;
-    }
-
-    private void checkForNewTestCaseClass(Properties properties) {
+    private Class<? extends TestCase> checkForNewTestCaseClass(
+        Properties properties) {
         if (properties.contains(CLASS_NAME_PROPS)) {
             try {
-                setTestCaseClass((Class<? extends TestCase>) Class.forName(properties.
-                    getProperty(CLASS_NAME_PROPS)));
+                return (Class<? extends TestCase>) Class.forName(properties.
+                    getProperty(CLASS_NAME_PROPS));
             }
             catch (ClassNotFoundException ex) {
                 ex.printStackTrace();
+                return null;
             }
+        }
+        else {
+            return null;
         }
     }
 }

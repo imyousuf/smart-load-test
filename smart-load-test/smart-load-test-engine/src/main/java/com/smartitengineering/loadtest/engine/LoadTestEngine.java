@@ -50,13 +50,17 @@ public interface LoadTestEngine {
      * @param testInstances A collection of instances that this engine will
      *                      execute
      * @param initProperties Properties to be used initialization
-     * @throws IllegalArgumentException If the testName is null or depends on
+     * @throws IllegalArgumentException If the testName is null or no unit
+     *                                  instances specified and/or depends on
      *                                  the specification of the implementor
+     * @throws IllegalStateException If engine is not initialized 
+     *                                  or implementations specific
      */
     public void init(String testName,
                      Set<UnitTestInstance> testInstances,
                      Properties initProperties)
-        throws IllegalArgumentException;
+        throws IllegalArgumentException,
+               IllegalStateException;
 
     /**
      * Returns the current state of the engine.
@@ -91,7 +95,8 @@ public interface LoadTestEngine {
      * @throws java.lang.IllegalStateException If the engine state is not (or
      *                                           after) STARTED
      */
-    public Date getStartTime() throws IllegalStateException;
+    public Date getStartTime()
+        throws IllegalStateException;
 
     /**
      * Datetime stamp of the ending of the tests.
@@ -100,7 +105,8 @@ public interface LoadTestEngine {
      * @throws java.lang.IllegalStateException If the engine state is not
      *                                          FINISHED
      */
-    public Date getEndTime() throws IllegalStateException;
+    public Date getEndTime()
+        throws IllegalStateException;
 
     /**
      * Returns the duration of the test once it is finished.

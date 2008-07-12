@@ -19,6 +19,7 @@ package com.smartitengineering.loadtest.engine.impl;
 
 import com.smartitengineering.loadtest.engine.LoadTestEngine;
 import com.smartitengineering.loadtest.engine.TestCase;
+import com.smartitengineering.loadtest.engine.UnitTestInstance;
 import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangeListener;
 import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangedEvent;
 import com.smartitengineering.loadtest.engine.events.TestCaseStateChangedEvent;
@@ -37,14 +38,19 @@ import java.util.Set;
  */
 public abstract class AbstractLoadTestEngineImpl
     implements LoadTestEngine {
+    
+    public static final String PROPS_PERMIT_KEY = "com.smartitengineering.loadtest.engine.loadTestEngine.concurrentBatches";
 
     private LoadTestEngine.State engineState;
     private Date startDate;
     private Date endDate;
+    private Set<UnitTestInstance> testInstances;
     private Set<LoadTestEngineStateChangeListener> engineStateListeners;
     private Set<TestCaseTransitionListener> testCaseTransitionListeners;
     private Class<? extends TestCaseBatchCreator> batchCreatorClass;
     private TestCaseThreadManager threadManager;
+    private String testName;
+    private int permits;
 
     protected AbstractLoadTestEngineImpl() {
         testCaseTransitionListeners = new HashSet<TestCaseTransitionListener>();
@@ -74,7 +80,8 @@ public abstract class AbstractLoadTestEngineImpl
     protected abstract void rollBackToCreatedState();
 
     public Date getStartTime() {
-        if(getState().getStateStep() < LoadTestEngine.State.STARTED.getStateStep()) {
+        if (getState().getStateStep() < LoadTestEngine.State.STARTED.
+            getStateStep()) {
             throw new IllegalStateException();
         }
         else {
@@ -83,7 +90,8 @@ public abstract class AbstractLoadTestEngineImpl
     }
 
     public Date getEndTime() {
-        if(getState().getStateStep() < LoadTestEngine.State.FINISHED.getStateStep()) {
+        if (getState().getStateStep() < LoadTestEngine.State.FINISHED.
+            getStateStep()) {
             throw new IllegalStateException();
         }
         else {
@@ -142,10 +150,10 @@ public abstract class AbstractLoadTestEngineImpl
             return;
         }
         try {
-            batchCreatorClass = (Class <? extends TestCaseBatchCreator>)
-            Class.forName(batchCreator);
+            batchCreatorClass = (Class<? extends TestCaseBatchCreator>) Class.
+                forName(batchCreator);
         }
-        catch(Exception ex) {
+        catch (Exception ex) {
             throw new IllegalArgumentException(ex);
         }
     }
@@ -225,5 +233,34 @@ public abstract class AbstractLoadTestEngineImpl
             return ManagementFactory.getDefaultBatchCreator();
         }
         return batchCreatorClass.newInstance();
+    }
+
+    protected String getTestName() {
+        return testName;
+    }
+
+    protected void setTestName(String testName) {
+        this.testName = testName;
+    }
+
+    protected void setTestInstances(Set<UnitTestInstance> testInstances) {
+        if (testInstances != null) {
+            this.testInstances = testInstances;
+        }
+    }
+
+    protected Set<UnitTestInstance> getTestInstances() {
+        return this.testInstances;
+    }
+
+    public int getPermits() {
+        if(permits < 1) {
+            permits = 1;
+        }
+        return permits;
+    }
+
+    public void setPermits(int permits) {
+        this.permits = permits;
     }
 }

@@ -21,14 +21,21 @@ import com.smartitengineering.loadtest.engine.TestCase;
 import com.smartitengineering.loadtest.engine.UnitTestInstance;
 import com.smartitengineering.loadtest.engine.events.BatchEvent;
 import com.smartitengineering.loadtest.engine.events.TestCaseBatchListener;
+import com.smartitengineering.loadtest.engine.events.TestCaseStateChangeListener;
+import com.smartitengineering.loadtest.engine.events.TestCaseStateChangedEvent;
+import com.smartitengineering.loadtest.engine.events.TestCaseTransitionListener;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator.Batch;
+import com.smartitengineering.loadtest.engine.result.TestCaseResult;
 import com.smartitengineering.loadtest.engine.result.TestResult;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -40,12 +47,19 @@ public class LoadTestEngineImpl
 
     protected EngineBatchListener engineBatchListener;
     private Map<TestCaseBatchCreator, UnitTestInstance> creators;
+    private Map<UnitTestInstance, UnitTestInstanceRecord> instances;
+    private Map<TestCase, UnitTestInstanceRecord> caseRecords;
     private Semaphore semaphore;
+    private EngineJobFinishedDetector finishedDetector;
+    private ExecutorService executorService;
+    private TestCaseTransitionListener transitionListener;
+    private TestCaseStateChangeListener caseStateChangeListener;
 
     @Override
     protected void initializeBeforeCreatedState() {
         setTestInstances(new HashSet<UnitTestInstance>());
         creators = new HashMap<TestCaseBatchCreator, UnitTestInstance>();
+        instances = new HashMap<UnitTestInstance, UnitTestInstanceRecord>();
     }
 
     public void init(String testName,
@@ -79,6 +93,7 @@ public class LoadTestEngineImpl
         engineBatchListener = new EngineBatchListener();
         semaphore = new Semaphore(getPermits());
         setTestName(testName);
+
         getTestInstances().addAll(testInstances);
         for (UnitTestInstance instance : getTestInstances()) {
             try {
@@ -90,8 +105,17 @@ public class LoadTestEngineImpl
             catch (Exception ex) {
                 ex.printStackTrace();
             }
-
         }
+        transitionListener = new TestCaseStateTransitionMonitor();
+        addTestCaseTransitionListener(transitionListener);
+        caseStateChangeListener = new TestCaseStateListenerImpl();
+        caseRecords = new HashMap<TestCase, UnitTestInstanceRecord>();
+
+        finishedDetector = new EngineJobFinishedDetector();
+        executorService = Executors.newSingleThreadExecutor();
+
+        //TODO create test result structures
+
         setState(State.INITIALIZED);
     }
 
@@ -105,7 +129,6 @@ public class LoadTestEngineImpl
             entrySet()) {
             creator.getKey().start();
         }
-        //TODO implement other steps
         setState(State.STARTED);
     }
 
@@ -114,7 +137,7 @@ public class LoadTestEngineImpl
         if (getState().getStateStep() < State.FINISHED.getStateStep()) {
             throw new IllegalStateException();
         }
-        //TODO implement test result
+        //TODO finalize  test result and return it
         return null;
     }
 
@@ -124,6 +147,7 @@ public class LoadTestEngineImpl
         setTestName(null);
         semaphore = null;
         engineBatchListener = null;
+        finishedDetector = null;
     }
 
     protected class EngineBatchListener
@@ -141,10 +165,29 @@ public class LoadTestEngineImpl
                     batchThreads = batch.getBatch();
                     for (Map.Entry<Thread, TestCase> thread : batchThreads.
                         getValue().entrySet()) {
-                        //TODO add test case listeners to monitor the test cases
-                        thread.getKey().start();
-                        getTestCaseThreadManager().manageThread(thread.getKey(),
-                            thread.getValue());
+                        if (thread.getKey() != null && thread.getValue() != null) {
+                            thread.getKey().start();
+                            thread.getValue().addTestCaseStateChangeListener(
+                                caseStateChangeListener);
+                            getTestCaseThreadManager().manageThread(thread.
+                                getKey(),
+                                thread.getValue());
+                            final TestCaseBatchCreator batchCreator =
+                                batch.getBatchCreator();
+                            if (batchCreator != null) {
+                                final UnitTestInstance testInstance =
+                                    creators.get(batchCreator);
+                                if (testInstance != null) {
+                                    final UnitTestInstanceRecord instanceRecord =
+                                        instances.get(testInstance);
+                                    if (instanceRecord != null) {
+                                        instanceRecord.incrementCount();
+                                        caseRecords.put(thread.getValue(),
+                                            instanceRecord);
+                                    }
+                                }
+                            }
+                        }
                     }
                     batch.setBatchStarted();
                 }
@@ -161,6 +204,122 @@ public class LoadTestEngineImpl
         }
 
         public void batchCreationEnded(BatchEvent event) {
+            if (event.getBatch() != null &&
+                event.getBatch().getBatchCreator() != null) {
+                UnitTestInstance testInstance = creators.get(event.getBatch().
+                    getBatchCreator());
+                if (testInstance != null) {
+                    UnitTestInstanceRecord record = instances.get(testInstance);
+                    record.setIntanceFinished();
+                    executorService.submit(finishedDetector);
+                }
+            }
+        }
+    }
+
+    protected class TestCaseStateTransitionMonitor
+        implements TestCaseTransitionListener {
+
+        public void testCaseInitialized(TestCaseStateChangedEvent event) {
+        }
+
+        public void testCaseStarted(TestCaseStateChangedEvent event) {
+        }
+
+        public void testCaseFinished(TestCaseStateChangedEvent event) {
+            testCaseIsDone(event);
+        }
+
+        public void testCaseStopped(TestCaseStateChangedEvent event) {
+            testCaseIsDone(event);
+        }
+
+        private void testCaseIsDone(TestCaseStateChangedEvent event) {
+            UnitTestInstanceRecord record =
+                caseRecords.remove(event.getSource());
+            if (record != null) {
+                //TODO add TestCaseInstance for this test case.
+                record.decrementCount();
+                if (record.hasUnitTestInstanceFinished()) {
+                    executorService.submit(finishedDetector);
+                }
+            }
+        }
+    }
+
+    protected class TestCaseStateListenerImpl
+        implements TestCaseStateChangeListener {
+
+        public void stateChanged(TestCaseStateChangedEvent stateChangeEvent) {
+            fireTestCaseStateTransitionEvent(stateChangeEvent);
+        }
+    }
+
+    protected class UnitTestInstanceRecord {
+
+        private int testCaseCount;
+        private TestCaseResult testCaseResult;
+        private boolean instanceFinished;
+
+        public UnitTestInstanceRecord(TestCaseResult result) {
+            if (result == null) {
+                throw new IllegalArgumentException();
+            }
+            testCaseCount = 0;
+            testCaseResult = result;
+            instanceFinished = true;
+        }
+
+        public synchronized void incrementCount() {
+            testCaseCount++;
+        }
+
+        public synchronized void decrementCount() {
+            testCaseCount--;
+        }
+
+        public int getTestCaseCount() {
+            return testCaseCount;
+        }
+
+        public boolean isInstanceFinished() {
+            return instanceFinished;
+        }
+
+        public synchronized void setIntanceFinished() {
+            instanceFinished = true;
+        }
+
+        public TestCaseResult getTestCaseResult() {
+            return testCaseResult;
+        }
+
+        public boolean hasUnitTestInstanceFinished() {
+            return isInstanceFinished() && getTestCaseCount() <= 0;
+        }
+    }
+
+    protected class EngineJobFinishedDetector
+        implements Runnable {
+
+        public void run() {
+            ArrayList<UnitTestInstance> toBeDeletedInstances =
+                new ArrayList<UnitTestInstance>();
+            for (Map.Entry<UnitTestInstance, UnitTestInstanceRecord> instanceRecord : instances.
+                entrySet()) {
+                if (instanceRecord.getValue() != null && instanceRecord.getValue().
+                    hasUnitTestInstanceFinished()) {
+                    toBeDeletedInstances.add(instanceRecord.getKey());
+                }
+            }
+            synchronized (instances) {
+                for (UnitTestInstance instance : toBeDeletedInstances) {
+                    instances.remove(instance);
+                }
+            }
+            if (instances.isEmpty()) {
+                setState(State.FINISHED);
+            }
         }
     }
 }

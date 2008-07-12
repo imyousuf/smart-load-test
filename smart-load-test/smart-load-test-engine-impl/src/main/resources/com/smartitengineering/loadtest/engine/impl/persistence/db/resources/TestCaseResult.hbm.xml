@@ -56,14 +56,6 @@
                 <property name="value" />
             </composite-element>
         </set>
-        <set name="stepConfigurations" table="test_case_result_step_config" inverse="false" lazy="false" outer-join="true" cascade="all">
-            <key column="test_case_result_id" />
-            <composite-element class="com.smartitengineering.loadtest.engine.result.StepConfiguration">
-                <property name="stepNumber" column="step_number" />
-                <property name="delayInMillis" column="delay_in_millis" />
-                <property name="stepSize" column="step_size" />
-            </composite-element>
-        </set>
         <set name="otherInfomations" table="test_case_result_extra_info" inverse="false" lazy="false" outer-join="true" cascade="all">
             <key column="test_case_result_id" />
             <composite-element class="com.smartitengineering.loadtest.engine.result.KeyedInformation">

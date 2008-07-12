@@ -34,15 +34,12 @@ public class TestCaseResult
 
     private String name;
     private String instanceFactoryClassName;
-    private Set<StepConfiguration> stepConfigurations;
     private Set<TestProperty> testProperties;
     private Set<TestCaseInstanceResult> testCaseInstanceResults;
     private Set<KeyedInformation> otherInfomations;
 
     public boolean isValid() {
         if (name != null && instanceFactoryClassName != null 
-            && stepConfigurations != null 
-            && stepConfigurations.size() > 0 
             && testCaseInstanceResults != null 
             && testCaseInstanceResults.size() > 0) {
             for (TestCaseInstanceResult instanceResult : testCaseInstanceResults) {
@@ -106,13 +103,6 @@ public class TestCaseResult
             }
             caseResult.setTestCaseInstanceResults(testCaseInstanceResultsClone);
         }
-        if(stepConfigurations != null) {
-            HashSet<StepConfiguration> configurations = new HashSet<StepConfiguration>();
-            for(StepConfiguration configuration : stepConfigurations) {
-                configurations.add((StepConfiguration) configuration.clone());
-            }
-            caseResult.setStepConfigurations(configurations);
-        }
         return caseResult;
     }
 
@@ -167,14 +157,6 @@ public class TestCaseResult
 
     public void setOtherInfomations(Set<KeyedInformation> otherInfomations) {
         this.otherInfomations = otherInfomations;
-    }
-
-    public Set<StepConfiguration> getStepConfigurations() {
-        return stepConfigurations;
-    }
-
-    public void setStepConfigurations(Set<StepConfiguration> stepConfigurations) {
-        this.stepConfigurations = stepConfigurations;
     }
 
 }

@@ -18,6 +18,7 @@
 package com.smartitengineering.loadtest.engine.impl.management;
 
 import com.smartitengineering.loadtest.engine.TestCase;
+import com.smartitengineering.loadtest.engine.events.BatchEvent;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator.Batch;
 import java.lang.ref.WeakReference;
 import java.util.AbstractMap;
@@ -95,7 +96,10 @@ public class DefaultTestCaseBatchCreator
                 setNextBatchAvailable(false);
                 currentBatch = null;
             }
-
+            Batch batch =
+                getBatch(new AbstractMap.SimpleEntry<ThreadGroup, Map<Thread, TestCase>>(
+                new ThreadGroup(""), new HashMap<Thread, TestCase>()));
+            fireBatchEvent(new BatchEvent(batch));
         }
     }
 }

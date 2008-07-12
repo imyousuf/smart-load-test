@@ -24,10 +24,18 @@ package com.smartitengineering.loadtest.engine.events;
  * @author imyousuf
  */
 public interface TestCaseBatchListener {
+
     /**
      * Notify the observer that batch is available and provide the event to
      * retrieve the source of the event.
      * @param event The source batch creator event.
      */
     public void batchAvailable(BatchEvent event);
+
+    /**
+     * Notify the observer that there is no more batches to be created. Though
+     * the event does have a batch but it is NOT a valid batch.
+     * @param event This represents the batch creator whose task has ended
+     */
+    public void batchCreationEnded(BatchEvent event);
 }

@@ -147,12 +147,22 @@ public abstract class AbstracltTestCaseBatchCreator
     protected void fireBatchEvent() {
         if (isNextBatchAvailable()) {
             BatchEvent batchEvent = new BatchEvent(getNextBatch());
-            for (TestCaseBatchListener listener : batchListeners) {
-                listener.batchAvailable(batchEvent);
-            }
+            fireBatchEvent(batchEvent);
         }
     }
 
+    /**
+     * Fire event for the batch event generated; one of its use cases is when
+     * batch creation has finished
+     * @param event The event to use to notify observers
+     */
+    protected void fireBatchEvent(BatchEvent event) {
+        if (event != null) {
+            for (TestCaseBatchListener listener : batchListeners) {
+                listener.batchAvailable(event);
+            }
+        }
+    }
     protected void setNextBatchAvailable(boolean nextBatchAvailable) {
         this.nextBatchAvailable = nextBatchAvailable;
     }

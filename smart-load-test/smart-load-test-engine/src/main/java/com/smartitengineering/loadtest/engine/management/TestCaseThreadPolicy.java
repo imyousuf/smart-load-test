@@ -18,7 +18,7 @@
  */
 package com.smartitengineering.loadtest.engine.management;
 
-import com.smartitengineering.loadtest.engine.*;
+import com.smartitengineering.loadtest.engine.TestCase;
 
 /**
  * This API Interface represents an thread kill policy maker. It basically is a

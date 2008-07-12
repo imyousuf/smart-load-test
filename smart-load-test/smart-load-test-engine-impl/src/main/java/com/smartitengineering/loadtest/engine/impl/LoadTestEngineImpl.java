@@ -26,11 +26,15 @@ import com.smartitengineering.loadtest.engine.events.TestCaseStateChangedEvent;
 import com.smartitengineering.loadtest.engine.events.TestCaseTransitionListener;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator.Batch;
+import com.smartitengineering.loadtest.engine.result.TestCaseInstanceResult;
 import com.smartitengineering.loadtest.engine.result.TestCaseResult;
+import com.smartitengineering.loadtest.engine.result.TestProperty;
 import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -54,6 +58,7 @@ public class LoadTestEngineImpl
     private ExecutorService executorService;
     private TestCaseTransitionListener transitionListener;
     private TestCaseStateChangeListener caseStateChangeListener;
+    private TestResult result;
 
     @Override
     protected void initializeBeforeCreatedState() {
@@ -114,7 +119,34 @@ public class LoadTestEngineImpl
         finishedDetector = new EngineJobFinishedDetector();
         executorService = Executors.newSingleThreadExecutor();
 
-        //TODO create test result structures
+        result = new TestResult();
+        result.setTestName(testName);
+        HashSet<TestCaseResult> resultSet = new HashSet<TestCaseResult>();
+        result.setTestCaseRunResults(resultSet);
+        for (UnitTestInstance instance : testInstances) {
+            TestCaseResult caseResult = new TestCaseResult();
+            caseResult.setName(instance.getName());
+            caseResult.setInstanceFactoryClassName(instance.
+                getInstanceFactoryClassName());
+            final Properties testProperties = instance.getProperties();
+            Set<TestProperty> testPropertys = new HashSet<TestProperty>(
+                testProperties.size());
+            final Iterator<Object> keySetIterator = testProperties.keySet().
+                iterator();
+            while (keySetIterator.hasNext()) {
+                TestProperty property = new TestProperty();
+                final String key = keySetIterator.next().toString();
+                property.setKey(key);
+                property.setValue(testProperties.getProperty(key));
+                testPropertys.add(property);
+            }
+            caseResult.setTestProperties(testPropertys);
+            caseResult.setTestCaseInstanceResults(
+                new HashSet<TestCaseInstanceResult>());
+            UnitTestInstanceRecord record = new UnitTestInstanceRecord(
+                caseResult);
+            instances.put(instance, record);
+        }
 
         setState(State.INITIALIZED);
     }
@@ -124,6 +156,7 @@ public class LoadTestEngineImpl
         if (getState().getStateStep() != State.INITIALIZED.getStateStep()) {
             throw new IllegalStateException();
         }
+        result.setStartDateTime(new Date());
         getTestCaseThreadManager().startManager();
         for (Map.Entry<TestCaseBatchCreator, UnitTestInstance> creator : creators.
             entrySet()) {
@@ -137,8 +170,12 @@ public class LoadTestEngineImpl
         if (getState().getStateStep() < State.FINISHED.getStateStep()) {
             throw new IllegalStateException();
         }
-        //TODO finalize  test result and return it
-        return null;
+        if (result.isValid()) {
+            return result;
+        }
+        else {
+            throw new IllegalStateException("Test result in invalid state");
+        }
     }
 
     @Override
@@ -238,7 +275,14 @@ public class LoadTestEngineImpl
             UnitTestInstanceRecord record =
                 caseRecords.remove(event.getSource());
             if (record != null) {
-                //TODO add TestCaseInstance for this test case.
+                TestCase testCase = event.getSource();
+                TestCaseInstanceResult instanceResult = new TestCaseInstanceResult();
+                instanceResult.setStartTime(testCase.getStartTimeOfTest());
+                instanceResult.setEndTime(testCase.getEndTimeOfTest());
+                instanceResult.setEndTestCaseState(testCase.getState());
+                instanceResult.setInstanceNumber(record.getTestCaseCount());
+                record.getTestCaseResult().getTestCaseInstanceResults().add(
+                    instanceResult);
                 record.decrementCount();
                 if (record.hasUnitTestInstanceFinished()) {
                     executorService.submit(finishedDetector);
@@ -318,6 +362,7 @@ public class LoadTestEngineImpl
                 }
             }
             if (instances.isEmpty()) {
+                result.setEndDateTime(new Date());
                 setState(State.FINISHED);
             }
         }

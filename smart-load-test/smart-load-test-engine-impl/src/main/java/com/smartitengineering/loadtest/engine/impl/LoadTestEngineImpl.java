@@ -17,10 +17,19 @@
  */
 package com.smartitengineering.loadtest.engine.impl;
 
+import com.smartitengineering.loadtest.engine.TestCase;
 import com.smartitengineering.loadtest.engine.UnitTestInstance;
+import com.smartitengineering.loadtest.engine.events.BatchEvent;
+import com.smartitengineering.loadtest.engine.events.TestCaseBatchListener;
+import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
+import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator.Batch;
 import com.smartitengineering.loadtest.engine.result.TestResult;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
 
 /**
  * Default implementation of the LoadTestEngine
@@ -29,30 +38,129 @@ import java.util.Set;
 public class LoadTestEngineImpl
     extends AbstractLoadTestEngineImpl {
 
+    protected EngineBatchListener engineBatchListener;
+    private Map<TestCaseBatchCreator, UnitTestInstance> creators;
+    private Semaphore semaphore;
+
     @Override
-    protected void rollBackToCreatedState() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    protected void initializeBeforeCreatedState() {
+        setTestInstances(new HashSet<UnitTestInstance>());
+        creators = new HashMap<TestCaseBatchCreator, UnitTestInstance>();
     }
 
     public void init(String testName,
                      Set<UnitTestInstance> testInstances,
                      Properties initProperties)
-        throws IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throws IllegalArgumentException,
+               IllegalStateException {
+        if (getState().getStateStep() != State.CREATED.getStateStep()) {
+            throw new IllegalStateException();
+        }
+        if (testName == null || testName.length() <= 0) {
+            throw new IllegalArgumentException();
+        }
+        if (testInstances == null || testInstances.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        if (initProperties != null && !initProperties.isEmpty()) {
+            if (initProperties.containsKey(PROPS_PERMIT_KEY)) {
+                try {
+                    setPermits(Integer.parseInt(initProperties.getProperty(
+                        PROPS_PERMIT_KEY)));
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                    setPermits(-1);
+                }
+            }
+        }
+
+        engineBatchListener = new EngineBatchListener();
+        semaphore = new Semaphore(getPermits());
+        setTestName(testName);
+        getTestInstances().addAll(testInstances);
+        for (UnitTestInstance instance : getTestInstances()) {
+            try {
+                TestCaseBatchCreator creator = getTestCaseBatchCreatorInstance();
+                creator.init(instance);
+                creator.addBatchCreatorListener(engineBatchListener);
+                creators.put(creator, instance);
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        }
+        setState(State.INITIALIZED);
     }
 
     public void start()
         throws IllegalStateException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (getState().getStateStep() != State.INITIALIZED.getStateStep()) {
+            throw new IllegalStateException();
+        }
+        getTestCaseThreadManager().startManager();
+        for (Map.Entry<TestCaseBatchCreator, UnitTestInstance> creator : creators.
+            entrySet()) {
+            creator.getKey().start();
+        }
+        //TODO implement other steps
+        setState(State.STARTED);
     }
 
     public TestResult getTestResult()
         throws IllegalStateException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (getState().getStateStep() < State.FINISHED.getStateStep()) {
+            throw new IllegalStateException();
+        }
+        //TODO implement test result
+        return null;
     }
 
     @Override
-    protected void initializeBeforeCreatedState() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    protected void rollBackToCreatedState() {
+        getTestInstances().clear();
+        setTestName(null);
+        semaphore = null;
+        engineBatchListener = null;
+    }
+
+    protected class EngineBatchListener
+        implements TestCaseBatchListener {
+
+        public void batchAvailable(BatchEvent event) {
+            boolean acquired = false;
+            try {
+                semaphore.acquire();
+                acquired = true;
+                Batch batch;
+                Map.Entry<ThreadGroup, Map<Thread, TestCase>> batchThreads;
+                batch = event.getBatch();
+                if (batch != null) {
+                    batchThreads = batch.getBatch();
+                    for (Map.Entry<Thread, TestCase> thread : batchThreads.
+                        getValue().entrySet()) {
+                        //TODO add test case listeners to monitor the test cases
+                        thread.getKey().start();
+                        getTestCaseThreadManager().manageThread(thread.getKey(),
+                            thread.getValue());
+                    }
+                    batch.setBatchStarted();
+                }
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            finally {
+                if (acquired) {
+                    semaphore.release();
+                    acquired = false;
+                }
+            }
+        }
+
+        public void batchCreationEnded(BatchEvent event) {
+        }
     }
 }

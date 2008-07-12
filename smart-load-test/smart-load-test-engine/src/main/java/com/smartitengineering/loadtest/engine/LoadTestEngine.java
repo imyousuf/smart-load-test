@@ -53,7 +53,7 @@ public interface LoadTestEngine {
      * @throws IllegalArgumentException If the testName is null or no unit
      *                                  instances specified and/or depends on
      *                                  the specification of the implementor
-     * @throws IllegalStateException If engine is not initialized 
+     * @throws IllegalStateException If engine is not in created state
      *                                  or implementations specific
      */
     public void init(String testName,

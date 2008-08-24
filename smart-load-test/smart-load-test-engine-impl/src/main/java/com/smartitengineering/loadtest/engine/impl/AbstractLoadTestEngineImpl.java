@@ -279,4 +279,12 @@ public abstract class AbstractLoadTestEngineImpl
     public void setPermits(int permits) {
         this.permits = permits;
     }
+
+    protected Set<LoadTestEngineStateChangeListener> getEngineStateListeners() {
+        return engineStateListeners;
+    }
+
+    protected Set<TestCaseTransitionListener> getTestCaseTransitionListeners() {
+        return testCaseTransitionListeners;
+    }
 }

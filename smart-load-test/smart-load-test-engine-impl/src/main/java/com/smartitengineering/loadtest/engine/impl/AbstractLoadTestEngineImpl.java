@@ -162,8 +162,13 @@ public abstract class AbstractLoadTestEngineImpl
             return;
         }
         try {
-            batchCreatorClass = (Class<? extends TestCaseBatchCreator>) Class.
-                forName(batchCreator);
+            final Class<?> clazz = Class.forName(batchCreator);
+            if(TestCaseBatchCreator.class.isAssignableFrom(clazz)) {
+                batchCreatorClass = (Class<? extends TestCaseBatchCreator>) clazz;
+            }
+            else {
+                throw new ClassCastException();
+            }
         }
         catch (Exception ex) {
             throw new IllegalArgumentException(ex);

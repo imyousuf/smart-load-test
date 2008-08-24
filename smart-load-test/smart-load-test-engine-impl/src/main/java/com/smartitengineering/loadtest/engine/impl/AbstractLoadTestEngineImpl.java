@@ -187,6 +187,18 @@ public abstract class AbstractLoadTestEngineImpl
         if (newState == null) {
             return;
         }
+        switch(newState) {
+            case CREATED:
+                break;
+            case INITIALIZED:
+                break;
+            case STARTED:
+                startDate = new Date();
+                break;
+            case FINISHED:
+                endDate = new Date();
+                break;
+        }
         LoadTestEngine.State oldState = getState();
         this.engineState = newState;
         LoadTestEngineStateChangedEvent stateChangedEvent =

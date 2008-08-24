@@ -69,7 +69,7 @@ public class XMLPersistenceEngineImplTest
                     return LoadTestEngine.State.FINISHED;
                 }
 
-                public void reinstanteCreatedState() {
+                public void reinstantiateCreatedState() {
                     throw new UnsupportedOperationException("Not supported yet.");
                 }
 

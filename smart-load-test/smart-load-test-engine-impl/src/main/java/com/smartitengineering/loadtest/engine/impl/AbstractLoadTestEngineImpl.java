@@ -68,7 +68,7 @@ public abstract class AbstractLoadTestEngineImpl
         return engineState;
     }
 
-    public synchronized void reinstanteCreatedState() {
+    public synchronized void reinstantiateCreatedState() {
         rollBackToCreatedState();
         setState(LoadTestEngine.State.CREATED);
     }

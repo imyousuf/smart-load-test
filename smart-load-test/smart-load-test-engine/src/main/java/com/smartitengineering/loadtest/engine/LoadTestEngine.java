@@ -34,7 +34,7 @@ import java.util.Set;
  * Thread manager should be provided so that it can manage all threads created
  * by the engine. Once all information are available start operations should be
  * used to start the testing. In order to reuse the engine please use the
- * reinstanteCreatedState operation. Test result is available only once the
+ * reinstantiateCreatedState operation. Test result is available only once the
  * test engine finishes its testing operation. Use the appropriate listeners to
  * get updates on test engine's state and its test cases states.
  * @author imyousuf
@@ -74,7 +74,7 @@ public interface LoadTestEngine {
      * be reused for another test. It will ensure that the same engine can be
      * used to either repeast the test or perform new set of tests.
      */
-    public void reinstanteCreatedState();
+    public void reinstantiateCreatedState();
 
     /**
      * Starts the engine; that is it starts executing the test instances as they

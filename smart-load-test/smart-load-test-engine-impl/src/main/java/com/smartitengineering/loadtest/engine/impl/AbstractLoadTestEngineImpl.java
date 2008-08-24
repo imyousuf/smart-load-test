@@ -38,9 +38,9 @@ import java.util.Set;
  */
 public abstract class AbstractLoadTestEngineImpl
     implements LoadTestEngine {
-    
-    public static final String PROPS_PERMIT_KEY = "com.smartitengineering.loadtest.engine.loadTestEngine.concurrentBatches";
 
+    public static final String PROPS_PERMIT_KEY =
+        "com.smartitengineering.loadtest.engine.loadTestEngine.concurrentBatches";
     private LoadTestEngine.State engineState;
     private Date startDate;
     private Date endDate;
@@ -142,6 +142,10 @@ public abstract class AbstractLoadTestEngineImpl
 
     public void setTestCaseBatchCreator(
         Class<? extends TestCaseBatchCreator> batchCreator) {
+        if (getState().getStateStep() >= LoadTestEngine.State.INITIALIZED.
+            getStateStep()) {
+            throw new IllegalStateException();
+        }
         if (batchCreator == null) {
             return;
         }
@@ -150,6 +154,10 @@ public abstract class AbstractLoadTestEngineImpl
 
     public void setTestCaseBatchCreator(String batchCreator)
         throws IllegalArgumentException {
+        if (getState().getStateStep() >= LoadTestEngine.State.INITIALIZED.
+            getStateStep()) {
+            throw new IllegalStateException();
+        }
         if (batchCreator == null) {
             return;
         }
@@ -187,7 +195,7 @@ public abstract class AbstractLoadTestEngineImpl
         if (newState == null) {
             return;
         }
-        switch(newState) {
+        switch (newState) {
             case CREATED:
                 break;
             case INITIALIZED:
@@ -270,7 +278,7 @@ public abstract class AbstractLoadTestEngineImpl
     }
 
     public int getPermits() {
-        if(permits < 1) {
+        if (permits < 1) {
             permits = 1;
         }
         return permits;

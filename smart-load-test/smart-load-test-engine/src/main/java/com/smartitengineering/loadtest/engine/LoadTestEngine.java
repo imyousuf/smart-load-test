@@ -167,9 +167,12 @@ public interface LoadTestEngine {
      * must have no-args constructor.
      *
      * @param batchCreator
+     * @throws java.lang.IllegalStateException Batch creator can only be set
+     *                                          before init is invoked
      */
     public void setTestCaseBatchCreator(
-        Class<? extends TestCaseBatchCreator> batchCreator);
+        Class<? extends TestCaseBatchCreator> batchCreator)
+        throws IllegalStateException;
 
     /**
      * Sets the fully qualified class for the batch creator responsible for
@@ -178,9 +181,11 @@ public interface LoadTestEngine {
      * @param batchCreator The fully qualified batch creator class name
      * @throws java.lang.IllegalArgumentException If string is not a valid batch
      *                                            creator
+     * @throws java.lang.IllegalStateException Batch creator can only be set
+     *                                          before init is invoked
      */
     public void setTestCaseBatchCreator(String batchCreator)
-        throws IllegalArgumentException;
+        throws IllegalArgumentException, IllegalStateException;
 
     /**
      * Retreive the batch creator class for this test case engine. It is to be

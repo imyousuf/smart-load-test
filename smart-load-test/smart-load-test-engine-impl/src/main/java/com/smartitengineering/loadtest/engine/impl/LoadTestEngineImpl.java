@@ -156,13 +156,13 @@ public class LoadTestEngineImpl
         if (getState().getStateStep() != State.INITIALIZED.getStateStep()) {
             throw new IllegalStateException();
         }
-        result.setStartDateTime(new Date());
         getTestCaseThreadManager().startManager();
         for (Map.Entry<TestCaseBatchCreator, UnitTestInstance> creator : creators.
             entrySet()) {
             creator.getKey().start();
         }
         setState(State.STARTED);
+        result.setStartDateTime(getStartTime());
     }
 
     public TestResult getTestResult()
@@ -362,8 +362,8 @@ public class LoadTestEngineImpl
                 }
             }
             if (instances.isEmpty()) {
-                result.setEndDateTime(new Date());
                 setState(State.FINISHED);
+                result.setEndDateTime(getEndTime());
             }
         }
     }

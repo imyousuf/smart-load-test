@@ -101,7 +101,11 @@ public abstract class AbstractLoadTestEngineImpl
 
     public long getDuration()
         throws IllegalStateException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (getState().getStateStep() < LoadTestEngine.State.FINISHED.
+            getStateStep()) {
+            throw new IllegalStateException();
+        }
+        return getEndTime().getTime() - getStartTime().getTime();
     }
 
     public void addLoadTestEngineStateChangeListener(

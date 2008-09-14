@@ -17,6 +17,8 @@
  */
 package com.smartitengineering.loadtest.engine.impl;
 
+import java.util.Map;
+
 /**
  *
  * @author imyousuf
@@ -45,5 +47,10 @@ public class DummyTestCase
 
     @Override
     protected void doInitializingTasksBeforeCreatedState() {
+    }
+
+    @Override
+    public Map<String, String> getExtraInfo() {
+        return null;
     }
 }

@@ -20,6 +20,7 @@ package com.smartitengineering.loadtest.engine.impl;
 import com.smartitengineering.loadtest.engine.events.TestCaseStateChangeListener;
 import com.smartitengineering.loadtest.engine.events.TestCaseStateChangedEvent;
 import java.util.ArrayList;
+import java.util.Map;
 import junit.framework.TestCase;
 
 /**
@@ -406,6 +407,60 @@ public class AbstractTestCaseTest
                     event.getNewValue());
             }
             i++;
+        }
+    }
+    
+    public void testGetTestCaseResultExtraInfo() {
+        com.smartitengineering.loadtest.engine.TestCase testCase =
+            getTestCase(1);
+        try {
+            testCase.getTestCaseResultExtraInfo();
+            fail("Extra Info should be retrievable!");
+        }
+        catch(IllegalStateException stateException) {
+            //Should get this
+        }
+        catch(Exception exception) {
+            fail(exception.getMessage());
+        }
+        testCase.initTestCase(null);
+        try {
+            testCase.getTestCaseResultExtraInfo();
+            fail("Extra Info should be retrievable!");
+        }
+        catch(IllegalStateException stateException) {
+            //Should get this
+        }
+        catch(Exception exception) {
+            fail(exception.getMessage());
+        }
+        Thread thread = new Thread(testCase);
+        thread.start();
+        try {
+            testCase.getTestCaseResultExtraInfo();
+            fail("Extra Info should be retrievable!");
+        }
+        catch(IllegalStateException stateException) {
+            //Should get this
+        }
+        catch(Exception exception) {
+            fail(exception.getMessage());
+        }
+        try {
+            thread.join();
+        }
+        catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        try {
+            Map<String, String> map = testCase.getTestCaseResultExtraInfo();
+            assertNull(map);
+        }
+        catch(IllegalStateException stateException) {
+            fail("Extra Info should be retrievable!");
+        }
+        catch(Exception exception) {
+            fail(exception.getMessage());
         }
     }
 

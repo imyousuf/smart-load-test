@@ -20,6 +20,7 @@ package com.smartitengineering.loadtest.engine;
 
 import com.smartitengineering.loadtest.engine.events.TestCaseStateChangeListener;
 import java.util.Date;
+import java.util.Map;
 
 /**
  *
@@ -95,6 +96,16 @@ public interface TestCase
      * @param params Parameters used for initializing
      */
     public <InitParam extends Object> void initTestCase(InitParam... params);
+    
+    /**
+     * If the test case wants to provide any extra info for the test case it can
+     * provide it through this operations. Any operation responsible to creating
+     * TestCaseResult HAS to to invoke this method once at least.
+     * @return Extra result properties to be used by result processors. Might
+     *          return null if nothing to return
+     * @throws java.lang.IllegalStateException If not stopped or finished.
+     */
+    public Map<String, String> getTestCaseResultExtraInfo();
 
     public void addTestCaseStateChangeListener(
         TestCaseStateChangeListener changeListener);

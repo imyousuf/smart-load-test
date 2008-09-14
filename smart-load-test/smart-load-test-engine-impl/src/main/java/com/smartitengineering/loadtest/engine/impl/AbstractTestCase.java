@@ -22,6 +22,7 @@ import com.smartitengineering.loadtest.engine.events.TestCaseStateChangeListener
 import com.smartitengineering.loadtest.engine.events.TestCaseStateChangedEvent;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -114,7 +115,7 @@ public abstract class AbstractTestCase
         }
     }
 
-    public void run() {
+    public final void run() {
         if (getState().getStateStep() < State.INITIALIZED.getStateStep()) {
             throw new IllegalStateException();
         }
@@ -131,6 +132,15 @@ public abstract class AbstractTestCase
             ex.printStackTrace();
         }
     }
+    
+    public final Map<String, String> getTestCaseResultExtraInfo() {
+        if(getState().getStateStep() < State.FINISHED.getStateStep()) {
+            throw new IllegalStateException();
+        }
+        return getExtraInfo();
+    }
+    
+    public abstract Map<String, String> getExtraInfo();
 
     protected abstract void extendRun()
         throws Exception;

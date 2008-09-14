@@ -26,12 +26,12 @@ import com.smartitengineering.loadtest.engine.events.TestCaseStateChangedEvent;
 import com.smartitengineering.loadtest.engine.events.TestCaseTransitionListener;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator.Batch;
+import com.smartitengineering.loadtest.engine.result.KeyedInformation;
 import com.smartitengineering.loadtest.engine.result.TestCaseInstanceResult;
 import com.smartitengineering.loadtest.engine.result.TestCaseResult;
 import com.smartitengineering.loadtest.engine.result.TestProperty;
 import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -281,6 +281,18 @@ public class LoadTestEngineImpl
                 instanceResult.setEndTime(testCase.getEndTimeOfTest());
                 instanceResult.setEndTestCaseState(testCase.getState());
                 instanceResult.setInstanceNumber(record.getTestCaseCount());
+                Map<String, String> extraInfo = testCase.getTestCaseResultExtraInfo();
+                if(extraInfo != null) {
+                    Set<Map.Entry<String, String>> entries = extraInfo.entrySet();
+                    Set<KeyedInformation> otherInfo = new HashSet<KeyedInformation>(entries.size());
+                    for (Map.Entry<String, String> extraInfoEntry : entries) {
+                        KeyedInformation information = new KeyedInformation();
+                        information.setKey(extraInfoEntry.getKey());
+                        information.setValue(extraInfoEntry.getValue());
+                        otherInfo.add(information);
+                    }
+                    instanceResult.setOtherInfomations(otherInfo);
+                }
                 record.getTestCaseResult().getTestCaseInstanceResults().add(
                     instanceResult);
                 record.decrementCount();

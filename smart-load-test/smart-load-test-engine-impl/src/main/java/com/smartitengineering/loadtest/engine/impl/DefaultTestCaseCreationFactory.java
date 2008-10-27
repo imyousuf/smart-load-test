@@ -66,7 +66,6 @@ public class DefaultTestCaseCreationFactory
         TestCase type = null;
         Class<? extends TestCase> testCaseClass;
         testCaseClass = checkForNewTestCaseClass(properties);
-        System.out.println("Case: " + testCaseClass);
         if (testCaseClass != null) {
             try {
                 type = testCaseClass.getConstructor(Properties.class).

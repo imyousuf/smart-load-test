@@ -18,6 +18,7 @@
 package com.smartitengineering.loadtest.engine.impl;
 
 import java.util.Map;
+import java.util.Properties;
 
 /**
  *
@@ -27,12 +28,26 @@ public class DummyTestCase
     extends AbstractTestCase {
 
     private int sleepTime = 10;
+    
+    public static final String SLEEP_TIME_PROP = "com.smartitengineering.loadtest.dummyTestCase.sleep";
 
     public DummyTestCase() {
     }
 
     public DummyTestCase(int sleepTime) {
         this.sleepTime = sleepTime;
+    }
+    
+    public DummyTestCase(Properties properties) {
+        if(properties != null && properties.contains(SLEEP_TIME_PROP)) {
+            String time = properties.getProperty(SLEEP_TIME_PROP);
+            try {
+                sleepTime = Integer.parseInt(time);
+            }
+            catch(Exception ex) {
+                sleepTime = 10;
+            }
+        }
     }
 
     @Override

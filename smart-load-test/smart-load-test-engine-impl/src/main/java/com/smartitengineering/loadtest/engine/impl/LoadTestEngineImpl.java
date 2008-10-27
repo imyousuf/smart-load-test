@@ -100,17 +100,6 @@ public class LoadTestEngineImpl
         setTestName(testName);
 
         getTestInstances().addAll(testInstances);
-        for (UnitTestInstance instance : getTestInstances()) {
-            try {
-                TestCaseBatchCreator creator = getTestCaseBatchCreatorInstance();
-                creator.init(instance);
-                creator.addBatchCreatorListener(engineBatchListener);
-                creators.put(creator, instance);
-            }
-            catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
         transitionListener = new TestCaseStateTransitionMonitor();
         addTestCaseTransitionListener(transitionListener);
         caseStateChangeListener = new TestCaseStateListenerImpl();
@@ -124,12 +113,21 @@ public class LoadTestEngineImpl
         HashSet<TestCaseResult> resultSet = new HashSet<TestCaseResult>();
         result.setTestCaseRunResults(resultSet);
         for (UnitTestInstance instance : testInstances) {
+            try {
+                TestCaseBatchCreator creator = getTestCaseBatchCreatorInstance();
+                creator.init(instance);
+                creator.addBatchCreatorListener(engineBatchListener);
+                creators.put(creator, instance);
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
             TestCaseResult caseResult = new TestCaseResult();
             caseResult.setName(instance.getName());
             caseResult.setInstanceFactoryClassName(instance.
                 getInstanceFactoryClassName());
             final Properties testProperties = instance.getProperties();
-            Set<TestProperty> testPropertys = new HashSet<TestProperty>(
+            Set<TestProperty> testPropertySet = new HashSet<TestProperty>(
                 testProperties.size());
             final Iterator<Object> keySetIterator = testProperties.keySet().
                 iterator();
@@ -138,9 +136,9 @@ public class LoadTestEngineImpl
                 final String key = keySetIterator.next().toString();
                 property.setKey(key);
                 property.setValue(testProperties.getProperty(key));
-                testPropertys.add(property);
+                testPropertySet.add(property);
             }
-            caseResult.setTestProperties(testPropertys);
+            caseResult.setTestProperties(testPropertySet);
             caseResult.setTestCaseInstanceResults(
                 new HashSet<TestCaseInstanceResult>());
             UnitTestInstanceRecord record = new UnitTestInstanceRecord(

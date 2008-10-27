@@ -94,57 +94,10 @@ public class LoadTestEngineImpl
                 }
             }
         }
-
-        engineBatchListener = new EngineBatchListener();
-        semaphore = new Semaphore(getPermits());
-        setTestName(testName);
-
-        getTestInstances().addAll(testInstances);
-        transitionListener = new TestCaseStateTransitionMonitor();
-        addTestCaseTransitionListener(transitionListener);
-        caseStateChangeListener = new TestCaseStateListenerImpl();
-        caseRecords = new HashMap<TestCase, UnitTestInstanceRecord>();
-
-        finishedDetector = new EngineJobFinishedDetector();
-        executorService = Executors.newSingleThreadExecutor();
-
-        result = new TestResult();
-        result.setTestName(testName);
-        HashSet<TestCaseResult> resultSet = new HashSet<TestCaseResult>();
-        result.setTestCaseRunResults(resultSet);
-        for (UnitTestInstance instance : testInstances) {
-            try {
-                TestCaseBatchCreator creator = getTestCaseBatchCreatorInstance();
-                creator.init(instance);
-                creator.addBatchCreatorListener(engineBatchListener);
-                creators.put(creator, instance);
-            }
-            catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            TestCaseResult caseResult = new TestCaseResult();
-            caseResult.setName(instance.getName());
-            caseResult.setInstanceFactoryClassName(instance.
-                getInstanceFactoryClassName());
-            final Properties testProperties = instance.getProperties();
-            Set<TestProperty> testPropertySet = new HashSet<TestProperty>(
-                testProperties.size());
-            final Iterator<Object> keySetIterator = testProperties.keySet().
-                iterator();
-            while (keySetIterator.hasNext()) {
-                TestProperty property = new TestProperty();
-                final String key = keySetIterator.next().toString();
-                property.setKey(key);
-                property.setValue(testProperties.getProperty(key));
-                testPropertySet.add(property);
-            }
-            caseResult.setTestProperties(testPropertySet);
-            caseResult.setTestCaseInstanceResults(
-                new HashSet<TestCaseInstanceResult>());
-            UnitTestInstanceRecord record = new UnitTestInstanceRecord(
-                caseResult);
-            instances.put(instance, record);
-        }
+        initializeInternals(testName);
+        initializeFinishDetector();
+        initializeResult(testName);
+        initializeTestInstances(testInstances);
 
         setState(State.INITIALIZED);
     }
@@ -183,6 +136,84 @@ public class LoadTestEngineImpl
         semaphore = null;
         engineBatchListener = null;
         finishedDetector = null;
+    }
+
+    private void initializeFinishDetector() {
+
+        finishedDetector =
+            new EngineJobFinishedDetector();
+        executorService =
+            Executors.newSingleThreadExecutor();
+    }
+
+    private void initializeInternals(String testName) {
+
+        engineBatchListener =
+            new EngineBatchListener();
+        semaphore = new Semaphore(getPermits());
+        transitionListener =
+            new TestCaseStateTransitionMonitor();
+        caseStateChangeListener =
+            new TestCaseStateListenerImpl();
+        caseRecords =
+            new HashMap<TestCase, UnitTestInstanceRecord>();
+        setTestName(testName);
+        addTestCaseTransitionListener(transitionListener);
+    }
+
+    private void initializeResult(String testName) {
+
+        result = new TestResult();
+        result.setTestName(testName);
+        HashSet<TestCaseResult> resultSet =
+            new HashSet<TestCaseResult>();
+        result.setTestCaseRunResults(resultSet);
+    }
+
+    private void initializeTestInstances(Set<UnitTestInstance> testInstances) {
+
+        getTestInstances().addAll(testInstances);
+        for (UnitTestInstance instance : getTestInstances()) {
+            registerToBatchCreator(instance);
+            createTestCaseResult(instance);
+        }
+    }
+
+    private void createTestCaseResult(UnitTestInstance instance) {
+        TestCaseResult caseResult =
+            new TestCaseResult();
+        caseResult.setName(instance.getName());
+        caseResult.setInstanceFactoryClassName(instance.getInstanceFactoryClassName());
+        final Properties testProperties = instance.getProperties();
+        Set<TestProperty> testPropertySet =
+            new HashSet<TestProperty>(testProperties.size());
+        final Iterator<Object> keySetIterator =
+            testProperties.keySet().iterator();
+        while (keySetIterator.hasNext()) {
+            TestProperty property =
+                new TestProperty();
+            final String key = keySetIterator.next().toString();
+            property.setKey(key);
+            property.setValue(testProperties.getProperty(key));
+            testPropertySet.add(property);
+        }
+        caseResult.setTestProperties(testPropertySet);
+        caseResult.setTestCaseInstanceResults(new HashSet<TestCaseInstanceResult>());
+        UnitTestInstanceRecord record =
+            new UnitTestInstanceRecord(caseResult);
+        instances.put(instance, record);
+    }
+
+    private void registerToBatchCreator(UnitTestInstance instance) {
+        try {
+            TestCaseBatchCreator creator = getTestCaseBatchCreatorInstance();
+            creator.init(instance);
+            creator.addBatchCreatorListener(engineBatchListener);
+            creators.put(creator, instance);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     protected class EngineBatchListener

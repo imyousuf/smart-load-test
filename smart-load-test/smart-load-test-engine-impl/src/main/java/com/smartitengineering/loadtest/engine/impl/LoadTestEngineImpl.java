@@ -32,6 +32,7 @@ import com.smartitengineering.loadtest.engine.result.TestCaseResult;
 import com.smartitengineering.loadtest.engine.result.TestProperty;
 import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -51,7 +52,7 @@ public class LoadTestEngineImpl
 
     protected EngineBatchListener engineBatchListener;
     private Map<TestCaseBatchCreator, UnitTestInstance> creators;
-    private Map<UnitTestInstance, UnitTestInstanceRecord> instances;
+    private Map<UnitTestInstance, UnitTestInstanceRecord> instanceRecords;
     private Map<TestCase, UnitTestInstanceRecord> caseRecords;
     private Semaphore semaphore;
     private EngineJobFinishedDetector finishedDetector;
@@ -64,7 +65,7 @@ public class LoadTestEngineImpl
     protected void initializeBeforeCreatedState() {
         setTestInstances(new HashSet<UnitTestInstance>());
         creators = new HashMap<TestCaseBatchCreator, UnitTestInstance>();
-        instances = new HashMap<UnitTestInstance, UnitTestInstanceRecord>();
+        instanceRecords = new HashMap<UnitTestInstance, UnitTestInstanceRecord>();
     }
 
     public void init(String testName,
@@ -108,9 +109,9 @@ public class LoadTestEngineImpl
             throw new IllegalStateException();
         }
         getTestCaseThreadManager().startManager();
-        for (Map.Entry<TestCaseBatchCreator, UnitTestInstance> creator : creators.
-            entrySet()) {
-            creator.getKey().start();
+        final Set<TestCaseBatchCreator> allBatchCreators = getAllBatchCreators();
+        for (TestCaseBatchCreator creator : allBatchCreators) {
+            creator.start();
         }
         setState(State.STARTED);
         result.setStartDateTime(getStartTime());
@@ -201,7 +202,7 @@ public class LoadTestEngineImpl
         caseResult.setTestCaseInstanceResults(new HashSet<TestCaseInstanceResult>());
         UnitTestInstanceRecord record =
             new UnitTestInstanceRecord(caseResult);
-        instances.put(instance, record);
+        instanceRecords.put(instance, record);
     }
 
     private void registerToBatchCreator(UnitTestInstance instance) {
@@ -245,7 +246,7 @@ public class LoadTestEngineImpl
                                     creators.get(batchCreator);
                                 if (testInstance != null) {
                                     final UnitTestInstanceRecord instanceRecord =
-                                        instances.get(testInstance);
+                                        instanceRecords.get(testInstance);
                                     if (instanceRecord != null) {
                                         instanceRecord.incrementCount();
                                         caseRecords.put(thread.getValue(),
@@ -275,7 +276,7 @@ public class LoadTestEngineImpl
                 UnitTestInstance testInstance = creators.get(event.getBatch().
                     getBatchCreator());
                 if (testInstance != null) {
-                    UnitTestInstanceRecord record = instances.get(testInstance);
+                    UnitTestInstanceRecord record = instanceRecords.get(testInstance);
                     record.setIntanceFinished();
                     executorService.submit(finishedDetector);
                 }
@@ -390,19 +391,19 @@ public class LoadTestEngineImpl
         public void run() {
             ArrayList<UnitTestInstance> toBeDeletedInstances =
                 new ArrayList<UnitTestInstance>();
-            for (Map.Entry<UnitTestInstance, UnitTestInstanceRecord> instanceRecord : instances.
+            for (Map.Entry<UnitTestInstance, UnitTestInstanceRecord> instanceRecord : instanceRecords.
                 entrySet()) {
                 if (instanceRecord.getValue() != null && instanceRecord.getValue().
                     hasUnitTestInstanceFinished()) {
                     toBeDeletedInstances.add(instanceRecord.getKey());
                 }
             }
-            synchronized (instances) {
+            synchronized (instanceRecords) {
                 for (UnitTestInstance instance : toBeDeletedInstances) {
-                    instances.remove(instance);
+                    instanceRecords.remove(instance);
                 }
             }
-            if (instances.isEmpty()) {
+            if (instanceRecords.isEmpty()) {
                 setState(State.FINISHED);
                 result.setEndDateTime(getEndTime());
             }
@@ -424,7 +425,11 @@ public class LoadTestEngineImpl
 
     @Override
     protected Set<TestCaseBatchCreator> getAllBatchCreators() {
-        return creators.keySet();
+        final Set<TestCaseBatchCreator> allCreators = creators.keySet();
+        if(allCreators == null) {
+            return Collections.emptySet();
+        }
+        return allCreators;
     }
 
     @Override

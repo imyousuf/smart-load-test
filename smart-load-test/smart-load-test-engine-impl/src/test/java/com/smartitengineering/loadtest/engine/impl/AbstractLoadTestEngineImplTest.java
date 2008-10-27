@@ -34,6 +34,7 @@ import com.smartitengineering.loadtest.engine.management.TestCaseThreadManager;
 import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import junit.framework.TestCase;
@@ -565,6 +566,21 @@ public class AbstractLoadTestEngineImplTest
 
         public TestResult getTestResult()
             throws IllegalStateException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        protected TestCaseBatchCreator getBatchCreatorForTestInstance(UnitTestInstance instance) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        protected Set<TestCaseBatchCreator> getAllBatchCreators() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        protected Map<UnitTestInstance, TestCaseBatchCreator> getAllBatchCreatorsForTestInstances() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }

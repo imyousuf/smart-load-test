@@ -18,6 +18,7 @@
 package com.smartitengineering.loadtest.engine;
 
 import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangeListener;
+import com.smartitengineering.loadtest.engine.events.TestCaseBatchListener;
 import com.smartitengineering.loadtest.engine.events.TestCaseTransitionListener;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
 import com.smartitengineering.loadtest.engine.management.TestCaseThreadManager;
@@ -162,6 +163,21 @@ public interface LoadTestEngine {
         TestCaseTransitionListener listener);
 
     /**
+     * Add listener to monitor the batch creation events. It is to be noted that
+     * since load test engine's batch listeners will be the first one's to be
+     * added, creation of batch will mainly be on to it and rest of the
+     * listeners should limit themselves to monitor purpose only.
+     * @param listener Observer for test case batch creation
+     */
+    public void addTestCaseBatchListener(final TestCaseBatchListener listener);
+
+    /**
+     * Removes observer from batch creators iff it was added.
+     * @param listener Observer to be removed
+     */
+    public void removeTestCaseBatchListener(final TestCaseBatchListener listener);
+
+    /**
      * Sets the batch creator class that is responsible for creating batches of
      * test case and thread tor execute. Please note that the batch creator
      * must have no-args constructor.
@@ -185,7 +201,8 @@ public interface LoadTestEngine {
      *                                          before init is invoked
      */
     public void setTestCaseBatchCreator(String batchCreator)
-        throws IllegalArgumentException, IllegalStateException;
+        throws IllegalArgumentException,
+               IllegalStateException;
 
     /**
      * Retreive the batch creator class for this test case engine. It is to be

@@ -408,4 +408,32 @@ public class LoadTestEngineImpl
             }
         }
     }
+
+    @Override
+    protected TestCaseBatchCreator getBatchCreatorForTestInstance(UnitTestInstance instance) {
+        if(instance == null) {
+            return null;
+        }
+        for (Map.Entry<TestCaseBatchCreator, UnitTestInstance> entry : creators.entrySet()) {
+            if(entry.getValue().equals(instance)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected Set<TestCaseBatchCreator> getAllBatchCreators() {
+        return creators.keySet();
+    }
+
+    @Override
+    protected Map<UnitTestInstance, TestCaseBatchCreator> getAllBatchCreatorsForTestInstances() {
+        Map<UnitTestInstance, TestCaseBatchCreator> resultMap 
+            = new HashMap<UnitTestInstance, TestCaseBatchCreator>();
+        for (Map.Entry<TestCaseBatchCreator, UnitTestInstance> entry : creators.entrySet()) {
+            resultMap.put(entry.getValue(), entry.getKey());
+        }
+        return resultMap;
+    }
 }

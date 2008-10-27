@@ -22,6 +22,7 @@ import com.smartitengineering.loadtest.engine.TestCase;
 import com.smartitengineering.loadtest.engine.UnitTestInstance;
 import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangeListener;
 import com.smartitengineering.loadtest.engine.events.LoadTestEngineStateChangedEvent;
+import com.smartitengineering.loadtest.engine.events.TestCaseBatchListener;
 import com.smartitengineering.loadtest.engine.events.TestCaseStateChangedEvent;
 import com.smartitengineering.loadtest.engine.events.TestCaseTransitionListener;
 import com.smartitengineering.loadtest.engine.impl.management.ManagementFactory;
@@ -29,6 +30,7 @@ import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
 import com.smartitengineering.loadtest.engine.management.TestCaseThreadManager;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -47,6 +49,7 @@ public abstract class AbstractLoadTestEngineImpl
     private Set<UnitTestInstance> testInstances;
     private Set<LoadTestEngineStateChangeListener> engineStateListeners;
     private Set<TestCaseTransitionListener> testCaseTransitionListeners;
+    private Set<TestCaseBatchListener> batchListeners;
     private Class<? extends TestCaseBatchCreator> batchCreatorClass;
     private TestCaseThreadManager threadManager;
     private String testName;
@@ -55,6 +58,7 @@ public abstract class AbstractLoadTestEngineImpl
     protected AbstractLoadTestEngineImpl() {
         testCaseTransitionListeners = new HashSet<TestCaseTransitionListener>();
         engineStateListeners = new HashSet<LoadTestEngineStateChangeListener>();
+        batchListeners = new HashSet<TestCaseBatchListener>();
         initializeBeforeCreatedState();
         setState(LoadTestEngine.State.CREATED);
     }
@@ -140,6 +144,34 @@ public abstract class AbstractLoadTestEngineImpl
         testCaseTransitionListeners.remove(listener);
     }
 
+    public void addTestCaseBatchListener(TestCaseBatchListener listener) {
+        if(listener == null) {
+            return;
+        }
+        if(!batchListeners.contains(listener)) {
+            batchListeners.add(listener);
+            final Set<TestCaseBatchCreator> allBatchCreators =
+                getAllBatchCreators();
+            for(TestCaseBatchCreator creator : allBatchCreators) {
+                creator.addBatchCreatorListener(listener);
+            }
+        }
+    }
+
+    public void removeTestCaseBatchListener(TestCaseBatchListener listener) {
+        if(listener == null) {
+            return;
+        }
+        if(batchListeners.contains(listener)) {
+            batchListeners.remove(listener);
+            final Set<TestCaseBatchCreator> allBatchCreators =
+                getAllBatchCreators();
+            for(TestCaseBatchCreator creator : allBatchCreators) {
+                creator.removeBatchCreatrorListener(listener);
+            }
+        }
+    }
+
     public void setTestCaseBatchCreator(
         Class<? extends TestCaseBatchCreator> batchCreator) {
         if (getState().getStateStep() >= LoadTestEngine.State.INITIALIZED.
@@ -163,8 +195,9 @@ public abstract class AbstractLoadTestEngineImpl
         }
         try {
             final Class<?> clazz = Class.forName(batchCreator);
-            if(TestCaseBatchCreator.class.isAssignableFrom(clazz)) {
-                batchCreatorClass = (Class<? extends TestCaseBatchCreator>) clazz;
+            if (TestCaseBatchCreator.class.isAssignableFrom(clazz)) {
+                batchCreatorClass =
+                    (Class<? extends TestCaseBatchCreator>) clazz;
             }
             else {
                 throw new ClassCastException();
@@ -300,4 +333,11 @@ public abstract class AbstractLoadTestEngineImpl
     protected Set<TestCaseTransitionListener> getTestCaseTransitionListeners() {
         return testCaseTransitionListeners;
     }
+
+    protected abstract TestCaseBatchCreator getBatchCreatorForTestInstance(
+        final UnitTestInstance instance);
+
+    protected abstract Set<TestCaseBatchCreator> getAllBatchCreators();
+
+    protected abstract Map<UnitTestInstance, TestCaseBatchCreator> getAllBatchCreatorsForTestInstances();
 }

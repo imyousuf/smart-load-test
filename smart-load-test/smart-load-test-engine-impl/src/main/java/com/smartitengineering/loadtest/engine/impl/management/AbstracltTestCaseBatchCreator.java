@@ -25,7 +25,7 @@ import com.smartitengineering.loadtest.engine.UnitTestInstance;
 import com.smartitengineering.loadtest.engine.events.BatchEvent;
 import com.smartitengineering.loadtest.engine.events.TestCaseBatchListener;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -49,7 +49,7 @@ public abstract class AbstracltTestCaseBatchCreator
     protected AbstracltTestCaseBatchCreator() {
         setNextBatchAvailable(false);
         setInitialized(false);
-        batchListeners = new HashSet<TestCaseBatchListener>();
+        batchListeners = new LinkedHashSet<TestCaseBatchListener>();
     }
 
     public void init(UnitTestInstance testInstance)

@@ -137,6 +137,14 @@ public class LoadTestEngineImpl
         semaphore = null;
         engineBatchListener = null;
         finishedDetector = null;
+        executorService = null;
+        caseRecords = null;
+        caseStateChangeListener = null;
+        removeTestCaseTransitionListener(transitionListener);
+        transitionListener = null;
+        result = null;
+        instanceRecords.clear();
+        creators.clear();
     }
 
     private void initializeFinishDetector() {

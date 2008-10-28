@@ -42,6 +42,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
+import org.apache.commons.lang.mutable.MutableInt;
 
 /**
  * Default implementation of the LoadTestEngine
@@ -286,7 +287,6 @@ public class LoadTestEngineImpl
                 if (testInstance != null) {
                     UnitTestInstanceRecord record = instanceRecords.get(testInstance);
                     record.setIntanceFinished();
-                    executorService.submit(finishedDetector);
                 }
             }
         }
@@ -294,11 +294,20 @@ public class LoadTestEngineImpl
 
     protected class TestCaseStateTransitionMonitor
         implements TestCaseTransitionListener {
+        
+        private MutableInt startedThreadCount;
 
+        public TestCaseStateTransitionMonitor() {
+            startedThreadCount = new MutableInt(0);
+        }
+        
         public void testCaseInitialized(TestCaseStateChangedEvent event) {
         }
 
         public void testCaseStarted(TestCaseStateChangedEvent event) {
+            synchronized (startedThreadCount) {
+                startedThreadCount.setValue(startedThreadCount.intValue() + 1);
+            }
         }
 
         public void testCaseFinished(TestCaseStateChangedEvent event) {
@@ -334,8 +343,11 @@ public class LoadTestEngineImpl
                 record.getTestCaseResult().getTestCaseInstanceResults().add(
                     instanceResult);
                 record.decrementCount();
-                if (record.hasUnitTestInstanceFinished()) {
-                    executorService.submit(finishedDetector);
+                synchronized(startedThreadCount)  {
+                    startedThreadCount.setValue(startedThreadCount.intValue() - 1);
+                    if (startedThreadCount.intValue() <= 0) {
+                        executorService.submit(finishedDetector);
+                    }
                 }
             }
         }
@@ -361,7 +373,7 @@ public class LoadTestEngineImpl
             }
             testCaseCount = 0;
             testCaseResult = result;
-            instanceFinished = true;
+            instanceFinished = false;
         }
 
         public synchronized void incrementCount() {

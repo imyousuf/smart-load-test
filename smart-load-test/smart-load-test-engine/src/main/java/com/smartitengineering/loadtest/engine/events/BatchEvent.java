@@ -18,6 +18,7 @@
 package com.smartitengineering.loadtest.engine.events;
 
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Represents a BatchEvent where batch creator is provided to the observer so
@@ -27,6 +28,8 @@ import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
 public class BatchEvent {
 
     private TestCaseBatchCreator.Batch batch;
+    
+    private String testInstanceName;
 
     /**
      * Create a batch event with the provided batch creator. Observer can get
@@ -35,12 +38,13 @@ public class BatchEvent {
      * @param batchCreator The batch creator to provide to the observer
      * @throws java.lang.IllegalArgumentException if batchCreator is null
      */
-    public BatchEvent(TestCaseBatchCreator.Batch batch)
+    public BatchEvent(TestCaseBatchCreator.Batch batch, String testInstanceName)
         throws IllegalArgumentException {
-        if (batch == null) {
+        if (batch == null || StringUtils.isEmpty(testInstanceName)) {
             throw new IllegalArgumentException();
         }
         this.batch = batch;
+        this.testInstanceName = testInstanceName;
     }
 
     /**
@@ -49,5 +53,13 @@ public class BatchEvent {
      */
     public TestCaseBatchCreator.Batch getBatch() {
         return batch;
+    }
+
+    /**
+     * Return the name of the test instance causing the batch generation
+     * @return The name of the instance
+     */
+    public String getTestInstanceName() {
+        return testInstanceName;
     }
 }

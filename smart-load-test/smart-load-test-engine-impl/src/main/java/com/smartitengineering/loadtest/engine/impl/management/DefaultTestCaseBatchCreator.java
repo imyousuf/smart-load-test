@@ -99,7 +99,7 @@ public class DefaultTestCaseBatchCreator
             Batch batch =
                 getBatch(new AbstractMap.SimpleEntry<ThreadGroup, Map<Thread, TestCase>>(
                 new ThreadGroup(""), new HashMap<Thread, TestCase>()));
-            fireBatchEvent(new BatchEvent(batch));
+            fireBatchEvent(new BatchEvent(batch, name));
         }
     }
 }

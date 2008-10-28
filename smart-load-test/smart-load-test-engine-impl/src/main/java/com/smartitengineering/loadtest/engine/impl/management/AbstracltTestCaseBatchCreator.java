@@ -29,6 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -73,7 +74,7 @@ public abstract class AbstracltTestCaseBatchCreator
             }
             initalProperties = testInstance.getProperties();
             name = testInstance.getName();
-            if (initalProperties == null || name == null || name.length() <= 0) {
+            if (initalProperties == null || StringUtils.isEmpty(name)) {
                 throw new IllegalArgumentException();
             }
         }
@@ -146,7 +147,7 @@ public abstract class AbstracltTestCaseBatchCreator
      */
     protected void fireBatchEvent() {
         if (isNextBatchAvailable()) {
-            BatchEvent batchEvent = new BatchEvent(getNextBatch());
+            BatchEvent batchEvent = new BatchEvent(getNextBatch(), name);
             fireBatchEvent(batchEvent);
         }
     }

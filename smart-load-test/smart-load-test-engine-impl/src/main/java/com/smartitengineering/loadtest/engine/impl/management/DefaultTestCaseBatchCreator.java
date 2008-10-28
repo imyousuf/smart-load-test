@@ -22,6 +22,7 @@ import com.smartitengineering.loadtest.engine.events.BatchEvent;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator.Batch;
 import java.lang.ref.WeakReference;
 import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class DefaultTestCaseBatchCreator
 
     public Batch getNextBatch()
         throws IllegalStateException {
-        if (isInitialized() && isNextBatchAvailable()) {
+        if (!isInitialized() || !isNextBatchAvailable()) {
             throw new IllegalStateException();
         }
         return currentBatch;
@@ -80,6 +81,7 @@ public class DefaultTestCaseBatchCreator
                 for (int stepCount = 0; stepCount < nextStepSize; ++stepCount) {
                     TestCase testCase = getTestCaseCreationFactory().getTestCase(
                         initalProperties);
+                    testCase.initTestCase();
                     if (testCase == null) {
                         continue;
                     }
@@ -98,8 +100,8 @@ public class DefaultTestCaseBatchCreator
             }
             Batch batch =
                 getBatch(new AbstractMap.SimpleEntry<ThreadGroup, Map<Thread, TestCase>>(
-                new ThreadGroup(""), new HashMap<Thread, TestCase>()));
-            fireBatchEvent(new BatchEvent(batch, name));
+                new ThreadGroup(""), Collections.<Thread, TestCase>emptyMap()));
+            fireBatchEndedEvent(new BatchEvent(batch, name));
         }
     }
 }

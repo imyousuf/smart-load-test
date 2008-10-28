@@ -24,7 +24,10 @@ import com.smartitengineering.loadtest.engine.TestCaseCreationFactory;
 import com.smartitengineering.loadtest.engine.UnitTestInstance;
 import com.smartitengineering.loadtest.engine.events.BatchEvent;
 import com.smartitengineering.loadtest.engine.events.TestCaseBatchListener;
+import com.smartitengineering.loadtest.engine.impl.DefaultTestCaseCreationFactory;
 import com.smartitengineering.loadtest.engine.management.TestCaseBatchCreator;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Properties;
@@ -60,8 +63,13 @@ public abstract class AbstracltTestCaseBatchCreator
             throw new IllegalArgumentException();
         }
         try {
-            testCaseCreationFactory = (TestCaseCreationFactory) Class.forName(
-                testInstance.getInstanceFactoryClassName()).newInstance();
+            if (StringUtils.isEmpty(testInstance.getDelayTimeProviderClassName()) ||
+                StringUtils.isEmpty(testInstance.
+                getIncrementSizeProviderClassName())) {
+                throw new IllegalArgumentException(
+                    "Delay and Step provider must be provided!");
+            }
+            testCaseCreationFactory = getTestCaseCreationFactory(testInstance);
             delayProvider = (DelayProvider) Class.forName(testInstance.
                 getDelayTimeProviderClassName()).newInstance();
             delayProvider.init(testInstance.getProperties());
@@ -164,6 +172,21 @@ public abstract class AbstracltTestCaseBatchCreator
             }
         }
     }
+    
+    /**
+     * Fire event for the batch event generated; one of its use cases is when
+     * batch creation has finished
+     * @param event The event to use to notify observers
+     */
+    protected void fireBatchEndedEvent(BatchEvent event) {
+        if (event != null) {
+            for (TestCaseBatchListener listener : batchListeners) {
+                listener.batchCreationEnded(event);
+            }
+        }
+    }
+
+
     protected void setNextBatchAvailable(boolean nextBatchAvailable) {
         this.nextBatchAvailable = nextBatchAvailable;
     }
@@ -186,5 +209,35 @@ public abstract class AbstracltTestCaseBatchCreator
 
     protected Set<TestCaseBatchListener> getBatchListeners() {
         return batchListeners;
+    }
+
+    private TestCaseCreationFactory getTestCaseCreationFactory(
+        UnitTestInstance testInstance)
+        throws ClassNotFoundException,
+               IllegalAccessException,
+               InstantiationException {
+        final String instanceFactoryClassName =
+            testInstance.getInstanceFactoryClassName();
+        if (!StringUtils.isEmpty(instanceFactoryClassName)) {
+            try {
+                final Class<? extends TestCaseCreationFactory> classForName =
+                    (Class<? extends TestCaseCreationFactory>) Class.forName(
+                    instanceFactoryClassName);
+                try {
+                    Method method = classForName.getDeclaredMethod("getInstance");
+                    if(method != null && Modifier.isStatic(method.getModifiers())) {
+                        return (TestCaseCreationFactory) method.invoke(classForName);
+                    }
+                }
+                catch(NoSuchMethodException exception) {
+                    exception.printStackTrace();
+                }
+                return classForName.newInstance();
+            }
+            catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        }
+        return DefaultTestCaseCreationFactory.getInstance();
     }
 }

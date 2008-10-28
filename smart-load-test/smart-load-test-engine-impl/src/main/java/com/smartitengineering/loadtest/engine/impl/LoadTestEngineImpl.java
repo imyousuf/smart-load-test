@@ -66,7 +66,8 @@ public class LoadTestEngineImpl
     protected void initializeBeforeCreatedState() {
         setTestInstances(new HashSet<UnitTestInstance>());
         creators = new HashMap<TestCaseBatchCreator, UnitTestInstance>();
-        instanceRecords = new HashMap<UnitTestInstance, UnitTestInstanceRecord>();
+        instanceRecords =
+            new HashMap<UnitTestInstance, UnitTestInstanceRecord>();
     }
 
     public void init(String testName,
@@ -193,7 +194,8 @@ public class LoadTestEngineImpl
         TestCaseResult caseResult =
             new TestCaseResult();
         caseResult.setName(instance.getName());
-        caseResult.setInstanceFactoryClassName(instance.getInstanceFactoryClassName());
+        caseResult.setInstanceFactoryClassName(instance.
+            getInstanceFactoryClassName());
         final Properties testProperties = instance.getProperties();
         Set<TestProperty> testPropertySet =
             new HashSet<TestProperty>(testProperties.size());
@@ -208,7 +210,8 @@ public class LoadTestEngineImpl
             testPropertySet.add(property);
         }
         caseResult.setTestProperties(testPropertySet);
-        caseResult.setTestCaseInstanceResults(new HashSet<TestCaseInstanceResult>());
+        caseResult.setTestCaseInstanceResults(
+            new HashSet<TestCaseInstanceResult>());
         UnitTestInstanceRecord record =
             new UnitTestInstanceRecord(caseResult);
         instanceRecords.put(instance, record);
@@ -285,7 +288,8 @@ public class LoadTestEngineImpl
                 UnitTestInstance testInstance = creators.get(event.getBatch().
                     getBatchCreator());
                 if (testInstance != null) {
-                    UnitTestInstanceRecord record = instanceRecords.get(testInstance);
+                    UnitTestInstanceRecord record = instanceRecords.get(
+                        testInstance);
                     record.setIntanceFinished();
                 }
             }
@@ -294,13 +298,13 @@ public class LoadTestEngineImpl
 
     protected class TestCaseStateTransitionMonitor
         implements TestCaseTransitionListener {
-        
+
         private MutableInt startedThreadCount;
 
         public TestCaseStateTransitionMonitor() {
             startedThreadCount = new MutableInt(0);
         }
-        
+
         public void testCaseInitialized(TestCaseStateChangedEvent event) {
         }
 
@@ -323,15 +327,19 @@ public class LoadTestEngineImpl
                 caseRecords.remove(event.getSource());
             if (record != null) {
                 TestCase testCase = event.getSource();
-                TestCaseInstanceResult instanceResult = new TestCaseInstanceResult();
+                TestCaseInstanceResult instanceResult =
+                    new TestCaseInstanceResult();
                 instanceResult.setStartTime(testCase.getStartTimeOfTest());
                 instanceResult.setEndTime(testCase.getEndTimeOfTest());
                 instanceResult.setEndTestCaseState(testCase.getState());
-                instanceResult.setInstanceNumber(record.getTestCaseCount());
-                Map<String, String> extraInfo = testCase.getTestCaseResultExtraInfo();
-                if(extraInfo != null) {
-                    Set<Map.Entry<String, String>> entries = extraInfo.entrySet();
-                    Set<KeyedInformation> otherInfo = new HashSet<KeyedInformation>(entries.size());
+                instanceResult.setInstanceNumber(record.getTotalTestCaseCount());
+                Map<String, String> extraInfo = testCase.
+                    getTestCaseResultExtraInfo();
+                if (extraInfo != null && !extraInfo.isEmpty()) {
+                    Set<Map.Entry<String, String>> entries =
+                        extraInfo.entrySet();
+                    Set<KeyedInformation> otherInfo =
+                        new HashSet<KeyedInformation>(entries.size());
                     for (Map.Entry<String, String> extraInfoEntry : entries) {
                         KeyedInformation information = new KeyedInformation();
                         information.setKey(extraInfoEntry.getKey());
@@ -343,8 +351,13 @@ public class LoadTestEngineImpl
                 record.getTestCaseResult().getTestCaseInstanceResults().add(
                     instanceResult);
                 record.decrementCount();
-                synchronized(startedThreadCount)  {
-                    startedThreadCount.setValue(startedThreadCount.intValue() - 1);
+                if (record.hasUnitTestInstanceFinished()) {
+                    result.getTestCaseRunResults().add(
+                        record.getTestCaseResult());
+                }
+                synchronized (startedThreadCount) {
+                    startedThreadCount.setValue(startedThreadCount.intValue() -
+                        1);
                     if (startedThreadCount.intValue() <= 0) {
                         executorService.submit(finishedDetector);
                     }
@@ -366,12 +379,14 @@ public class LoadTestEngineImpl
         private int testCaseCount;
         private TestCaseResult testCaseResult;
         private boolean instanceFinished;
+        private int totalTestCount;
 
         public UnitTestInstanceRecord(TestCaseResult result) {
             if (result == null) {
                 throw new IllegalArgumentException();
             }
             testCaseCount = 0;
+            totalTestCount = 0;
             testCaseResult = result;
             instanceFinished = false;
         }
@@ -386,6 +401,11 @@ public class LoadTestEngineImpl
 
         public int getTestCaseCount() {
             return testCaseCount;
+        }
+        
+        public synchronized int getTotalTestCaseCount() {
+            totalTestCount++;
+            return totalTestCount;
         }
 
         public boolean isInstanceFinished() {
@@ -431,12 +451,14 @@ public class LoadTestEngineImpl
     }
 
     @Override
-    protected TestCaseBatchCreator getBatchCreatorForTestInstance(UnitTestInstance instance) {
-        if(instance == null) {
+    protected TestCaseBatchCreator getBatchCreatorForTestInstance(
+        UnitTestInstance instance) {
+        if (instance == null) {
             return null;
         }
-        for (Map.Entry<TestCaseBatchCreator, UnitTestInstance> entry : creators.entrySet()) {
-            if(entry.getValue().equals(instance)) {
+        for (Map.Entry<TestCaseBatchCreator, UnitTestInstance> entry : creators.
+            entrySet()) {
+            if (entry.getValue().equals(instance)) {
                 return entry.getKey();
             }
         }
@@ -446,7 +468,7 @@ public class LoadTestEngineImpl
     @Override
     protected Set<TestCaseBatchCreator> getAllBatchCreators() {
         final Set<TestCaseBatchCreator> allCreators = creators.keySet();
-        if(allCreators == null) {
+        if (allCreators == null) {
             return Collections.emptySet();
         }
         return allCreators;
@@ -454,9 +476,10 @@ public class LoadTestEngineImpl
 
     @Override
     protected Map<UnitTestInstance, TestCaseBatchCreator> getAllBatchCreatorsForTestInstances() {
-        Map<UnitTestInstance, TestCaseBatchCreator> resultMap 
-            = new HashMap<UnitTestInstance, TestCaseBatchCreator>();
-        for (Map.Entry<TestCaseBatchCreator, UnitTestInstance> entry : creators.entrySet()) {
+        Map<UnitTestInstance, TestCaseBatchCreator> resultMap =
+            new HashMap<UnitTestInstance, TestCaseBatchCreator>();
+        for (Map.Entry<TestCaseBatchCreator, UnitTestInstance> entry : creators.
+            entrySet()) {
             resultMap.put(entry.getValue(), entry.getKey());
         }
         return resultMap;

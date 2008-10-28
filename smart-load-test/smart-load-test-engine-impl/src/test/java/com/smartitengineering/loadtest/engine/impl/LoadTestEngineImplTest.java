@@ -19,8 +19,13 @@ package com.smartitengineering.loadtest.engine.impl;
 
 import com.smartitengineering.loadtest.engine.LoadTestEngine;
 import com.smartitengineering.loadtest.engine.UnitTestInstance;
+import com.smartitengineering.loadtest.engine.events.BatchEvent;
+import com.smartitengineering.loadtest.engine.events.TestCaseBatchListener;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import junit.framework.TestCase;
 
@@ -51,22 +56,22 @@ public class LoadTestEngineImplTest
         HashSet<UnitTestInstance> hashSet = new HashSet();
         createDataSet1(hashSet);
         final String testName = "test-1";
-        engine.init( testName, hashSet, properties);
+        engine.init(testName, hashSet, properties);
         assertEquals(LoadTestEngine.State.INITIALIZED, engine.getState());
         engine.reinstantiateCreatedState();
-        engine.init( testName, hashSet, null);
+        engine.init(testName, hashSet, null);
         assertEquals(LoadTestEngine.State.INITIALIZED, engine.getState());
         engine.reinstantiateCreatedState();
-        engine.init( testName, hashSet, new Properties());
+        engine.init(testName, hashSet, new Properties());
         assertEquals(LoadTestEngine.State.INITIALIZED, engine.getState());
         engine.reinstantiateCreatedState();
         final Properties invalidProps = new Properties();
         invalidProps.setProperty(LoadTestEngineImpl.PROPS_PERMIT_KEY, "4asd");
-        engine.init( testName, hashSet, invalidProps);
+        engine.init(testName, hashSet, invalidProps);
         assertEquals(LoadTestEngine.State.INITIALIZED, engine.getState());
-        
+
         //Following are the failure scenarios
-        
+
         //Scenario-1 test case name is empty
         engine.reinstantiateCreatedState();
         try {
@@ -87,7 +92,7 @@ public class LoadTestEngineImplTest
         catch (Exception exception) {
             fail(exception.getMessage());
         }
-        
+
         //Scenario-2 test case name is null/empty
         engine.reinstantiateCreatedState();
         try {
@@ -101,7 +106,8 @@ public class LoadTestEngineImplTest
         }
         engine.reinstantiateCreatedState();
         try {
-            engine.init(testName, Collections.<UnitTestInstance>emptySet(), properties);
+            engine.init(testName, Collections.<UnitTestInstance>emptySet(),
+                properties);
             fail("Initialization should not succeed! - Invalid test instance");
         }
         catch (IllegalArgumentException exception) {
@@ -109,10 +115,49 @@ public class LoadTestEngineImplTest
         catch (Exception exception) {
             fail(exception.getMessage());
         }
-        
+
     }
 
     public void testStart() {
+        LoadTestEngine engine;
+        //Following is the success scenario
+        engine = new LoadTestEngineImpl();
+        Properties properties = new Properties();
+        //Allow 4 simultaneous batch creators be in action at a time
+        properties.setProperty(LoadTestEngineImpl.PROPS_PERMIT_KEY, "4");
+        HashSet<UnitTestInstance> hashSet = new HashSet();
+        createDataSet1(hashSet);
+        final String testName = "test-1";
+        engine.init(testName, hashSet, properties);
+        final HashMap<String, Integer> instanceBatchCount =
+            new HashMap<String, Integer>();
+        final HashMap<String, List<Integer>> testCasesCount =
+            new HashMap<String, List<Integer>>();
+        final List<String> endedInstances = new ArrayList<String>();
+        addBatchListener(engine, instanceBatchCount, testCasesCount,
+            endedInstances);
+        engine.start();
+        assertEquals(LoadTestEngine.State.STARTED, engine.getState());
+        long startMillis = System.currentTimeMillis();
+        final int maxWaitDuration = 10000;
+        waitForEngineToFinish(engine, startMillis, maxWaitDuration);
+        assertEquals(LoadTestEngine.State.FINISHED, engine.getState());
+        assertTrue(validateForDataSet1(instanceBatchCount, testCasesCount, endedInstances));
+        System.out.println("Status: " + engine.getState().name());
+        System.out.println("Duration: " + (System.currentTimeMillis() -
+            startMillis));
+
+        //Failure scenarios
+        engine.reinstantiateCreatedState();
+        try {
+            engine.start();
+            fail("Engine should not have started!");
+        }
+        catch (IllegalStateException stateException) {
+        }
+        catch (Exception ex) {
+            fail(ex.getMessage());
+        }
     }
 
     public void testGetTestResult() {
@@ -124,20 +169,57 @@ public class LoadTestEngineImplTest
     public void testRemoveTestCaseBatchListener() {
     }
 
+    private void addBatchListener(LoadTestEngine engine,
+                                  final HashMap<String, Integer> instanceBatchCount,
+                                  final HashMap<String, List<Integer>> testCasesCount,
+                                  final List<String> endedInstances) {
+        engine.addTestCaseBatchListener(new TestCaseBatchListener() {
+
+            public synchronized void batchAvailable(BatchEvent event) {
+                String testName = event.getTestInstanceName();
+                if (instanceBatchCount.containsKey(testName)) {
+                    Integer count = instanceBatchCount.get(testName);
+                    int threadCount =
+                        event.getBatch().getBatch().getValue().size();
+                    count = count.intValue() + 1;
+                    instanceBatchCount.put(testName, count);
+                    List<Integer> threadCounts = testCasesCount.get(testName);
+                    threadCounts.add(threadCount);
+                    testCasesCount.put(testName, threadCounts);
+                }
+                else {
+                    Integer count;
+                    int threadCount =
+                        event.getBatch().getBatch().getValue().size();
+                    count = 1;
+                    instanceBatchCount.put(testName, count);
+                    List<Integer> threadCounts =
+                        new ArrayList<Integer>();
+                    threadCounts.add(threadCount);
+                    testCasesCount.put(testName, threadCounts);
+                }
+            }
+
+            public void batchCreationEnded(BatchEvent event) {
+                endedInstances.add(event.getTestInstanceName());
+            }
+        });
+    }
+
     private void createDataSet1(HashSet<UnitTestInstance> hashSet) {
-        UnitTestInstance instance 
-            = createUnitTestInstance("instance-1", 100, 5, 3, 1000);
+        UnitTestInstance instance = createUnitTestInstance("instance-1", 10, 5,
+            3, 500);
         hashSet.add(instance);
-        instance = createUnitTestInstance("instance-2", 50, 6, 4, 1000);
+        instance = createUnitTestInstance("instance-2", 5, 6, 4, 200);
         hashSet.add(instance);
-        instance = createUnitTestInstance("instance-3", 200, 3, 5, 1000);
+        instance = createUnitTestInstance("instance-3", 20, 3, 5, 500);
         hashSet.add(instance);
-        instance = createUnitTestInstance("instance-4", 100, 3, 5, 500);
+        instance = createUnitTestInstance("instance-4", 10, 3, 5, 300);
         hashSet.add(instance);
     }
 
     private UnitTestInstance createUnitTestInstance(final String testName,
-                                                    final int sleepDuration, 
+                                                    final int sleepDuration,
                                                     final int numOfBatches,
                                                     final int testCasesPerBatch,
                                                     final int batchInterval) {
@@ -146,7 +228,7 @@ public class LoadTestEngineImplTest
         final int testCasesPerBatch = 3;
         final int numOfBatches = 5;
         final int sleepDuration = 100;
-        */
+         */
         UnitTestInstance instance = new UnitTestInstance();
         Properties properties = new Properties();
 
@@ -155,16 +237,17 @@ public class LoadTestEngineImplTest
             DummyTestCase.class.getName());
 
         //Specify how long the test case would sleep
-        properties.setProperty(DummyTestCase.SLEEP_TIME_PROP, Integer.toString(sleepDuration));
+        properties.setProperty(DummyTestCase.SLEEP_TIME_PROP, Integer.toString(
+            sleepDuration));
 
         //Create batches at 1s interval
         properties.setProperty(UniformDelayProvider.DELAY_PROPS,
             Integer.toString(batchInterval));
-        
+
         //Create 5 batches
         properties.setProperty(UniformDelayProvider.STEP_COUNT_PROPS,
             Integer.toString(numOfBatches));
-        
+
         //Create 3 test cases for each batch
         properties.setProperty(UniformStepSizeProvider.UNIT_STEP_SIZE_PROPS,
             Integer.toString(testCasesPerBatch));
@@ -179,5 +262,59 @@ public class LoadTestEngineImplTest
         instance.setProperties(properties);
         instance.setName(testName);
         return instance;
+    }
+
+    private boolean validateForDataSet1(
+        final HashMap<String, Integer> instanceBatchCount,
+        final HashMap<String, List<Integer>> testCasesCount,
+        final List<String> endedInstances) {
+        boolean result = true;
+        String instanceName;
+        int expectedBatchCount;
+        int expectedThreadsPerBatch;
+        String[] instanceNames = {"instance-1", "instance-2", "instance-3",
+            "instance-4",
+        };
+        int[] batchCounts = {5, 6, 3, 3,};
+        int[] threadsPerBatchCounts = {3, 4, 5, 5,};
+        for (int i = 0; i < instanceNames.length && result; ++i) {
+            instanceName = instanceNames[i];
+            expectedBatchCount = batchCounts[i];
+            expectedThreadsPerBatch = threadsPerBatchCounts[i];
+            result = result && instanceBatchCount.containsKey(instanceName) &&
+                instanceBatchCount.get(instanceName).intValue() ==
+                expectedBatchCount;
+            result = result && testCasesCount.containsKey(instanceName);
+            if (result) {
+                List<Integer> threadCounts = testCasesCount.get(instanceName);
+                for (Integer threadCount : threadCounts) {
+                    result = result && threadCount.intValue() ==
+                        expectedThreadsPerBatch;
+                }
+            }
+        }
+        result = result && instanceNames.length == endedInstances.size();
+        if(result) {
+            for (String instance : instanceNames) {
+                result = result && endedInstances.contains(instance);
+            }
+        }
+        return result;
+    }
+
+    private void waitForEngineToFinish(LoadTestEngine engine,
+                                       long startMillis,
+                                       final int maxWaitDuration) {
+        while (!engine.getState().
+            equals(LoadTestEngine.State.FINISHED) &&
+            System.currentTimeMillis() - startMillis < maxWaitDuration) {
+            try {
+                //Wait for the engine to finish
+                Thread.sleep(500);
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }

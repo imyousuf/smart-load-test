@@ -21,12 +21,15 @@ import com.smartitengineering.loadtest.engine.LoadTestEngine;
 import com.smartitengineering.loadtest.engine.UnitTestInstance;
 import com.smartitengineering.loadtest.engine.events.BatchEvent;
 import com.smartitengineering.loadtest.engine.events.TestCaseBatchListener;
+import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import junit.framework.TestCase;
 
 /**
@@ -142,7 +145,8 @@ public class LoadTestEngineImplTest
         final int maxWaitDuration = 10000;
         waitForEngineToFinish(engine, startMillis, maxWaitDuration);
         assertEquals(LoadTestEngine.State.FINISHED, engine.getState());
-        assertTrue(validateForDataSet1(instanceBatchCount, testCasesCount, endedInstances));
+        assertTrue(validateForDataSet(instanceBatchCount, testCasesCount,
+            endedInstances, getDataSet1()));
         System.out.println("Status: " + engine.getState().name());
         System.out.println("Duration: " + (System.currentTimeMillis() -
             startMillis));
@@ -206,16 +210,18 @@ public class LoadTestEngineImplTest
         });
     }
 
-    private void createDataSet1(HashSet<UnitTestInstance> hashSet) {
-        UnitTestInstance instance = createUnitTestInstance("instance-1", 10, 5,
-            3, 500);
-        hashSet.add(instance);
-        instance = createUnitTestInstance("instance-2", 5, 6, 4, 200);
-        hashSet.add(instance);
-        instance = createUnitTestInstance("instance-3", 20, 3, 5, 500);
-        hashSet.add(instance);
-        instance = createUnitTestInstance("instance-4", 10, 3, 5, 300);
-        hashSet.add(instance);
+    private void createDataSet1(Set<UnitTestInstance> hashSet) {
+        createDataSet(getDataSet1(), hashSet);
+    }
+
+    private void createDataSet(Set<TestData> dataSet,
+                               Set<UnitTestInstance> testInstances) {
+        for (TestData data : dataSet) {
+            UnitTestInstance instance = createUnitTestInstance(data.instanceName, 
+                data.sleepDuration, data.batchCount,
+                data.threadsPerBatch, data.batchInterval);
+            testInstances.add(instance);
+        }
     }
 
     private UnitTestInstance createUnitTestInstance(final String testName,
@@ -264,23 +270,40 @@ public class LoadTestEngineImplTest
         return instance;
     }
 
-    private boolean validateForDataSet1(
-        final HashMap<String, Integer> instanceBatchCount,
-        final HashMap<String, List<Integer>> testCasesCount,
-        final List<String> endedInstances) {
-        boolean result = true;
-        String instanceName;
-        int expectedBatchCount;
-        int expectedThreadsPerBatch;
+    private Set<TestData> getDataSet1() {
+        LinkedHashSet<TestData> dataSet = new LinkedHashSet<TestData>();
         String[] instanceNames = {"instance-1", "instance-2", "instance-3",
             "instance-4",
         };
         int[] batchCounts = {5, 6, 3, 3,};
         int[] threadsPerBatchCounts = {3, 4, 5, 5,};
-        for (int i = 0; i < instanceNames.length && result; ++i) {
-            instanceName = instanceNames[i];
-            expectedBatchCount = batchCounts[i];
-            expectedThreadsPerBatch = threadsPerBatchCounts[i];
+        int[] sleepDurations = {10, 5, 20, 10};
+        int[] batchIntervals = {500, 200, 500, 300};
+        for (int i = 0; i < instanceNames.length; ++i) {
+            TestData testData = new TestData();
+            testData.instanceName = instanceNames[i];
+            testData.batchCount = batchCounts[i];
+            testData.threadsPerBatch = threadsPerBatchCounts[i];
+            testData.sleepDuration = sleepDurations[i];
+            testData.batchInterval = batchIntervals[i];
+            dataSet.add(testData);
+        }
+        return dataSet;
+    }
+
+    private boolean validateForDataSet(
+        final HashMap<String, Integer> instanceBatchCount,
+        final HashMap<String, List<Integer>> testCasesCount,
+        final List<String> endedInstances,
+        final Set<TestData> dataSet) {
+        boolean result = true;
+        String instanceName;
+        int expectedBatchCount;
+        int expectedThreadsPerBatch;
+        for (TestData data : dataSet) {
+            instanceName = data.instanceName;
+            expectedBatchCount = data.batchCount;
+            expectedThreadsPerBatch = data.threadsPerBatch;
             result = result && instanceBatchCount.containsKey(instanceName) &&
                 instanceBatchCount.get(instanceName).intValue() ==
                 expectedBatchCount;
@@ -293,10 +316,10 @@ public class LoadTestEngineImplTest
                 }
             }
         }
-        result = result && instanceNames.length == endedInstances.size();
-        if(result) {
-            for (String instance : instanceNames) {
-                result = result && endedInstances.contains(instance);
+        result = result && dataSet.size() == endedInstances.size();
+        if (result) {
+            for (TestData data : dataSet) {
+                result = result && endedInstances.contains(data.instanceName);
             }
         }
         return result;
@@ -317,4 +340,14 @@ public class LoadTestEngineImplTest
             }
         }
     }
+
+    private class TestData {
+
+        String instanceName;
+        int batchCount;
+        int threadsPerBatch;
+        int sleepDuration;
+        int batchInterval;
+    }
+
 }

@@ -409,6 +409,10 @@ public class LoadTestEngineImplTest
                             instanceResult.getInstanceNumber());
                         if (validationResult) {
                             numbers.add(instanceResult.getInstanceNumber());
+                            long duration = instanceResult.getEndTime().getTime() 
+                                - instanceResult.getStartTime().getTime();
+                            validationResult = validationResult 
+                                && duration >= instanceData.sleepDuration;
                         }
                         else {
                             break;

@@ -39,7 +39,7 @@ public class DummyTestCase
     }
     
     public DummyTestCase(Properties properties) {
-        if(properties != null && properties.contains(SLEEP_TIME_PROP)) {
+        if(properties != null && properties.containsKey(SLEEP_TIME_PROP)) {
             String time = properties.getProperty(SLEEP_TIME_PROP);
             try {
                 sleepTime = Integer.parseInt(time);

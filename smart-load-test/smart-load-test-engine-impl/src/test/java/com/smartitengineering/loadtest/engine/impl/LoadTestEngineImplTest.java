@@ -21,9 +21,12 @@ import com.smartitengineering.loadtest.engine.LoadTestEngine;
 import com.smartitengineering.loadtest.engine.UnitTestInstance;
 import com.smartitengineering.loadtest.engine.events.BatchEvent;
 import com.smartitengineering.loadtest.engine.events.TestCaseBatchListener;
+import com.smartitengineering.loadtest.engine.result.TestCaseInstanceResult;
+import com.smartitengineering.loadtest.engine.result.TestCaseResult;
 import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -165,6 +168,49 @@ public class LoadTestEngineImplTest
     }
 
     public void testGetTestResult() {
+        LoadTestEngine engine;
+        //Following is the success scenario
+        engine = new LoadTestEngineImpl();
+        Properties properties = new Properties();
+        //Allow 4 simultaneous batch creators be in action at a time
+        properties.setProperty(LoadTestEngineImpl.PROPS_PERMIT_KEY, "4");
+        HashSet<UnitTestInstance> hashSet = new HashSet();
+        createDataSet1(hashSet);
+        final String testName = "test-1";
+        engine.init(testName, hashSet, properties);
+        Date startDate = new Date();
+        engine.start();
+        long startMillis = System.currentTimeMillis();
+        final int maxWaitDuration = 10000;
+        waitForEngineToFinish(engine, startMillis, maxWaitDuration);
+        Date endDate = new Date();
+        TestResult result = engine.getTestResult();
+        assertNotNull(result);
+        assertTrue(validateResult(result, getDataSet1(), startDate, endDate));
+
+        //Test failure scenario
+        engine.reinstantiateCreatedState();
+        try {
+            engine.getTestResult();
+            fail("TestResult should not be retrievable!");
+        }
+        catch (IllegalStateException stateException) {
+        }
+        catch (Exception exception) {
+            fail(exception.getMessage());
+        }
+
+        engine.reinstantiateCreatedState();
+        try {
+            engine.init(testName, hashSet, properties);
+            engine.getTestResult();
+            fail("TestResult should not be retrievable!");
+        }
+        catch (IllegalStateException stateException) {
+        }
+        catch (Exception exception) {
+            fail(exception.getMessage());
+        }
     }
 
     public void testAddTestCaseBatchListener() {
@@ -217,7 +263,7 @@ public class LoadTestEngineImplTest
     private void createDataSet(Set<TestData> dataSet,
                                Set<UnitTestInstance> testInstances) {
         for (TestData data : dataSet) {
-            UnitTestInstance instance = createUnitTestInstance(data.instanceName, 
+            UnitTestInstance instance = createUnitTestInstance(data.instanceName,
                 data.sleepDuration, data.batchCount,
                 data.threadsPerBatch, data.batchInterval);
             testInstances.add(instance);
@@ -325,6 +371,58 @@ public class LoadTestEngineImplTest
         return result;
     }
 
+    private boolean validateResult(TestResult result,
+                                   Set<TestData> dataSet,
+                                   Date startDate,
+                                   Date endDate) {
+        boolean validationResult = true;
+        validationResult = validationResult && startDate.before(result.
+            getStartDateTime());
+        validationResult = validationResult && endDate.after(result.
+            getEndDateTime());
+        if (validationResult) {
+            for (TestCaseResult caseResult : result.getTestCaseRunResults()) {
+                //Test for existence of test instance
+                String instanceName = caseResult.getName();
+                boolean found = false;
+                TestData instanceData = null;
+                for (TestData data : dataSet) {
+                    if (data.instanceName.equals(instanceName)) {
+                        found = true;
+                        instanceData = data;
+                    }
+                }
+                validationResult = validationResult && found;
+                if (validationResult) {
+                    //Check for all instances in result
+                    validationResult = validationResult && caseResult.
+                        getTestCaseInstanceResults().size() ==
+                        instanceData.batchCount * instanceData.threadsPerBatch;
+                    if (!validationResult) {
+                        break;
+                    }
+                    //Check for unique instance number
+                    Set<Integer> numbers = new HashSet<Integer>();
+                    for (TestCaseInstanceResult instanceResult : caseResult.
+                        getTestCaseInstanceResults()) {
+                        validationResult = validationResult && !numbers.contains(
+                            instanceResult.getInstanceNumber());
+                        if (validationResult) {
+                            numbers.add(instanceResult.getInstanceNumber());
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        return validationResult;
+    }
+
     private void waitForEngineToFinish(LoadTestEngine engine,
                                        long startMillis,
                                        final int maxWaitDuration) {
@@ -349,5 +447,4 @@ public class LoadTestEngineImplTest
         int sleepDuration;
         int batchInterval;
     }
-
 }

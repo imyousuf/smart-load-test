@@ -18,6 +18,7 @@
  */
 package com.smartitengineering.loadtest.engine.result;
 
+import com.smartitengineering.domain.AbstractPersistentDTO;
 import com.smartitengineering.domain.PersistentDTO;
 import com.smartitengineering.loadtest.engine.TestCase;
 import java.util.Date;
@@ -32,7 +33,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class TestCaseInstanceResult
-    extends PersistentDTO<TestCaseInstanceResult> {
+    extends AbstractPersistentDTO<TestCaseInstanceResult>
+    implements PersistentDTO<TestCaseInstanceResult> {
 
     private Date startTime;
     private Date endTime;
@@ -139,5 +141,4 @@ public class TestCaseInstanceResult
     public void setOtherInfomations(Set<KeyedInformation> otherInfomations) {
         this.otherInfomations = otherInfomations;
     }
-
 }

@@ -324,7 +324,7 @@ public class LoadTestEngineImplTest
         int[] batchCounts = {5, 6, 3, 3,};
         int[] threadsPerBatchCounts = {3, 4, 5, 5,};
         int[] sleepDurations = {10, 5, 20, 10};
-        int[] batchIntervals = {500, 200, 500, 300};
+        int[] batchIntervals = {200, 200, 100, 300};
         for (int i = 0; i < instanceNames.length; ++i) {
             TestData testData = new TestData();
             testData.instanceName = instanceNames[i];
@@ -378,9 +378,12 @@ public class LoadTestEngineImplTest
         boolean validationResult = true;
         validationResult = validationResult && startDate.before(result.
             getStartDateTime());
+        System.out.println("START TIME: " + validationResult);
         validationResult = validationResult && endDate.after(result.
             getEndDateTime());
+        System.out.println("END TIME: " + validationResult);
         if (validationResult) {
+            System.out.println("Results: " + result.getTestCaseRunResults());
             for (TestCaseResult caseResult : result.getTestCaseRunResults()) {
                 //Test for existence of test instance
                 String instanceName = caseResult.getName();
@@ -393,11 +396,16 @@ public class LoadTestEngineImplTest
                     }
                 }
                 validationResult = validationResult && found;
+                System.out.println("Instance found? " + found);
                 if (validationResult) {
                     //Check for all instances in result
                     validationResult = validationResult && caseResult.
                         getTestCaseInstanceResults().size() ==
                         instanceData.batchCount * instanceData.threadsPerBatch;
+                    System.out.println("Instance count matched? " +
+                        validationResult + " " + caseResult.
+                        getTestCaseInstanceResults().size() + " " +
+                        (instanceData.batchCount * instanceData.threadsPerBatch));
                     if (!validationResult) {
                         break;
                     }
@@ -407,12 +415,16 @@ public class LoadTestEngineImplTest
                         getTestCaseInstanceResults()) {
                         validationResult = validationResult && !numbers.contains(
                             instanceResult.getInstanceNumber());
+                        System.out.println("Instance number checked? " +
+                            validationResult);
                         if (validationResult) {
                             numbers.add(instanceResult.getInstanceNumber());
-                            long duration = instanceResult.getEndTime().getTime() 
-                                - instanceResult.getStartTime().getTime();
-                            validationResult = validationResult 
-                                && duration >= instanceData.sleepDuration;
+                            long duration = instanceResult.getEndTime().getTime() - instanceResult.getStartTime().
+                                getTime();
+                            validationResult = validationResult && duration >=
+                                instanceData.sleepDuration;
+                            System.out.println("Check duration: " +
+                                validationResult);
                         }
                         else {
                             break;
@@ -424,6 +436,7 @@ public class LoadTestEngineImplTest
                 }
             }
         }
+        System.out.println("Returning: " + validationResult);
         return validationResult;
     }
 
@@ -432,7 +445,7 @@ public class LoadTestEngineImplTest
                                        final int maxWaitDuration) {
         while (!engine.getState().
             equals(LoadTestEngine.State.FINISHED) &&
-            System.currentTimeMillis() - startMillis < maxWaitDuration) {
+            (System.currentTimeMillis() - startMillis) < maxWaitDuration) {
             try {
                 //Wait for the engine to finish
                 Thread.sleep(500);

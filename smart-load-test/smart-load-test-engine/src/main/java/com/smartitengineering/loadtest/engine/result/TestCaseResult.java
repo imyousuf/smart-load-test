@@ -18,6 +18,7 @@
  */
 package com.smartitengineering.loadtest.engine.result;
 
+import com.smartitengineering.domain.AbstractPersistentDTO;
 import com.smartitengineering.domain.PersistentDTO;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +31,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class TestCaseResult
-    extends PersistentDTO<TestCaseResult> {
+    extends AbstractPersistentDTO<TestCaseResult>
+    implements PersistentDTO<TestCaseResult> {
 
     private String name;
     private String instanceFactoryClassName;
@@ -39,9 +41,9 @@ public class TestCaseResult
     private Set<KeyedInformation> otherInfomations;
 
     public boolean isValid() {
-        if (name != null && instanceFactoryClassName != null 
-            && testCaseInstanceResults != null 
-            && testCaseInstanceResults.size() > 0) {
+        if (name != null && instanceFactoryClassName != null &&
+            testCaseInstanceResults != null && testCaseInstanceResults.size() >
+            0) {
             for (TestCaseInstanceResult instanceResult : testCaseInstanceResults) {
                 if (!instanceResult.isValid()) {
                     return false;
@@ -158,5 +160,4 @@ public class TestCaseResult
     public void setOtherInfomations(Set<KeyedInformation> otherInfomations) {
         this.otherInfomations = otherInfomations;
     }
-
 }

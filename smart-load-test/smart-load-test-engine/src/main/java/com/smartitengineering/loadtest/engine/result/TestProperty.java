@@ -18,6 +18,7 @@
  */
 package com.smartitengineering.loadtest.engine.result;
 
+import com.smartitengineering.domain.AbstractPersistentDTO;
 import com.smartitengineering.domain.PersistentDTO;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,7 +29,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class TestProperty
-    extends PersistentDTO<TestProperty> {
+    extends AbstractPersistentDTO<TestProperty>
+    implements PersistentDTO<TestProperty> {
 
     private String key;
     private String value;
@@ -76,5 +78,4 @@ public class TestProperty
     public void setValue(String value) {
         this.value = value;
     }
-
 }

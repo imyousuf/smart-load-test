@@ -19,7 +19,9 @@ package com.smartitengineering.loadtest.engine.impl.persistence.db;
 
 import com.smartitengineering.dao.common.CommonReadDao;
 import com.smartitengineering.dao.common.CommonWriteDao;
-import com.smartitengineering.dao.common.QueryParameter;
+import com.smartitengineering.dao.common.queryparam.MatchMode;
+import com.smartitengineering.dao.common.queryparam.QueryParameter;
+import com.smartitengineering.dao.common.queryparam.QueryParameterFactory;
 import com.smartitengineering.loadtest.engine.persistence.PersistentTestResultEngine;
 import com.smartitengineering.loadtest.engine.result.TestResult;
 import java.util.ArrayList;
@@ -38,7 +40,6 @@ public class DatabasePersistentTestResultEngineImpl
     implements PersistentTestResultEngine {
 
     private CommonReadDao<TestResult> persistentEngineDao;
-    
     private CommonWriteDao<TestResult> persistentWriteEngineDao;
 
     public List<TestResult> getAllResults() {
@@ -48,19 +49,19 @@ public class DatabasePersistentTestResultEngineImpl
         }
         catch (Exception ex) {
             ex.printStackTrace();
-            allResults =  Collections.<TestResult>emptyList();
+            allResults = Collections.<TestResult>emptyList();
         }
         return new ArrayList<TestResult>(new HashSet<TestResult>(allResults));
     }
 
     public List<TestResult> getAllForTestName(final String testName) {
-        QueryParameter<String> param = 
+        QueryParameter<String> param =
             getNameParam(testName);
         List<TestResult> searchResults;
         try {
             searchResults = persistentEngineDao.getList(param);
         }
-        catch(Exception ex) {
+        catch (Exception ex) {
             ex.printStackTrace();
             searchResults = Collections.<TestResult>emptyList();
         }
@@ -79,7 +80,7 @@ public class DatabasePersistentTestResultEngineImpl
         try {
             searchResults = persistentEngineDao.getList(param);
         }
-        catch(Exception ex) {
+        catch (Exception ex) {
             ex.printStackTrace();
             searchResults = Collections.<TestResult>emptyList();
         }
@@ -92,9 +93,9 @@ public class DatabasePersistentTestResultEngineImpl
         List<TestResult> searchResults;
         try {
             searchResults = persistentEngineDao.getList(getNameParam(testName),
-                                              getDateParam(startDate, endDate));
+                getDateParam(startDate, endDate));
         }
-        catch(Exception ex) {
+        catch (Exception ex) {
             ex.printStackTrace();
             searchResults = Collections.<TestResult>emptyList();
         }
@@ -104,7 +105,7 @@ public class DatabasePersistentTestResultEngineImpl
     public boolean deleteTestResult(TestResult testResult)
         throws IllegalArgumentException,
                UnsupportedOperationException {
-        if(testResult == null) {
+        if (testResult == null) {
             throw new IllegalArgumentException();
         }
         try {
@@ -129,12 +130,12 @@ public class DatabasePersistentTestResultEngineImpl
      */
     public List<TestResult> getTestResults(Map<String, ? extends Object> filters)
         throws UnsupportedOperationException {
-        if(filters == null) {
+        if (filters == null) {
             return Collections.<TestResult>emptyList();
         }
         ArrayList<QueryParameter> params = new ArrayList<QueryParameter>();
         for (Map.Entry<String, ? extends Object> entry : filters.entrySet()) {
-            if(entry.getValue() instanceof QueryParameter) {
+            if (entry.getValue() instanceof QueryParameter) {
                 params.add((QueryParameter) entry.getValue());
             }
         }
@@ -142,7 +143,7 @@ public class DatabasePersistentTestResultEngineImpl
         try {
             searchResults = persistentEngineDao.getList(params);
         }
-        catch(Exception ex) {
+        catch (Exception ex) {
             ex.printStackTrace();
             searchResults = Collections.<TestResult>emptyList();
         }
@@ -162,7 +163,8 @@ public class DatabasePersistentTestResultEngineImpl
         return persistentWriteEngineDao;
     }
 
-    public void setPersistentWriteEngineDao(CommonWriteDao<TestResult> persistentWriteEngineDao) {
+    public void setPersistentWriteEngineDao(
+        CommonWriteDao<TestResult> persistentWriteEngineDao) {
         this.persistentWriteEngineDao = persistentWriteEngineDao;
     }
 
@@ -181,20 +183,15 @@ public class DatabasePersistentTestResultEngineImpl
             endDate = new Date();
         }
         QueryParameter<Date> param =
-            new QueryParameter<Date>("startDateTime",
-            QueryParameter.PARAMETER_TYPE_PROPERTY,
-            QueryParameter.OPERATOR_BETWEEN, startDate);
-        param.setParameter2(endDate);
+            QueryParameterFactory.<Date>getBetweenPropertyParam("startDateTime",
+            startDate, endDate);
         return param;
     }
 
     protected QueryParameter<String> getNameParam(final String testName) {
         QueryParameter<String> param =
-            new QueryParameter<String>("testName",
-            QueryParameter.PARAMETER_TYPE_PROPERTY,
-            QueryParameter.OPERATOR_STRING_LIKE,
-            testName == null ? "" : testName);
-        param.setMatchMode(QueryParameter.MatchMode.START);
+            QueryParameterFactory.<String>getStringLikePropertyParam("testName", testName == null
+            ? "" : testName, MatchMode.START);
         return param;
     }
 }

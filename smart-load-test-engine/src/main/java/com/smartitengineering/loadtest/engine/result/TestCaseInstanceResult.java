@@ -19,7 +19,6 @@
 package com.smartitengineering.loadtest.engine.result;
 
 import com.smartitengineering.domain.AbstractPersistentDTO;
-import com.smartitengineering.domain.PersistentDTO;
 import com.smartitengineering.loadtest.engine.TestCase;
 import java.util.Date;
 import java.util.HashSet;
@@ -32,9 +31,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @author imyousuf
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class TestCaseInstanceResult
-    extends AbstractPersistentDTO<TestCaseInstanceResult>
-    implements PersistentDTO<TestCaseInstanceResult> {
+public class TestCaseInstanceResult extends AbstractPersistentDTO<TestCaseInstanceResult> {
 
     private Date startTime;
     private Date endTime;

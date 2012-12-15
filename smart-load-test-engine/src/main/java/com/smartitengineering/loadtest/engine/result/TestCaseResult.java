@@ -19,7 +19,6 @@
 package com.smartitengineering.loadtest.engine.result;
 
 import com.smartitengineering.domain.AbstractPersistentDTO;
-import com.smartitengineering.domain.PersistentDTO;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -30,9 +29,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @author imyousuf
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class TestCaseResult
-    extends AbstractPersistentDTO<TestCaseResult>
-    implements PersistentDTO<TestCaseResult> {
+public class TestCaseResult extends AbstractPersistentDTO<TestCaseResult> {
 
     private String name;
     private String instanceFactoryClassName;

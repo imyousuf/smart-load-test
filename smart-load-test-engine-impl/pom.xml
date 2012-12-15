@@ -18,222 +18,211 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <project>
-    <parent>
-        <artifactId>smart-load-test</artifactId>
-        <groupId>com.smartitengineering</groupId>
-        <version>0.1-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.smartitengineering.smart-load-test-engine</groupId>
-    <artifactId>smart-load-test-engine-impl</artifactId>
-    <name>smart-load-test-engine-impl</name>
-    <version>${parent.version}</version>
-    <url>http://code.google.com/p/smart-load-test/</url>
-    <description>
+  <parent>
+    <artifactId>smart-load-test</artifactId>
+    <groupId>com.smartitengineering</groupId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.smartitengineering.smart-load-test-engine</groupId>
+  <artifactId>smart-load-test-engine-impl</artifactId>
+  <name>smart-load-test-engine-impl</name>
+  <version>${parent.version}</version>
+  <url>http://code.google.com/p/smart-load-test/</url>
+  <description>
         This module will contain the default implementation of the different
         engines, namingly it will contain the db persistence, file system
         persistence, engine impl and console UI impl.
-    </description>
-    <developers>
-        <developer>
-            <id>imyousuf</id>
-            <name>Imran M Yousuf</name>
-            <email>imyousuf@smartitengineering.com</email>
-        </developer>
-    </developers>
-    <build>
+  </description>
+  <profiles>
+    <profile>
+      <id>db-schema</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <file>
+          <exists>src/database/db-connection-params.properties</exists>
+        </file>
+      </activation>
+      <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>properties-maven-plugin</artifactId>
+            <version>1.0-alpha-2</version>
+            <executions>
+              <execution>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>read-project-properties</goal>
+                </goals>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                  <files>
+                    <file>src/database/db-connection-params.properties</file>
+                  </files>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>src/database/db-connection-params.properties</file>
-                            </files>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>ddlutils-compile</id>
-                        <phase>compile</phase>
-                        <configuration>
-                            <tasks>
-                                <taskdef classname="org.apache.ddlutils.task.DdlToDatabaseTask"
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>ddlutils-compile</id>
+                <phase>compile</phase>
+                <configuration>
+                  <tasks>
+                    <taskdef classname="org.apache.ddlutils.task.DdlToDatabaseTask"
                                          name="ddlToDatabase"
                                          classpathref="maven.compile.classpath"/>
-                                <mkdir dir="${project.build.directory}/database"/>
-                                <ddlToDatabase usedelimitedsqlidentifiers="true">
-                                    <database driverclassname="${db.mysql.driver}"
+                    <mkdir dir="${project.build.directory}/database"/>
+                    <ddlToDatabase usedelimitedsqlidentifiers="true">
+                      <database driverclassname="${db.mysql.driver}"
                                               url="${db.mysql.url}"
                                               username="${db.mysql.username}"
                                               password="${db.mysql.password}"/>
-                                    <fileset dir="./src/database/">
-                                        <include name="schema.xml"/>
-                                    </fileset>
-                                    <writeschemasqltofile outputfile="${project.build.directory}/database/${db.mysql.product_name}-ddl.sql" alterdatabase="false" />
-                                </ddlToDatabase>
-                                <ddlToDatabase usedelimitedsqlidentifiers="true">
-                                    <database driverclassname="${db.pgsql.driver}"
+                      <fileset dir="./src/database/">
+                        <include name="schema.xml"/>
+                      </fileset>
+                      <writeschemasqltofile outputfile="${project.build.directory}/database/${db.mysql.product_name}-ddl.sql" alterdatabase="false" />
+                    </ddlToDatabase>
+                    <ddlToDatabase usedelimitedsqlidentifiers="true">
+                      <database driverclassname="${db.pgsql.driver}"
                                               url="${db.pgsql.url}"
                                               username="${db.pgsql.username}"
                                               password="${db.pgsql.password}"/>
-                                    <fileset dir="./src/database/">
-                                        <include name="schema.xml"/>
-                                    </fileset>
-                                    <writeschemasqltofile outputfile="${project.build.directory}/database/${db.pgsql.product_name}-ddl.sql" alterdatabase="false" />
-                                </ddlToDatabase>
-                            </tasks>
-                            
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>ddlutils-install</id>
-                        <phase>install</phase>
-                        <configuration>
-                            <tasks>
-                                <taskdef classname="org.apache.ddlutils.task.DdlToDatabaseTask"
+                      <fileset dir="./src/database/">
+                        <include name="schema.xml"/>
+                      </fileset>
+                      <writeschemasqltofile outputfile="${project.build.directory}/database/${db.pgsql.product_name}-ddl.sql" alterdatabase="false" />
+                    </ddlToDatabase>
+                  </tasks>
+
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>ddlutils-install</id>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <taskdef classname="org.apache.ddlutils.task.DdlToDatabaseTask"
                                          name="ddlToDatabase"
                                          classpathref="maven.compile.classpath"/>
-                                <mkdir dir="${project.build.directory}/database"/>
-                                <ddlToDatabase usedelimitedsqlidentifiers="true">
-                                    <database driverclassname="${db.mysql.driver}"
+                    <mkdir dir="${project.build.directory}/database"/>
+                    <ddlToDatabase usedelimitedsqlidentifiers="true">
+                      <database driverclassname="${db.mysql.driver}"
                                               url="${db.mysql.url}"
                                               username="${db.mysql.username}"
                                               password="${db.mysql.password}"/>
-                                    <fileset dir="./src/database/">
-                                        <include name="schema.xml"/>
-                                    </fileset>
-                                    <writeschemasqltofile outputfile="${project.build.directory}/database/${db.mysql.product_name}-alter-ddl.sql" alterdatabase="true" />
-                                </ddlToDatabase>
-                                <ddlToDatabase usedelimitedsqlidentifiers="true">
-                                    <database driverclassname="${db.pgsql.driver}"
+                      <fileset dir="./src/database/">
+                        <include name="schema.xml"/>
+                      </fileset>
+                      <writeschemasqltofile outputfile="${project.build.directory}/database/${db.mysql.product_name}-alter-ddl.sql" alterdatabase="true" />
+                    </ddlToDatabase>
+                    <ddlToDatabase usedelimitedsqlidentifiers="true">
+                      <database driverclassname="${db.pgsql.driver}"
                                               url="${db.pgsql.url}"
                                               username="${db.pgsql.username}"
                                               password="${db.pgsql.password}"/>
-                                    <fileset dir="./src/database/">
-                                        <include name="schema.xml"/>
-                                    </fileset>
-                                    <writeschemasqltofile outputfile="${project.build.directory}/database/${db.pgsql.product_name}-alter-ddl.sql" alterdatabase="true" />
-                                </ddlToDatabase>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>ddlutils-deploy</id>
-                        <phase>deploy</phase>
-                        <configuration>
-                            <tasks>
-                                <taskdef classname="org.apache.ddlutils.task.DdlToDatabaseTask"
+                      <fileset dir="./src/database/">
+                        <include name="schema.xml"/>
+                      </fileset>
+                      <writeschemasqltofile outputfile="${project.build.directory}/database/${db.pgsql.product_name}-alter-ddl.sql" alterdatabase="true" />
+                    </ddlToDatabase>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>ddlutils-deploy</id>
+                <phase>deploy</phase>
+                <configuration>
+                  <tasks>
+                    <taskdef classname="org.apache.ddlutils.task.DdlToDatabaseTask"
                                          name="ddlToDatabase"
                                          classpathref="maven.compile.classpath"/>
-                                <ddlToDatabase usedelimitedsqlidentifiers="true">
-                                    <database driverclassname="${db.pgsql.driver}"
+                    <ddlToDatabase usedelimitedsqlidentifiers="true">
+                      <database driverclassname="${db.pgsql.driver}"
                                               url="${db.pgsql.url}"
                                               username="${db.pgsql.username}"
                                               password="${db.pgsql.password}"/>
-                                    <fileset dir="./src/database/">
-                                        <include name="schema.xml"/>
-                                    </fileset>
-                                    <createDatabase failonerror="false" />
-                                    <writeSchemaToDatabase alterdatabase="true" />
-                                </ddlToDatabase>
-                                 <ddlToDatabase usedelimitedsqlidentifiers="true">
-                                    <database driverclassname="${db.mysql.driver}"
+                      <fileset dir="./src/database/">
+                        <include name="schema.xml"/>
+                      </fileset>
+                      <createDatabase failonerror="false" />
+                      <writeSchemaToDatabase alterdatabase="true" />
+                    </ddlToDatabase>
+                    <ddlToDatabase usedelimitedsqlidentifiers="true">
+                      <database driverclassname="${db.mysql.driver}"
                                               url="${db.mysql.url}"
                                               username="${db.mysql.username}"
                                               password="${db.mysql.password}"/>
-                                    <fileset dir="./src/database/">
-                                        <include name="schema.xml"/>
-                                    </fileset>
-                                    <createDatabase failonerror="false" />
-                                    <writeSchemaToDatabase alterdatabase="true" />
-                                </ddlToDatabase>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+                      <fileset dir="./src/database/">
+                        <include name="schema.xml"/>
+                      </fileset>
+                      <createDatabase failonerror="false" />
+                      <writeSchemaToDatabase alterdatabase="true" />
+                    </ddlToDatabase>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
-    </build>
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.smartitengineering</groupId>
-            <artifactId>smart-load-test-engine</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.smartitengineering</groupId>
-            <artifactId>smart-abstract-dao</artifactId>
-            <version>${abstract-dao-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.smartitengineering</groupId>
-            <artifactId>smart-hibernate-abstract-dao</artifactId>
-            <version>${abstract-dao-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.6</version>
-        </dependency>
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>8.2-507.jdbc3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ddlutils</groupId>
-            <artifactId>ddlutils</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.9</version>
-        </dependency>
-    </dependencies>
+      </build>
+    </profile>
+  </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.smartitengineering</groupId>
+      <artifactId>smart-load-test-engine</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.smartitengineering</groupId>
+      <artifactId>smart-abstract-dao</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.smartitengineering</groupId>
+      <artifactId>smart-hibernate-abstract-dao</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>8.2-507.jdbc3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ddlutils</groupId>
+      <artifactId>ddlutils</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>c3p0</groupId>
+      <artifactId>c3p0</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.9</version>
+    </dependency>
+  </dependencies>
 </project>

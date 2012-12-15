@@ -19,7 +19,6 @@
 package com.smartitengineering.loadtest.engine.result;
 
 import com.smartitengineering.domain.AbstractPersistentDTO;
-import com.smartitengineering.domain.PersistentDTO;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -28,54 +27,52 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @author imyousuf
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class TestProperty
-    extends AbstractPersistentDTO<TestProperty>
-    implements PersistentDTO<TestProperty> {
+public class TestProperty extends AbstractPersistentDTO<TestProperty> {
 
-    private String key;
-    private String value;
+  private String key;
+  private String value;
 
-    public boolean isValid() {
-        if (key != null && value != null) {
-            return true;
-        }
-        return false;
+  public boolean isValid() {
+    if (key != null && value != null) {
+      return true;
     }
+    return false;
+  }
 
-    @Override
-    public Object clone() {
-        TestProperty property = new TestProperty();
-        super.clone(property);
-        property.setKey(key);
-        property.setValue(value);
-        return property;
-    }
+  @Override
+  public Object clone() {
+    TestProperty property = new TestProperty();
+    super.clone(property);
+    property.setKey(key);
+    property.setValue(value);
+    return property;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj) && obj instanceof TestProperty) {
-            TestProperty resultObj = (TestProperty) obj;
-            if (key != null && resultObj.key != null &&
-                key.equals(resultObj.key)) {
-                return true;
-            }
-        }
-        return false;
+  @Override
+  public boolean equals(Object obj) {
+    if (super.equals(obj) && obj instanceof TestProperty) {
+      TestProperty resultObj = (TestProperty) obj;
+      if (key != null && resultObj.key != null &&
+          key.equals(resultObj.key)) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    public String getKey() {
-        return key;
-    }
+  public String getKey() {
+    return key;
+  }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
+  public void setKey(String key) {
+    this.key = key;
+  }
 
-    public String getValue() {
-        return value;
-    }
+  public String getValue() {
+    return value;
+  }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+  public void setValue(String value) {
+    this.value = value;
+  }
 }

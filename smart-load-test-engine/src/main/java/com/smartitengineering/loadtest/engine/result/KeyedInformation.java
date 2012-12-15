@@ -28,9 +28,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @author imyousuf
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class KeyedInformation
-    extends AbstractPersistentDTO<KeyedInformation>
-    implements PersistentDTO<KeyedInformation> {
+public class KeyedInformation extends AbstractPersistentDTO<KeyedInformation> {
 
     private String key;
     private String value;

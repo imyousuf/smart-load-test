@@ -28,20 +28,19 @@
     <artifactId>smart-load-test-doc</artifactId>
     <name>smart-load-test-doc</name>
     <version>${parent.version}</version>
-    <url>http://code.google.com/p/smart-load-test/</url>
     <pluginRepositories>
         <pluginRepository>
             <id>repository.jboss.org</id>
-            <url>http://repository.jboss.org/maven2</url>
+            <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
         <pluginRepository>
-            <id>snapshots.jboss.org</id>
-            <url>http://snapshots.jboss.org/maven2</url>
+            <id>3rdparty.repository.jboss.org</id>
+            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
@@ -49,8 +48,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>

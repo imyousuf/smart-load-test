@@ -18,15 +18,20 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
     <groupId>com.smartitengineering</groupId>
-    <artifactId>smart-load-test</artifactId>
-    <packaging>pom</packaging>
-    <version>0.1-SNAPSHOT</version>
-    <name>smart-load-test</name>
-    <url>http://code.google.com/p/smart-load-test/</url>
-    <inceptionYear>2008</inceptionYear>
-    <description>
+    <artifactId>smart-core</artifactId>
+    <version>0.1.10</version>
+  </parent>
+  <groupId>com.smartitengineering</groupId>
+  <artifactId>smart-load-test</artifactId>
+  <packaging>pom</packaging>
+  <version>0.1-SNAPSHOT</version>
+  <name>smart-load-test</name>
+  <url>http://code.google.com/p/smart-load-test/</url>
+  <inceptionYear>2008</inceptionYear>
+  <description>
         This framework is intended to make load testing simple, especially the
         logging of the results, persisting them and later representing them to
         the user. It is intended to be developed as a NetBeans Module and Stand
@@ -37,177 +42,77 @@
         different types. Not only existing frameworks, but by implementing some
         key API interfaces users can create their own test cases, which is of
         extreme benefit when it comes to testing Web Services.
-    </description>
-    <organization>
-        <name>Smart IT Engineering</name>
-        <url>http://www.smartitengineering.com</url>
-    </organization>
-    <issueManagement>
-        <system>Google Code Issue Tracker</system>
-        <url>http://code.google.com/p/smart-load-test/issues/</url>
-    </issueManagement>
-    <mailingLists>
-        <mailingList>
-            <name>User List</name>
-            <archive>http://groups.google.com/group/smart-load-test-users</archive>
-            <post>smart-load-test-users@googlegroups.com</post>
-        </mailingList>
-        <mailingList>
-            <name>Developer List</name>
-            <archive>http://groups.google.com/group/smart-load-test-dev</archive>
-            <post>smart-load-test-dev@googlegroups.com</post>
-        </mailingList>
-    </mailingLists>
-    <licenses>
-        <license>
-            <name>GNU General Public License v3</name>
-            <distribution>repo and manual</distribution>
-            <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
-        </license>
-    </licenses>
-    <scm>
-        <connection>scm:svn:http://smart-load-test.googlecode.com/svn/trunk/smart-load-test</connection>
-        <developerConnection>scm:svn:https://smart-load-test.googlecode.com/svn/trunk/smart-load-test</developerConnection>
-        <url>http://code.google.com/p/smart-load-test/source/browse</url>
-    </scm>
-    <developers>
-        <developer>
-            <id>imyousuf</id>
-            <name>Imran M Yousuf</name>
-            <email>imyousuf@smartitengineering.com</email>
-            <organization>Smart IT Engineering</organization>
-            <timezone>GMT +0600</timezone>
-            <roles>
-                <role>Project Owner</role>
-                <role>Developer</role>
-                <role>Maintainer</role>
-            </roles>
-        </developer>
-    </developers>
-    <distributionManagement>
-        <!-- use the following if you're not using a snapshot version. -->
-        <repository>
-            <id>java.net-m2-repository</id>
-            <url>java-net:/maven2-repository/trunk/repository/</url>
-        </repository>
-        <!-- use the following if you ARE using a snapshot version. -->
-        <snapshotRepository>
-            <id>free-ftp-snapshot-repo</id>
-            <name>My FTP snapshot</name>
-            <url>ftp://imyousuf.100webspace.net/imyousuf.100webspace.net/maven-repo/snapshot</url>
-        </snapshotRepository>
-    </distributionManagement>
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-scm-plugin</artifactId>
-                <version>1.0</version>
-                <configuration>
-                    <connectionType>developerConnection</connectionType>
-                    <username>${gcode.username}</username>
-                    <password>${gcode.password}</password>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.0.4</version>
-                <configuration>
-                    <attach>true</attach>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>jar</goal>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-        <extensions>
-            <extension>
-                <groupId>org.jvnet.wagon-svn</groupId>
-                <artifactId>wagon-svn</artifactId>
-                <version>1.8</version>
-            </extension>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ftp</artifactId>
-                <version>1.0-alpha-6</version>
-            </extension>
-        </extensions>
-    </build>
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>${cobertura-version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jxr-maven-plugin</artifactId>
-                <version>2.0-beta-1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-changelog-plugin</artifactId>
-                <version>2.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.3</version>
-            </plugin>
-        </plugins>
-    </reporting>
-    <repositories>
-        <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Repository for Maven</name>
-            <url>http://download.java.net/maven/2/</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>smart-it-snapshot-repo</id>
-            <name>Smart IT Engineering snapshot repo</name>
-            <url>http://dev.smartitengineering.com/maven-repo/snapshot</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-    <modules>
-        <module>smart-load-test-engine</module>
-        <module>smart-load-test-doc</module>
-        <module>smart-load-test-engine-app</module>
-        <module>smart-load-test-engine-impl</module>
-    </modules>
-    <properties>
-        <abstract-dao-version>0.4-SNAPSHOT</abstract-dao-version>
-        <cobertura-version>2.2</cobertura-version>
-    </properties>
+  </description>
+  <organization>
+    <name>Smart IT Solution</name>
+    <url>http://www.smitsol.com</url>
+  </organization>
+  <issueManagement>
+    <system>Google Code Issue Tracker</system>
+    <url>http://code.google.com/p/smart-load-test/issues/</url>
+  </issueManagement>
+  <mailingLists>
+    <mailingList>
+      <name>User List</name>
+      <archive>http://groups.google.com/group/smart-load-test-users</archive>
+      <post>smart-load-test-users@googlegroups.com</post>
+    </mailingList>
+    <mailingList>
+      <name>Developer List</name>
+      <archive>http://groups.google.com/group/smart-load-test-dev</archive>
+      <post>smart-load-test-dev@googlegroups.com</post>
+    </mailingList>
+  </mailingLists>
+  <licenses>
+    <license>
+      <name>GNU General Public License v3</name>
+      <distribution>repo and manual</distribution>
+      <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:git://github.com/imyousuf/smart-load-test.git</connection>
+    <developerConnection>scm:git:https://code.google.com/p/smart-load-test/</developerConnection>
+    <url>http://code.google.com/p/smart-load-test/source/browse</url>
+  </scm>
+  <developers>
+    <developer>
+      <id>imyousuf</id>
+      <name>Imran M Yousuf</name>
+      <email>imyousuf@smartitengineering.com</email>
+      <organization>Smart IT Solution</organization>
+      <timezone>GMT +0600</timezone>
+      <roles>
+        <role>Project Owner</role>
+        <role>Developer</role>
+        <role>Maintainer</role>
+      </roles>
+    </developer>
+  </developers>
+  <modules>
+    <module>smart-load-test-engine</module>
+    <module>smart-load-test-doc</module>
+    <module>smart-load-test-engine-app</module>
+    <module>smart-load-test-engine-impl</module>
+  </modules>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -39,7 +39,7 @@ import java.util.Map;
 public class DatabasePersistentTestResultEngineImpl
     implements PersistentTestResultEngine {
 
-    private CommonReadDao<TestResult> persistentEngineDao;
+    private CommonReadDao<TestResult, Integer> persistentEngineDao;
     private CommonWriteDao<TestResult> persistentWriteEngineDao;
 
     public List<TestResult> getAllResults() {
@@ -150,12 +150,12 @@ public class DatabasePersistentTestResultEngineImpl
         return new ArrayList<TestResult>(new HashSet<TestResult>(searchResults));
     }
 
-    public CommonReadDao<TestResult> getPersistentEngineDao() {
+    public CommonReadDao<TestResult, Integer> getPersistentEngineDao() {
         return persistentEngineDao;
     }
 
     public void setPersistentEngineDao(
-        CommonReadDao<TestResult> persistentEngineDao) {
+        CommonReadDao<TestResult, Integer> persistentEngineDao) {
         this.persistentEngineDao = persistentEngineDao;
     }
 

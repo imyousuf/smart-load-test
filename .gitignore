@@ -1,6 +1,12 @@
-smart-load-test/smart-load-test-engine-impl/src/test/resources/test-config.properties
-smart-load-test/smart-load-test-engine-impl/src/test/resources/db-test-config.properties
-smart-load-test/smart-load-test-engine-impl/src/database/db-connection-params.properties
+private/
+catalog.xml
+profiles.xml
+*.log
+generated
 target
+*.properties
 *~
 
+.settings/
+.project
+.classpath
